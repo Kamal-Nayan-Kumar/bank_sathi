@@ -30,7 +30,12 @@ def _numbers_in(text: str) -> set[float]:
         except ValueError:
             continue
         if unit:
-            scale = {"lakh": 100_000, "lac": 100_000, "l": 100_000, "crore": 10_000_000, "cr": 10_000_000}[unit.lower()]
+            # Indian units appear in prose as well as in numbers, so a figure
+            # written "Rs 1.5 lakh" is checked against 150000, not 1.5.
+            scale = {
+                "lakh": 100_000, "lac": 100_000, "l": 100_000,
+                "crore": 10_000_000, "cr": 10_000_000,
+            }[unit.lower()]
             value *= scale
         out.add(value)
     return out
@@ -251,8 +256,41 @@ def verify_response(response: RecommendationResponse, state: dict) -> VerifierRe
     return VerifierReport(passed=passed, checks=checks, notes=notes)
 
 
+def _facts_digest(response: RecommendationResponse) -> str:
+    """A compact statement of what the engine decided.
+
+    Only used by the optional LLM grounding check, so it is deliberately short:
+    the deterministic checks above already cover the numbers, and this judge is
+    there to catch a claim that is true-sounding but not supported.
+    """
+    lines = []
+    if response.profile:
+        p = response.profile
+        lines.append(
+            f"customer: age {p.age}, income {p.monthly_income}, cibil {p.cibil_score}, "
+            f"employment {p.employment.value}"
+        )
+    for r in response.recommendations:
+        lines.append(
+            f"{r.card_id} {r.name}: net {r.net_annual_value_rs}, fee paid "
+            f"{r.fee_payable_rs}, limit {r.est_credit_limit_rs}"
+        )
+    for r in response.rejected_cards:
+        lines.append(f"blocked by {r.code}: {r.message}")
+    for ev in response.rejections:
+        for r in ev.reasons:
+            lines.append(f"{ev.card_id} not eligible: {r.message}")
+    for e in response.evidence:
+        lines.append(f"policy [{e.source}] {e.text[:200]}")
+    return "\n".join(lines) or "(nothing)"
+
+
 def _llm_grounding_check(response: RecommendationResponse) -> tuple[bool, str]:
-    """Optional semantic check. Additive only: it can only fail, never pass."""
+    """Optional semantic check. Additive only: it can only fail, never pass.
+
+    Off by default (`ENABLE_VERIFIER_LLM_CHECK=false`). Turning it on cannot make
+    a bad answer pass, because a failure here only ever adds a failed check.
+    """
     from app import llm
 
     result = llm.chat(

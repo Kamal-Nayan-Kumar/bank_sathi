@@ -8,8 +8,8 @@ the thing worth testing.
 from __future__ import annotations
 
 import pytest
-
-from app import llm, masking, thresholds as T
+from app import llm, masking
+from app import thresholds as T
 from app.intake import (
     LLMExtractor,
     RegexExtractor,
@@ -20,7 +20,7 @@ from app.intake import (
     parse_amount,
     to_profile,
 )
-from app.schemas import PartialProfile, Reason, SpendMix
+from app.schemas import PartialProfile, SpendMix
 from tests.conftest import make_profile
 
 
@@ -150,7 +150,6 @@ class TestProviderFailover:
 
     def test_second_provider_is_used_when_the_first_is_unauthorised(self, monkeypatch):
         import httpx
-
         from app.config import get_settings
 
         s = get_settings()
@@ -176,7 +175,6 @@ class TestProviderFailover:
 
     def test_total_outage_degrades_rather_than_raising(self, monkeypatch):
         import httpx
-
         from app.config import get_settings
 
         s = get_settings()

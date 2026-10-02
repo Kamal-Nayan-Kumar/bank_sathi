@@ -17,8 +17,8 @@ import math
 import random
 from pathlib import Path
 
-from app.config import get_settings
 from app import thresholds as T
+from app.config import get_settings
 from app.rules.engine import evaluate_card, global_gate
 from app.rules.scoring import rank
 from app.schemas import Employment, SpendMix, UserProfile

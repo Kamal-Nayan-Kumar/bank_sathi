@@ -13,7 +13,6 @@ from __future__ import annotations
 import re
 
 from app import llm
-from app import thresholds as T
 from app.db import get_all_cards, get_card
 from app.schemas import UserProfile
 
@@ -80,7 +79,6 @@ def chat_reply(message: str, history: list[dict] | None = None, profile=None) ->
     worse answer, never a decision they should not have had.
     """
     import json as _json
-    import re as _re
 
     if not llm.available():
         return _fallback_reply(message, profile)

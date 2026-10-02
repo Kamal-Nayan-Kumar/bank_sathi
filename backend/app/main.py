@@ -20,11 +20,7 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 from types import UnionType
-from typing import Any, List, Literal, Union, get_args, get_origin
-
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from typing import Any, Literal, Union, get_args, get_origin
 
 from app import thresholds as T
 from app.config import get_settings
@@ -37,6 +33,9 @@ from app.schemas import (
     UserProfile,
 )
 from app.survey import load_examples
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 logging.basicConfig(level=get_settings().log_level)
 log = logging.getLogger(__name__)
@@ -44,7 +43,6 @@ log = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    settings = get_settings()
     try:
         from app.bootstrap import ensure_ready
 
@@ -135,7 +133,6 @@ def chat(req: NaturalLanguageRequest) -> ChatReply:
     from app.graph.run import run_chat
     from app.intake import get_extractor
     from app.masking import mask
-    from app.schemas import PartialProfile
 
     clean, _ = mask(req.message)
     prior = None
@@ -236,7 +233,7 @@ def profile_fields() -> dict:
             # is what stops `city_tier` from being misread as a multiselect and
             # keeps the raw typing repr out of the response.
             options = [str(a) for a in get_args(annotation) if a is not type(None)]
-        elif get_origin(annotation) in (list, List):
+        elif get_origin(annotation) in (list, list):
             inner = get_args(annotation)
             if inner and get_origin(inner[0]) is Literal:
                 options = [str(a) for a in get_args(inner[0]) if a is not type(None)]
@@ -304,7 +301,7 @@ def _widget(annotation: Any) -> str:
     origin = get_origin(annotation)
     if origin is Literal:
         return "select"
-    if origin in (list, List):
+    if origin in (list, list):
         return "multiselect"
     if origin in (Union, UnionType):
         for arg in get_args(annotation):
@@ -408,8 +405,9 @@ def health() -> dict:
 
 @app.get("/api/eval/results", tags=["meta"])
 def eval_results() -> dict:
-    from app.config import get_settings as gs
     from pathlib import Path
+
+    from app.config import get_settings as gs
 
     path = Path(gs().resolve("evaluation/results.json"))
     if not path.exists():

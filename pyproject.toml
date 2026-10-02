@@ -41,7 +41,10 @@ filterwarnings = ["ignore::DeprecationWarning"]
 addopts = "-q"
 
 [tool.ruff]
-line-length = 100
+# 110 rather than 88: this codebase keeps data tables (tier definitions, spend
+# shares, reward bands) one row per line, where wrapping hurts readability more
+# than the extra width costs.
+line-length = 110
 target-version = "py311"
 
 [tool.ruff.lint]

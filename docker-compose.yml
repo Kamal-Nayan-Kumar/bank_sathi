@@ -1,0 +1,40 @@
+# Bank Sathi - credit card recommendation engine
+#
+# Local development with the Python backend and the Vite frontend in one file.
+# For the deployed version, see README.md: Render for the API, Vercel for the UI.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # The catalogue and the SQLite fallback live here. Mounted so a rebuild
+      # does not lose them; Postgres and Qdrant make this unnecessary in
+      # production.
+      - bank-sathi-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 15s
+      timeout: 60s
+      # Generous: the first boot downloads the MiniLM model.
+      start_period: 120s
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+    environment:
+      # Baked into the bundle at build time.
+      VITE_API_URL: http://localhost:8000
+
+volumes:
+  bank-sathi-data:

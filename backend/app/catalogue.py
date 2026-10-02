@@ -100,7 +100,11 @@ BENEFITS = {
     "beginner": ["No joining fee", "One month fee waiver each year", "Free virtual card"],
     "business": ["Expense insights dashboard", "Higher cash withdrawal limit", "Working capital offers"],
     "lifestyle": ["Movie and streaming benefits", "Health and fitness partner discounts"],
-    "student": ["No annual fee for the first year", "Fee waiver on Rs 20,000 annual spend", "Budget EMI options"],
+    "student": [
+        "No annual fee for the first year",
+        "Fee waiver on Rs 20,000 annual spend",
+        "Budget EMI options",
+    ],
 }
 
 

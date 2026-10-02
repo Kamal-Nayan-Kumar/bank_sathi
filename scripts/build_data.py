@@ -22,7 +22,6 @@ from app.bootstrap import ensure_ready  # noqa: E402
 from app.catalogue import generate_cards  # noqa: E402
 from app.config import get_settings  # noqa: E402
 from app.db import get_all_cards, init_db, upsert_cards  # noqa: E402
-
 from app.survey import (  # noqa: E402
     edge_case_profiles,
     generate_profiles,
@@ -36,6 +35,11 @@ def main() -> None:
     ap.add_argument("--cards", type=int, default=120)
     ap.add_argument("--profiles", type=int, default=300)
     ap.add_argument("--skip-ingest", action="store_true")
+    ap.add_argument(
+        "--force",
+        action="store_true",
+        help="rebuild the catalogue even if the database already has rows",
+    )
     args = ap.parse_args()
 
     settings = get_settings()
@@ -61,6 +65,16 @@ def main() -> None:
     all_profiles = profiles + edges
 
     init_db()
+    live_cards = get_all_cards()
+    if live_cards and not args.force and len(live_cards) != len(cards):
+        # The catalogue in the database came from a different --cards value.
+        # Carry on, but say so: a silent mismatch makes evaluation numbers
+        # impossible to reproduce.
+        print(
+            f"note        : database holds {len(live_cards)} cards, generating "
+            f"{len(cards)}. Ground truth will use the database's set. "
+            f"Pass --force to overwrite."
+        )
     upsert_cards(
         cards,
         {c.card_id: [r.model_dump(mode="json") for r in c.reward_rules] for c in cards},

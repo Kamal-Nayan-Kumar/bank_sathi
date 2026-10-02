@@ -13,7 +13,7 @@ import logging
 import time
 from typing import Any
 
-from app import intake, llm
+from app import intake
 from app.config import get_settings
 from app.db import get_all_cards, get_cards_by_ids, session_scope
 from app.explain import explain_response, template_response

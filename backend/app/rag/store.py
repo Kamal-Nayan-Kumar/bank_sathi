@@ -11,7 +11,8 @@ import hashlib
 import logging
 import math
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field as dc_field
 from typing import Protocol
 
 from app.config import get_settings
@@ -29,7 +30,7 @@ def tokenize(text: str) -> list[str]:
 class Chunk:
     id: str
     text: str
-    metadata: dict[str, str | int | None] = field(default_factory=dict)
+    metadata: dict[str, str | int | None] = dc_field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------

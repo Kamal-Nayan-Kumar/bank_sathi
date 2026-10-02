@@ -14,8 +14,6 @@ from __future__ import annotations
 
 import logging
 
-from langgraph.graph import END, START, StateGraph
-
 from app.graph.nodes import (
     node_build_profile,
     node_evaluate,
@@ -29,6 +27,7 @@ from app.graph.nodes import (
     node_respond,
 )
 from app.graph.state import GraphState
+from langgraph.graph import END, START, StateGraph
 
 log = logging.getLogger(__name__)
 

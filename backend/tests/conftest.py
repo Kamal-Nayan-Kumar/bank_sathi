@@ -16,7 +16,7 @@ sys.path.insert(0, str(REPO_ROOT / "backend"))
 
 from app import thresholds as T  # noqa: E402
 from app.catalogue import generate_cards  # noqa: E402
-from app.db import init_db, session_scope, upsert_cards  # noqa: E402
+from app.db import init_db, upsert_cards  # noqa: E402
 from app.rag.ingest import ingest  # noqa: E402
 from app.rag.store import InMemoryStore, set_store  # noqa: E402
 from app.schemas import Employment, SpendMix, UserProfile  # noqa: E402

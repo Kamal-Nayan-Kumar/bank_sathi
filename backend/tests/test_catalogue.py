@@ -5,12 +5,10 @@ from __future__ import annotations
 import re
 
 import pytest
-
 from app import thresholds as T
 from app.catalogue import generate_cards
 from app.rag.ingest import _split_sections
 from app.rag.ingest import chunk_markdown as cm
-from app.schemas import Card, Employment
 
 
 def test_generation_is_deterministic():

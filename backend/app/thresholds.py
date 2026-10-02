@@ -344,12 +344,37 @@ FIELD_HELP = {
     "monthly_spend": "Rough figures are fine. We reward what you actually spend on.",
 }
 
+# Typical share of monthly income per spend category, per customer segment.
+# Used only by the synthetic-profile generator, never by the engine: real
+# spending comes from the customer. Shares sum to roughly 0.6, with the
+# remainder left unallocated rather than forced into "other".
 SPEND_SHARES = {
-    "student":       {"fuel": 0.02, "dining": 0.10, "groceries": 0.22, "online_shopping": 0.14, "travel": 0.06, "utilities": 0.08, "other": 0.38},
-    "early_career":  {"fuel": 0.05, "dining": 0.09, "groceries": 0.14, "online_shopping": 0.18, "travel": 0.07, "utilities": 0.09, "other": 0.38},
-    "mid_career":    {"fuel": 0.06, "dining": 0.08, "groceries": 0.13, "online_shopping": 0.12, "travel": 0.10, "utilities": 0.09, "other": 0.42},
-    "senior":        {"fuel": 0.05, "dining": 0.07, "groceries": 0.15, "online_shopping": 0.06, "travel": 0.08, "utilities": 0.11, "other": 0.48},
-    "self_employed": {"fuel": 0.08, "dining": 0.09, "groceries": 0.12, "online_shopping": 0.09, "travel": 0.08, "utilities": 0.10, "other": 0.44},
-    "new_to_credit": {"fuel": 0.04, "dining": 0.08, "groceries": 0.18, "online_shopping": 0.12, "travel": 0.04, "utilities": 0.10, "other": 0.44},
-    "risky":         {"fuel": 0.09, "dining": 0.07, "groceries": 0.16, "online_shopping": 0.10, "travel": 0.05, "utilities": 0.10, "other": 0.43},
+    "student": {
+        "fuel": 0.02, "dining": 0.10, "groceries": 0.22, "online_shopping": 0.14,
+        "travel": 0.06, "utilities": 0.08, "other": 0.38,
+    },
+    "early_career": {
+        "fuel": 0.05, "dining": 0.09, "groceries": 0.14, "online_shopping": 0.18,
+        "travel": 0.07, "utilities": 0.09, "other": 0.38,
+    },
+    "mid_career": {
+        "fuel": 0.06, "dining": 0.08, "groceries": 0.13, "online_shopping": 0.12,
+        "travel": 0.10, "utilities": 0.09, "other": 0.42,
+    },
+    "senior": {
+        "fuel": 0.05, "dining": 0.07, "groceries": 0.15, "online_shopping": 0.06,
+        "travel": 0.08, "utilities": 0.11, "other": 0.48,
+    },
+    "self_employed": {
+        "fuel": 0.08, "dining": 0.09, "groceries": 0.12, "online_shopping": 0.09,
+        "travel": 0.08, "utilities": 0.10, "other": 0.44,
+    },
+    "new_to_credit": {
+        "fuel": 0.04, "dining": 0.08, "groceries": 0.18, "online_shopping": 0.12,
+        "travel": 0.04, "utilities": 0.10, "other": 0.44,
+    },
+    "risky": {
+        "fuel": 0.09, "dining": 0.07, "groceries": 0.16, "online_shopping": 0.10,
+        "travel": 0.05, "utilities": 0.10, "other": 0.43,
+    },
 }

@@ -15,13 +15,12 @@ from contextlib import contextmanager
 from functools import lru_cache
 from typing import Any
 
-from sqlalchemy import JSON, Boolean, Integer, String, Text, create_engine, text
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
-
 from app import thresholds as T
 from app.config import REPO_ROOT, get_settings
 from app.schemas import Card
+from sqlalchemy import JSON, Boolean, Integer, String, Text, create_engine, text
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS cards (
@@ -298,7 +297,6 @@ def _json(value: Any) -> str:
 
 
 def get_card(card_id: str) -> Card | None:
-    from sqlalchemy import select
 
     with session_scope() as db:
         row = db.get(CardRow, card_id)

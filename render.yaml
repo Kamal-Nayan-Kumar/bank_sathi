@@ -1,0 +1,50 @@
+# Render blueprint for the Bank Sathi backend (FastAPI + LangGraph).
+#
+# Deploy with:  render blueprint launch
+#   or: New > Blueprint, point at this repo's render.yaml
+#
+# Everything the app needs is in .env.example. Only credentials are required;
+# the app boots on SQLite with local fallbacks if the optional ones are absent.
+
+services:
+  - type: web
+    name: bank-sathi-api
+    runtime: python
+    plan: free
+    region: singapore # closest to Neon and to the audience
+    rootDir: .
+    buildCommand: pip install -e .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
+    healthCheckPath: /api/health
+    # The free plan sleeps after inactivity, so a cold start pays for the
+    # MiniLM model load. The lifespan hook warms it at boot; this just gives the
+    # health check time to see a ready process rather than a loading one.
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+      # --- Groq (primary LLM). Optional: falls back to template prose. ---
+      - key: GROQ_API_KEY
+        sync: false
+
+      # --- OpenRouter (fallback LLM). Optional but recommended: Groq's free
+      #     tier rate-limits hard and this is what stops a 429 becoming a
+      #     30-second wait. ---
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL_EXTRACT
+        value: nvidia/nemotron-3-super-120b-a12b:free
+      - key: OPENROUTER_MODEL_EXPLAIN
+        value: nvidia/nemotron-3-super-120b-a12b:free
+
+      # --- Neon. Optional: falls back to SQLite in data/. ---
+      - key: DATABASE_URL
+        sync: false
+
+      # --- Qdrant. Optional: falls back to an in-process store, which means
+      #     the corpus is re-ingested on every cold start (about 2s). ---
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false

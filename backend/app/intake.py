@@ -19,8 +19,8 @@ import logging
 import re
 
 from app import llm
-from app.config import get_settings
 from app import thresholds as T
+from app.config import get_settings
 from app.schemas import Employment, PartialProfile, SpendMix
 
 log = logging.getLogger(__name__)

@@ -19,10 +19,9 @@ import json
 import logging
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import httpx
-
 from app.config import get_settings
 
 log = logging.getLogger(__name__)

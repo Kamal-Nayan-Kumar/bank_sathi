@@ -10,8 +10,8 @@ impossible age, validation must fail loudly rather than quietly clamp.
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import Annotated, Literal, Optional
+from enum import StrEnum
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -19,7 +19,13 @@ CardTier = Literal["secured", "entry", "mid", "premium"]
 Preference = Literal["cashback", "travel", "lounge", "fuel", "lifetime_free"]
 
 
-class Employment(str, Enum):
+class Employment(StrEnum):
+    """Employment types a card can be limited to.
+
+    StrEnum rather than `str, Enum`: on 3.11+ it is the intended form, and
+    `str(Employment.SALARIED)` returns the value instead of "Employment.SALARIED"
+    - which matters because these strings go into prompts and SQL.
+    """
     SALARIED = "salaried"
     SELF_EMPLOYED = "self_employed"
     BUSINESS_OWNER = "business_owner"
@@ -61,11 +67,11 @@ class UserProfile(BaseModel):
     monthly_income: int = Field(ge=0)
     employment: Employment
     city_tier: Literal[1, 2, 3]
-    cibil_score: Optional[int] = Field(None, ge=300, le=900)
+    cibil_score: int | None = Field(None, ge=300, le=900)
     existing_cards: int = Field(0, ge=0)
     missed_payments_12m: int = Field(0, ge=0)
     recent_inquiries_6m: int = Field(0, ge=0)
-    utilization_pct: Optional[float] = Field(None, ge=0, le=100)
+    utilization_pct: float | None = Field(None, ge=0, le=100)
     monthly_spend: SpendMix
     preferences: list[Preference] = Field(default_factory=list)
 
@@ -95,18 +101,18 @@ class PartialProfile(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    age: Optional[int] = Field(None, ge=0, le=120)
-    monthly_income: Optional[int] = Field(None, ge=0)
-    employment: Optional[Employment] = None
-    city_tier: Optional[Literal[1, 2, 3]] = None
-    cibil_score: Optional[int] = Field(None, ge=300, le=900)
-    existing_cards: Optional[int] = Field(None, ge=0)
-    missed_payments_12m: Optional[int] = Field(None, ge=0)
-    recent_inquiries_6m: Optional[int] = Field(None, ge=0)
-    utilization_pct: Optional[float] = Field(None, ge=0, le=100)
-    monthly_spend: Optional[SpendMix] = None
-    max_annual_fee: Optional[int] = Field(None, ge=0)
-    preferences: Optional[list[Preference]] = None
+    age: int | None = Field(None, ge=0, le=120)
+    monthly_income: int | None = Field(None, ge=0)
+    employment: Employment | None = None
+    city_tier: Literal[1, 2, 3] | None = None
+    cibil_score: int | None = Field(None, ge=300, le=900)
+    existing_cards: int | None = Field(None, ge=0)
+    missed_payments_12m: int | None = Field(None, ge=0)
+    recent_inquiries_6m: int | None = Field(None, ge=0)
+    utilization_pct: float | None = Field(None, ge=0, le=100)
+    monthly_spend: SpendMix | None = None
+    max_annual_fee: int | None = Field(None, ge=0)
+    preferences: list[Preference] | None = None
 
     def merged_with(self, prior: PartialProfile) -> PartialProfile:
         """Later conversation turns only fill blanks, they never erase."""
@@ -123,7 +129,7 @@ class RewardRule(BaseModel):
     # Effective percentage back already converted from points. Storing the
     # effective value keeps the scoring engine free of point-value arithmetic.
     value_pct: float = Field(ge=0)
-    monthly_cap_rs: Optional[int] = Field(None, ge=0)
+    monthly_cap_rs: int | None = Field(None, ge=0)
 
 
 class Card(BaseModel):
@@ -137,9 +143,9 @@ class Card(BaseModel):
     tier: CardTier
     annual_fee: int = Field(ge=0)
     joining_fee: int = Field(0, ge=0)
-    fee_waiver_spend: Optional[int] = Field(None, ge=0)
+    fee_waiver_spend: int | None = Field(None, ge=0)
     min_monthly_income: int = Field(ge=0)
-    min_cibil: Optional[int] = Field(None, ge=300, le=900)
+    min_cibil: int | None = Field(None, ge=300, le=900)
     min_age: int = Field(21, ge=18)
     max_age: int = Field(70, ge=21)
     allowed_employment: list[Employment]
@@ -180,7 +186,7 @@ class Reason(BaseModel):
     required: float | str | None = None
     # How far off the customer is, in the unit of `required`. None when the gap
     # is not meaningful (e.g. employment type).
-    gap: Optional[float] = None
+    gap: float | None = None
     fixable: bool = True
     # A near miss is a failure we expect the customer to clear with time.
     near_miss: bool = False
@@ -234,7 +240,7 @@ class VerifierReport(BaseModel):
 
 class PolicyEvidence(BaseModel):
     source: str
-    card_id: Optional[str] = None
+    card_id: str | None = None
     section: str
     text: str
     score: float = 0.0
@@ -251,7 +257,7 @@ class RecommendationResponse(BaseModel):
         "profile_rejected",
     ]
     decision: Literal["recommended", "rejected", "pending"] = "pending"
-    profile: Optional[UserProfile] = None
+    profile: UserProfile | None = None
     recommendations: list[Recommendation] = Field(default_factory=list)
     # Cards the customer failed, with reasons. Capped, not exhaustive.
     rejections: list[CardEvaluation] = Field(default_factory=list)
@@ -259,11 +265,11 @@ class RecommendationResponse(BaseModel):
     near_miss: list[CardEvaluation] = Field(default_factory=list)
     improvement_steps: list[str] = Field(default_factory=list)
     missing_fields: list[str] = Field(default_factory=list)
-    question: Optional[str] = None
+    question: str | None = None
     summary: str = ""
     evidence: list[PolicyEvidence] = Field(default_factory=list)
     score_breakdown: list[ScoreBreakdown] = Field(default_factory=list)
-    verifier: Optional[VerifierReport] = None
+    verifier: VerifierReport | None = None
     trace: dict[str, float] = Field(default_factory=dict)
 
 
@@ -272,7 +278,7 @@ class RecommendationResponse(BaseModel):
 # ---------------------------------------------------------------------------
 class NaturalLanguageRequest(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
-    session_id: Optional[str] = None
+    session_id: str | None = None
 
 
 class ProfileRequest(BaseModel):
@@ -280,5 +286,5 @@ class ProfileRequest(BaseModel):
 
 
 class CardQuery(BaseModel):
-    card_ids: Optional[list[str]] = None
+    card_ids: list[str] | None = None
     limit: int = Field(20, ge=1, le=200)

@@ -14,7 +14,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from app import llm, thresholds as T
+from app import llm
+from app import thresholds as T
 from app.config import get_settings
 from app.schemas import RecommendationResponse
 
@@ -200,9 +201,14 @@ def template_response(response: RecommendationResponse, state) -> Recommendation
     second = response.recommendations[1] if len(response.recommendations) > 1 else None
     spend_line = ""
     if profile:
-        top_cat = sorted(profile.monthly_spend.as_dict().items(), key=lambda kv: -kv[1])[0]
-        if top_cat[1] > 0:
-            spend_line = f" That lines up with where you actually spend, {_money(top_cat[1])} a month on {top_cat[0].replace('_', ' ')}."
+        ranked = sorted(profile.monthly_spend.as_dict().items(), key=lambda kv: -kv[1])
+        if ranked and ranked[0][1] > 0:
+            category, amount = ranked[0]
+            readable = category.replace("_", " ")
+            spend_line = (
+                f" That lines up with where you actually spend, "
+                f"{_money(amount)} a month on {readable}."
+            )
 
     sentence = (
         f"Based on what you've told me, {top.name} from {top.bank} is the strongest fit. "

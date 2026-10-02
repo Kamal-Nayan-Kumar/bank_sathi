@@ -8,8 +8,8 @@ rule engine already made.
 
 from __future__ import annotations
 
-from app.config import get_settings
 from app import thresholds as T
+from app.config import get_settings
 from app.rag.store import get_embedder, get_store
 from app.schemas import PolicyEvidence
 

@@ -23,16 +23,15 @@ import json
 import re
 import statistics
 import time
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
+from dataclasses import asdict, dataclass
+from dataclasses import field as dc_field
 
 from app.config import get_settings
 from app.db import get_all_cards
 from app.intake import RegexExtractor, get_extractor, missing_fields
 from app.masking import contains_pii, mask
-from app.policy import get_policy
-from app.rules.engine import evaluate_card, global_gate, near_misses
-from app.schemas import PartialProfile, UserProfile
+from app.rules.engine import evaluate_card, global_gate
+from app.schemas import UserProfile
 from app.survey import read_profiles
 
 FIELDS = [
@@ -58,8 +57,8 @@ _TOLERANCE_ABS = {"monthly_spend": 3_000.0}
 class Report:
     section: str
     n: int
-    metrics: dict = field(default_factory=dict)
-    notes: list[str] = field(default_factory=list)
+    metrics: dict = dc_field(default_factory=dict)
+    notes: list[str] = dc_field(default_factory=list)
 
 
 def _fmt(pct: float) -> str:
@@ -255,7 +254,6 @@ def eval_rules(profiles: list[UserProfile], cards: list, limit: int | None = Non
     gate_ok = 0
     eligibility_ok = 0
     false_eligible = 0
-    near_miss_ok = 0
     checked_cards = 0
 
     for p in sample:
@@ -417,7 +415,6 @@ def eval_robustness() -> Report:
     """
     from app.graph.run import run_profile
     from app.schemas import ProfileRequest, SpendMix
-
     from tests.conftest import make_profile
 
     baseline = run_profile(ProfileRequest(profile=make_profile(profile_id="ROB_BASE")))
@@ -560,7 +557,6 @@ def eval_ablation(profiles: list[UserProfile], limit: int = 12) -> Report:
         if not global_gate(p).passed and ids:
             approvals += 1
 
-    n = max(1, len(sample))
     a = max(1, answered)
     return Report(
         "ablation_llm_only",

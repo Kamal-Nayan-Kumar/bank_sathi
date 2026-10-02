@@ -8,7 +8,6 @@ with a rejection.
 from __future__ import annotations
 
 import pytest
-
 from app import thresholds as T
 from app.rules.engine import (
     candidate_filter_sql,

@@ -8,7 +8,6 @@ for.
 from __future__ import annotations
 
 import pytest
-
 from app.config import get_settings
 from app.db import get_engine, init_db, session_scope, upsert_cards
 
@@ -85,9 +84,8 @@ def test_upsert_replaces_rather_than_duplicating(cards, loaded_db):
 
 def test_orphaned_reward_rows_are_dropped(cards, loaded_db):
     """Rules are replaced as a set, so a removed card leaves nothing behind."""
-    from sqlalchemy import text
-
     from app.db import get_all_cards
+    from sqlalchemy import text
 
     upsert_cards(cards, {c.card_id: [] for c in cards})
     live_ids = {c.card_id for c in get_all_cards(include_inactive=True)}
