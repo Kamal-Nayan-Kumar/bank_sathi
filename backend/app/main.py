@@ -28,6 +28,7 @@ from app.schemas import (
     CardQuery,
     Employment,
     NaturalLanguageRequest,
+    PartialProfile,
     ProfileRequest,
     RecommendationResponse,
     UserProfile,
@@ -145,7 +146,14 @@ def chat(req: NaturalLanguageRequest) -> ChatReply:
     from app.masking import mask
 
     clean, _ = mask(req.message)
+    # The client sends back what we last extracted, so each turn refines the
+    # same profile instead of starting over.
     prior = None
+    if req.prior:
+        try:
+            prior = PartialProfile.model_validate(req.prior)
+        except Exception as exc:  # noqa: BLE001
+            log.warning("ignoring unusable prior profile: %s", exc)
     response = run_chat(req, prior)
 
     # Re-extract on the masked text so the stored partial matches what the

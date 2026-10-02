@@ -96,7 +96,9 @@ export function ChatPanel({
     startStages(setMessages);
 
     try {
-      const reply = await api.chat(message, "web-session");
+      // partial is read at call time, so each turn carries everything known so
+      // far and the profile only ever fills up.
+      const reply = await api.chat(message, "web-session", partial);
       stopStages();
       // The staged "working" line has served its purpose; the real answer and
       // the step-by-step panel replace it.

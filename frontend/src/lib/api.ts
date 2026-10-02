@@ -60,10 +60,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  chat: (message: string, sessionId: string) =>
+  // The API keeps no server-side session, so we send back what it last
+  // extracted. Without it a follow-up answer is all the engine sees.
+  chat: (message: string, sessionId: string, prior?: Record<string, unknown>) =>
     request<ChatReply>("/api/chat", {
       method: "POST",
-      body: JSON.stringify({ message, session_id: sessionId }),
+      body: JSON.stringify({ message, session_id: sessionId, prior: prior ?? null }),
     }),
 
   recommend: (profile: UserProfile) =>

@@ -11,7 +11,7 @@ impossible age, validation must fail loudly rather than quietly clamp.
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -115,8 +115,13 @@ class PartialProfile(BaseModel):
     preferences: list[Preference] | None = None
 
     def merged_with(self, prior: PartialProfile) -> PartialProfile:
-        """Later conversation turns only fill blanks, they never erase."""
-        return prior.model_copy(update=self.model_dump(exclude_unset=False))
+        """Later conversation turns only fill blanks, they never erase.
+
+        exclude_none matters: dumping every field would write the unset ones
+        back as null and wipe what the customer told us on the previous turn,
+        so a chat could never accumulate a profile no matter how long it ran.
+        """
+        return prior.model_copy(update=self.model_dump(exclude_none=True))
 
 
 # ---------------------------------------------------------------------------
@@ -279,6 +284,11 @@ class RecommendationResponse(BaseModel):
 class NaturalLanguageRequest(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
     session_id: str | None = None
+    # What the engine already knows, sent back by the client. The API holds no
+    # server-side sessions, so without this every follow-up turn starts from
+    # nothing and the conversation can never converge: the customer answers one
+    # question and the engine forgets the three they gave earlier.
+    prior: dict[str, Any] | None = None
 
 
 class ProfileRequest(BaseModel):
