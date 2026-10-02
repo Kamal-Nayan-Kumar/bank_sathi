@@ -147,11 +147,19 @@ def build_card_policy_chunks(cards: list) -> list[Chunk]:
     return chunks
 
 
-def ingest(docs_dir: Path | None = None, cards: list | None = None) -> dict[str, int]:
+def ingest(
+    docs_dir: Path | None = None, cards: list | None = None, force: bool = False
+) -> dict[str, int]:
+    """Load the corpus into the vector store.
+
+    Skips the upsert when the store already holds exactly what we would write.
+    That is the normal production case: every boot would otherwise re-embed 144
+    chunks, which means downloading and loading the model for no new content.
+    Pass force=True (make data does) to rebuild unconditionally.
+    """
     s = get_settings()
     docs_dir = docs_dir or s.resolve(s.policy_docs_dir)
     store = get_store()
-    embedder = get_embedder()
 
     all_chunks: list[Chunk] = []
     for path in sorted(docs_dir.glob("*.md")):
@@ -160,7 +168,21 @@ def ingest(docs_dir: Path | None = None, cards: list | None = None) -> dict[str,
         all_chunks.extend(build_card_policy_chunks(cards))
 
     if not all_chunks:
-        return {"chunks": 0, "docs": 0}
-    vectors = embedder.embed([c.text for c in all_chunks])
+        return {"chunks": 0, "docs": 0, "skipped": True}
+    if not force:
+        try:
+            if store.count() == len(all_chunks):
+                return {
+                    "chunks": len(all_chunks),
+                    "docs": len(list(docs_dir.glob("*.md"))),
+                    "skipped": True,
+                }
+        except Exception:  # noqa: BLE001 - an unreadable store just gets rebuilt
+            pass
+    vectors = get_embedder().embed([c.text for c in all_chunks])
     store.upsert(all_chunks, vectors)
-    return {"chunks": len(all_chunks), "docs": len(list(docs_dir.glob("*.md")))}
+    return {
+        "chunks": len(all_chunks),
+        "docs": len(list(docs_dir.glob("*.md"))),
+        "skipped": False,
+    }

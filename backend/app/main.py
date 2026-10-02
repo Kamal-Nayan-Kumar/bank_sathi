@@ -87,7 +87,9 @@ def _warm_up() -> None:
         stages[name] = round((_time.perf_counter() - t0) * 1000, 1)
 
     if _os.environ.get("WARM_EMBEDDER", "0") == "1":
-        timed("embedder", lambda: __import__("app.rag.store", fromlist=["x"]).get_embedder().embed(["warm up"]))
+        from app.rag.store import get_embedder
+
+        timed("embedder", lambda: get_embedder().embed(["warm up"]))
     timed("vector_store", lambda: __import__("app.rag.store", fromlist=["x"]).get_store().count())
     timed("catalogue", lambda: __import__("app.db", fromlist=["x"]).get_all_cards())
     log.info(
@@ -380,7 +382,7 @@ def health() -> dict:
     """
     from app import llm
     from app.db import get_all_cards
-    from app.rag.store import get_embedder, get_store
+    from app.rag.store import get_store
 
     status = {
         "database": "postgres" if get_settings().has_postgres else "sqlite",
@@ -394,18 +396,27 @@ def health() -> dict:
 
     try:
         store = get_store()
-        status["vector_store"] = "qdrant" if store.name == "qdrant" else "in-process"
+        on_qdrant = store.name == "qdrant"
+        status["vector_store"] = "qdrant" if on_qdrant else "in-process"
         status["policy_chunks"] = store.count()
     except Exception as exc:  # noqa: BLE001
+        on_qdrant = False
         status["vector_store"] = "unavailable"
         status["vector_store_error"] = str(exc)[:200]
 
-    try:
-        embedder = get_embedder()
-        status["embeddings"] = type(embedder).__name__.replace("Embedder", "").lower()
-    except Exception as exc:  # noqa: BLE001
-        status["embeddings"] = "unavailable"
-        status["embeddings_error"] = str(exc)[:200]
+    # When Qdrant embeds server-side, no local embedder is ever constructed —
+    # reporting get_embedder() here would load a model just to name it.
+    if on_qdrant:
+        status["embeddings"] = "qdrant-inference"
+    else:
+        try:
+            from app.rag.store import get_embedder
+
+            embedder = get_embedder()
+            status["embeddings"] = type(embedder).__name__.replace("Embedder", "").lower()
+        except Exception as exc:  # noqa: BLE001
+            status["embeddings"] = "unavailable"
+            status["embeddings_error"] = str(exc)[:200]
 
     status["llm"] = " + ".join(name for name, _, _ in llm.providers()) or "template"
     return status

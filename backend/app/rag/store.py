@@ -218,6 +218,12 @@ class QdrantStore:
     # rejects the query.
     _PAYLOAD_INDEXES = ("card_id", "document_type")
 
+    # Embedded by Qdrant Cloud itself, not by this process. Sending text and
+    # letting the cluster embed it means the backend holds no model in RAM —
+    # which is what keeps a 512MB container alive. Same MiniLM family as the
+    # local path, same 384 dimensions, so vectors from either side mix freely.
+    INFERENCE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
     def __init__(self, dim: int) -> None:
         from qdrant_client import QdrantClient
 
@@ -285,6 +291,26 @@ class QdrantStore:
     def search(
         self, vector: list[float], limit: int = 5, must: dict[str, str] | None = None
     ) -> list[tuple[Chunk, float]]:
+        return self._run_search(vector, limit, must)
+
+    def search_text(
+        self, text: str, limit: int = 5, must: dict[str, str] | None = None
+    ) -> list[tuple[Chunk, float]]:
+        """Search by text. Qdrant Cloud embeds it server-side with MiniLM.
+
+        This is the production path: no model download, no onnxruntime, no
+        extra RAM in the web process. The local vector path below stays for
+        tests and for clusters without inference enabled.
+        """
+        from qdrant_client import models
+
+        return self._run_search(
+            models.Document(text=text, model=self.INFERENCE_MODEL), limit, must
+        )
+
+    def _run_search(
+        self, query, limit: int = 5, must: dict[str, str] | None = None
+    ) -> list[tuple[Chunk, float]]:
         from qdrant_client.models import FieldCondition, Filter, MatchValue
 
         flt = None
@@ -296,7 +322,7 @@ class QdrantStore:
             )
         hits = self._client.query_points(
             collection_name=self._collection,
-            query=vector,
+            query=query,
             limit=limit,
             query_filter=flt,
             with_payload=True,

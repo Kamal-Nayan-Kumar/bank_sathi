@@ -14,6 +14,25 @@ from app.rag.store import get_embedder, get_store
 from app.schemas import PolicyEvidence
 
 
+def _search(store, embedder, query: str, limit: int, must=None):
+    """One search, by text when the store can embed server-side.
+
+    Qdrant Cloud embeds MiniLM itself, so the query text goes straight to the
+    cluster and no model loads in this process. Anything else (in-process store,
+    local Qdrant without inference) falls back to a locally embedded vector.
+    The caller cannot tell the difference: hits come back in the same shape.
+    """
+    search_text = getattr(store, "search_text", None)
+    if callable(search_text):
+        try:
+            return search_text(query, limit=limit, must=must)
+        except Exception:
+            # Inference disabled on the cluster, wrong model name, quota spent —
+            # whatever it is, a local vector is better than no evidence.
+            pass
+    return store.search(embedder.embed([query])[0], limit=limit, must=must)
+
+
 def _query_for_card(card, profile) -> str:
     """A retrieval query built from computed facts, not from LLM prose.
 
@@ -74,15 +93,13 @@ def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence
     seen: set[str] = set()
 
     if cards:
-        # One embedding call for the whole batch. Encoding five queries
-        # individually meant five model invocations on the request path, and
-        # measured ~5s of the request.
-        queries = [_query_for_card(card, profile) for card in cards]
-        vectors = embedder.embed(queries)
-        for card, vec in zip(cards, vectors, strict=True):
+        for card in cards:
             # Filtered by card_id so the explanation for card A can never be
             # grounded in card B's terms.
-            hits = store.search(vec, limit=per_card, must={"card_id": card.card_id})
+            hits = _search(
+                store, embedder, _query_for_card(card, profile),
+                limit=per_card, must={"card_id": card.card_id},
+            )
             for hit in hits:
                 if hit[1] < s.rag_min_score:
                     continue
@@ -96,8 +113,7 @@ def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence
         # Fall back to the general reward-valuation page so an explanation is
         # never left with zero support.
         q = "how we value a card, net annual value, annual fee waiver"
-        vec = embedder.embed([q])[0]
-        for hit in store.search(vec, limit=s.rag_top_k):
+        for hit in _search(store, embedder, q, limit=s.rag_top_k):
             if hit[1] >= s.rag_min_score:
                 ev = _to_evidence(hit)
                 key = f"{ev.card_id}:{ev.section}"
@@ -118,10 +134,9 @@ def retrieve_for_reason_codes(reason_codes: list[str], profile=None) -> list[Pol
         queries.append(_query_global(profile))
     if not queries:
         return out
-    vectors = embedder.embed(queries)
     per = max(1, s.rag_top_k // max(1, len(queries)))
-    for vec in vectors:
-        for hit in store.search(vec, limit=per):
+    for query in queries:
+        for hit in _search(store, embedder, query, limit=per):
             if hit[1] < s.rag_min_score:
                 continue
             ev = _to_evidence(hit)

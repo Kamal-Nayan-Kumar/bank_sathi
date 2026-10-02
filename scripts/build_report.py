@@ -9,7 +9,6 @@ diagram, so the figures stay reproducible and editable.
 
 from __future__ import annotations
 
-import json
 import time
 from pathlib import Path
 
@@ -32,7 +31,7 @@ def _fig(w: float = 7.5, h: float = 4.0):
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+    from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
     fig, ax = plt.subplots(figsize=(w, h))
     ax.set_xlim(0, 100)
@@ -215,7 +214,6 @@ def main() -> None:
         rag_llm,
         styles,
     )
-
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.units import mm
     from reportlab.platypus import BaseDocTemplate, Frame, PageTemplate
@@ -228,8 +226,6 @@ def main() -> None:
         "demo": "https://card-sathi.vercel.app",
         "api": "https://card-sathi-api.onrender.com",
     }
-    for key in ("GITHUB_URL", "DEMO_URL", "API_URL"):
-        pass
     import os
 
     links["github"] = os.environ.get("GITHUB_URL", links["github"])
