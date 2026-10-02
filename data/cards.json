@@ -1,0 +1,5999 @@
+[
+  {
+    "card_id": "CARD_001",
+    "name": "Cash Select",
+    "bank": "Coastline Bank",
+    "network": "Mastercard",
+    "segment": "cashback",
+    "tier": "mid",
+    "annual_fee": 3950,
+    "joining_fee": 1050,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 117000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 24.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.326,
+        "monthly_cap_rs": 17500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.651,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.326,
+        "monthly_cap_rs": 18500
+      }
+    ],
+    "benefit_highlights": [
+      "Auto-pay discount on every statement",
+      "Unlimited cashback on partner merchants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_002",
+    "name": "Voyager Card",
+    "bank": "Northwind Financial",
+    "network": "Mastercard",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 15850,
+    "joining_fee": 0,
+    "fee_waiver_spend": 120000,
+    "min_monthly_income": 290000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 19.3,
+    "lounge_visits_per_year": 6,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 8.457,
+        "monthly_cap_rs": 5500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.819,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.64,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Airport lounge access",
+      "Free flight seat upgrades"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_003",
+    "name": "Drive Edge",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 3400,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 105000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 28.4,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 4.119,
+        "monthly_cap_rs": 11500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.824,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.78,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "5% cashback on fuel up to Rs 5,000/month",
+      "Free vehicle insurance add-on"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_004",
+    "name": "Table Rewards",
+    "bank": "Sundara Bank",
+    "network": "Visa",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 4400,
+    "joining_fee": 0,
+    "fee_waiver_spend": 39000,
+    "min_monthly_income": 127000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 8.971,
+        "monthly_cap_rs": 18000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.495,
+        "monthly_cap_rs": 21500
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_005",
+    "name": "Bazaar Select",
+    "bank": "Northwind Financial",
+    "network": "Mastercard",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 500,
+    "joining_fee": 150,
+    "fee_waiver_spend": 4000,
+    "min_monthly_income": 28000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 33.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 4.342,
+        "monthly_cap_rs": 21000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.668,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Instant discount on partner app",
+      "Extended warranty on electronics"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_006",
+    "name": "Reserve Prime",
+    "bank": "Coastline Bank",
+    "network": "Amex",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 3750,
+    "fee_waiver_spend": 85000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.3,
+    "lounge_visits_per_year": 6,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 2.4,
+        "monthly_cap_rs": 4000
+      },
+      {
+        "category": "dining",
+        "value_pct": 2.4,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.8,
+        "monthly_cap_rs": 4500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.53,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Dedicated relationship manager",
+      "Concierge travel desk"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_007",
+    "name": "First Select",
+    "bank": "Rajpath Financial",
+    "network": "Visa",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 9000,
+    "min_monthly_income": 44000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.76,
+        "monthly_cap_rs": 12500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.14,
+        "monthly_cap_rs": 7500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 1.76,
+        "monthly_cap_rs": 6500
+      }
+    ],
+    "benefit_highlights": [
+      "No joining fee",
+      "One month fee waiver each year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_008",
+    "name": "Trade One",
+    "bank": "Ashoka Union Bank",
+    "network": "Mastercard",
+    "segment": "business",
+    "tier": "premium",
+    "annual_fee": 13700,
+    "joining_fee": 0,
+    "fee_waiver_spend": 115000,
+    "min_monthly_income": 260000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 21.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 2.954,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "travel",
+        "value_pct": 3.554,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.985,
+        "monthly_cap_rs": 4500
+      }
+    ],
+    "benefit_highlights": [
+      "Working capital offers",
+      "Higher cash withdrawal limit"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_009",
+    "name": "Urban Max",
+    "bank": "Kanchan Credit Union",
+    "network": "Amex",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 15350,
+    "joining_fee": 5000,
+    "fee_waiver_spend": 157000,
+    "min_monthly_income": 283000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.159,
+        "monthly_cap_rs": 6500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.119,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.519,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.78,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_010",
+    "name": "Scholar One",
+    "bank": "Ashoka Union Bank",
+    "network": "Visa",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 200,
+    "joining_fee": 0,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 21.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 2.466,
+        "monthly_cap_rs": 16000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.044,
+        "monthly_cap_rs": 20000
+      }
+    ],
+    "benefit_highlights": [
+      "Budget EMI options",
+      "No annual fee for the first year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_011",
+    "name": "Everyday Edge",
+    "bank": "Kanchan Credit Union",
+    "network": "Mastercard",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 400,
+    "joining_fee": 0,
+    "fee_waiver_spend": 3000,
+    "min_monthly_income": 25000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 33.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 0.956,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.911,
+        "monthly_cap_rs": 14500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.956,
+        "monthly_cap_rs": 22000
+      }
+    ],
+    "benefit_highlights": [
+      "Unlimited cashback on partner merchants",
+      "Auto-pay discount on every statement"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_012",
+    "name": "Miles Rewards",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 14300,
+    "joining_fee": 4500,
+    "fee_waiver_spend": 122000,
+    "min_monthly_income": 268000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 19.9,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 8.035,
+        "monthly_cap_rs": 21000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.678,
+        "monthly_cap_rs": 3500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.8,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Free flight seat upgrades",
+      "Airport lounge access"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_013",
+    "name": "Petrol Card",
+    "bank": "Triveni Bank",
+    "network": "Visa",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 3350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 23000,
+    "min_monthly_income": 103000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 24.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 3.265,
+        "monthly_cap_rs": 10500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.653,
+        "monthly_cap_rs": 7000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.9,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_014",
+    "name": "Bistro Rewards",
+    "bank": "Kanchan Credit Union",
+    "network": "RuPay",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 4350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 34000,
+    "min_monthly_income": 126000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.4,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.457,
+        "monthly_cap_rs": 14500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.743,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_015",
+    "name": "Shop Edge",
+    "bank": "Triveni Bank",
+    "network": "Visa",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 4000,
+    "min_monthly_income": 24000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.186,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.498,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_016",
+    "name": "Reserve Select",
+    "bank": "Sundara Bank",
+    "network": "RuPay",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 99000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 20.0,
+    "lounge_visits_per_year": 4,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.0,
+        "monthly_cap_rs": 23500
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.0,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.25,
+        "monthly_cap_rs": 8500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.46,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Complimentary airport lounge",
+      "Concierge travel desk"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_017",
+    "name": "Nova Rewards",
+    "bank": "Sundara Bank",
+    "network": "Amex",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1250,
+    "joining_fee": 250,
+    "fee_waiver_spend": 8000,
+    "min_monthly_income": 46000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.0,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 2.907,
+        "monthly_cap_rs": 13500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 5.16,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "fuel",
+        "value_pct": 2.907,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free virtual card",
+      "No joining fee"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_018",
+    "name": "Enterprise Edge",
+    "bank": "Sundara Bank",
+    "network": "Visa",
+    "segment": "business",
+    "tier": "premium",
+    "annual_fee": 18200,
+    "joining_fee": 8900,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 325000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 2.278,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.678,
+        "monthly_cap_rs": 24500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.759,
+        "monthly_cap_rs": 20000
+      }
+    ],
+    "benefit_highlights": [
+      "Expense insights dashboard",
+      "Working capital offers"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_019",
+    "name": "Urban Select",
+    "bank": "Ashoka Union Bank",
+    "network": "Mastercard",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 16050,
+    "joining_fee": 0,
+    "fee_waiver_spend": 97000,
+    "min_monthly_income": 294000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.0,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.26,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.195,
+        "monthly_cap_rs": 14500
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.595,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.83,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Movie and streaming benefits",
+      "Health and fitness partner discounts"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_020",
+    "name": "Scholar Prime",
+    "bank": "Coastline Bank",
+    "network": "Mastercard",
+    "segment": "student",
+    "tier": "entry",
+    "annual_fee": 1100,
+    "joining_fee": 0,
+    "fee_waiver_spend": 13000,
+    "min_monthly_income": 43000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 2.612,
+        "monthly_cap_rs": 17500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.241,
+        "monthly_cap_rs": 5500
+      }
+    ],
+    "benefit_highlights": [
+      "No annual fee for the first year",
+      "Fee waiver on Rs 20,000 annual spend"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_021",
+    "name": "Cashback One",
+    "bank": "Coastline Bank",
+    "network": "Visa",
+    "segment": "cashback",
+    "tier": "mid",
+    "annual_fee": 3200,
+    "joining_fee": 0,
+    "fee_waiver_spend": 23000,
+    "min_monthly_income": 100000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 24.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 0.963,
+        "monthly_cap_rs": 13500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.926,
+        "monthly_cap_rs": 24000
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.963,
+        "monthly_cap_rs": 5500
+      }
+    ],
+    "benefit_highlights": [
+      "Auto-pay discount on every statement",
+      "Unlimited cashback on partner merchants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_022",
+    "name": "Voyager One",
+    "bank": "Coastline Bank",
+    "network": "Visa",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 12950,
+    "joining_fee": 3950,
+    "fee_waiver_spend": 138000,
+    "min_monthly_income": 249000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.3,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 4.791,
+        "monthly_cap_rs": 18500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.597,
+        "monthly_cap_rs": 8500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.62,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Airport lounge access",
+      "Zero foreign transaction markup"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_023",
+    "name": "Drive Edge",
+    "bank": "Coastline Bank",
+    "network": "Mastercard",
+    "segment": "fuel",
+    "tier": "entry",
+    "annual_fee": 150,
+    "joining_fee": 50,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 19000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 3.34,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.668,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.05,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_024",
+    "name": "Bistro Rewards",
+    "bank": "Coastline Bank",
+    "network": "Amex",
+    "segment": "dining",
+    "tier": "entry",
+    "annual_fee": 250,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 21000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 3.501,
+        "monthly_cap_rs": 9000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.584,
+        "monthly_cap_rs": 19500
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": false,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_025",
+    "name": "Cart Max",
+    "bank": "Coastline Bank",
+    "network": "RuPay",
+    "segment": "shopping",
+    "tier": "mid",
+    "annual_fee": 4350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 31000,
+    "min_monthly_income": 126000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 6.422,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.928,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_026",
+    "name": "Signature Select",
+    "bank": "Northwind Financial",
+    "network": "Mastercard",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 92000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 18.8,
+    "lounge_visits_per_year": 8,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.6,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.6,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.7,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.44,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Dedicated relationship manager",
+      "Complimentary airport lounge"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_027",
+    "name": "Nova Rewards",
+    "bank": "Rajpath Financial",
+    "network": "RuPay",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1050,
+    "joining_fee": 0,
+    "fee_waiver_spend": 7000,
+    "min_monthly_income": 42000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 33.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.372,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.458,
+        "monthly_cap_rs": 15500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 1.372,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "No joining fee",
+      "Free virtual card"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_028",
+    "name": "Trade Max",
+    "bank": "Ashoka Union Bank",
+    "network": "Visa",
+    "segment": "business",
+    "tier": "mid",
+    "annual_fee": 2350,
+    "joining_fee": 750,
+    "fee_waiver_spend": 17000,
+    "min_monthly_income": 81000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 28.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 4.236,
+        "monthly_cap_rs": 4000
+      },
+      {
+        "category": "travel",
+        "value_pct": 5.236,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.412,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Expense insights dashboard",
+      "Higher cash withdrawal limit"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_029",
+    "name": "Urban Max",
+    "bank": "Coastline Bank",
+    "network": "RuPay",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 12700,
+    "joining_fee": 0,
+    "fee_waiver_spend": 126000,
+    "min_monthly_income": 246000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 3.168,
+        "monthly_cap_rs": 5000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.376,
+        "monthly_cap_rs": 14000
+      },
+      {
+        "category": "travel",
+        "value_pct": 1.876,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.62,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Movie and streaming benefits",
+      "Health and fitness partner discounts"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_030",
+    "name": "Campus Edge",
+    "bank": "Rajpath Financial",
+    "network": "Amex",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 200,
+    "joining_fee": 0,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 22.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.284,
+        "monthly_cap_rs": 15000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.389,
+        "monthly_cap_rs": 17500
+      }
+    ],
+    "benefit_highlights": [
+      "No annual fee for the first year",
+      "Fee waiver on Rs 20,000 annual spend"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_031",
+    "name": "Cash Card",
+    "bank": "Rajpath Financial",
+    "network": "Visa",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 600,
+    "joining_fee": 150,
+    "fee_waiver_spend": 5000,
+    "min_monthly_income": 30000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 0.846,
+        "monthly_cap_rs": 22500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.691,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.846,
+        "monthly_cap_rs": 15500
+      }
+    ],
+    "benefit_highlights": [
+      "Auto-pay discount on every statement",
+      "Unlimited cashback on partner merchants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_032",
+    "name": "Skywards Max",
+    "bank": "Rajpath Financial",
+    "network": "Visa",
+    "segment": "travel",
+    "tier": "mid",
+    "annual_fee": 1650,
+    "joining_fee": 800,
+    "fee_waiver_spend": 19000,
+    "min_monthly_income": 66000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.1,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 7.557,
+        "monthly_cap_rs": 10000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.519,
+        "monthly_cap_rs": 7000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.59,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Airport lounge access",
+      "Zero foreign transaction markup"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_033",
+    "name": "Petrol One",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "fuel",
+    "tier": "entry",
+    "annual_fee": 250,
+    "joining_fee": 50,
+    "fee_waiver_spend": 2000,
+    "min_monthly_income": 21000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 4.612,
+        "monthly_cap_rs": 18000
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.922,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.8,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_034",
+    "name": "Table Prime",
+    "bank": "Kanchan Credit Union",
+    "network": "Mastercard",
+    "segment": "dining",
+    "tier": "entry",
+    "annual_fee": 300,
+    "joining_fee": 0,
+    "fee_waiver_spend": 2000,
+    "min_monthly_income": 23000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.378,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.73,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_035",
+    "name": "Cart Prime",
+    "bank": "Northwind Financial",
+    "network": "RuPay",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 300,
+    "joining_fee": 150,
+    "fee_waiver_spend": 3000,
+    "min_monthly_income": 23000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.078,
+        "monthly_cap_rs": 12500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.485,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_036",
+    "name": "Platinum Max",
+    "bank": "Kanchan Credit Union",
+    "network": "Amex",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 2300,
+    "fee_waiver_spend": 86000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 21.5,
+    "lounge_visits_per_year": 6,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.0,
+        "monthly_cap_rs": 8500
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.0,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.25,
+        "monthly_cap_rs": 8500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.06,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Concierge travel desk",
+      "Dedicated relationship manager"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_037",
+    "name": "Nova Rewards",
+    "bank": "Triveni Bank",
+    "network": "Mastercard",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1000,
+    "joining_fee": 300,
+    "fee_waiver_spend": 8000,
+    "min_monthly_income": 40000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 2.012,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.617,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "fuel",
+        "value_pct": 2.012,
+        "monthly_cap_rs": 21000
+      }
+    ],
+    "benefit_highlights": [
+      "One month fee waiver each year",
+      "No joining fee"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_038",
+    "name": "Enterprise Max",
+    "bank": "Northwind Financial",
+    "network": "Amex",
+    "segment": "business",
+    "tier": "premium",
+    "annual_fee": 12900,
+    "joining_fee": 6000,
+    "fee_waiver_spend": 92000,
+    "min_monthly_income": 248000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 1.912,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.312,
+        "monthly_cap_rs": 22000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.637,
+        "monthly_cap_rs": 12500
+      }
+    ],
+    "benefit_highlights": [
+      "Working capital offers",
+      "Higher cash withdrawal limit"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_039",
+    "name": "Vibe Rewards",
+    "bank": "Ashoka Union Bank",
+    "network": "Visa",
+    "segment": "lifestyle",
+    "tier": "mid",
+    "annual_fee": 1500,
+    "joining_fee": 0,
+    "fee_waiver_spend": 13000,
+    "min_monthly_income": 62000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 1.948,
+        "monthly_cap_rs": 14000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.461,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 1.061,
+        "monthly_cap_rs": 4500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.41,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_040",
+    "name": "Campus Card",
+    "bank": "Northwind Financial",
+    "network": "RuPay",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 150,
+    "joining_fee": 50,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 23.0,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.148,
+        "monthly_cap_rs": 19000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.299,
+        "monthly_cap_rs": 20500
+      }
+    ],
+    "benefit_highlights": [
+      "No annual fee for the first year",
+      "Budget EMI options"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_041",
+    "name": "Everyday One",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 19000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 0.836,
+        "monthly_cap_rs": 18000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.673,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.836,
+        "monthly_cap_rs": 3000
+      }
+    ],
+    "benefit_highlights": [
+      "Unlimited cashback on partner merchants",
+      "Auto-pay discount on every statement"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_042",
+    "name": "Aero Card",
+    "bank": "Rajpath Financial",
+    "network": "Visa",
+    "segment": "travel",
+    "tier": "mid",
+    "annual_fee": 1450,
+    "joining_fee": 600,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 61000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 24.7,
+    "lounge_visits_per_year": 6,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 5.812,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.937,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.84,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Free flight seat upgrades",
+      "Airport lounge access"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_043",
+    "name": "Fuel Prime",
+    "bank": "Ashoka Union Bank",
+    "network": "RuPay",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 3450,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 106000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 8.278,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.656,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.55,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "5% cashback on fuel up to Rs 5,000/month",
+      "Free vehicle insurance add-on"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_044",
+    "name": "Table Edge",
+    "bank": "Meridian Co-operative Bank",
+    "network": "Visa",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 3200,
+    "joining_fee": 1350,
+    "fee_waiver_spend": 24000,
+    "min_monthly_income": 100000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 9.625,
+        "monthly_cap_rs": 14000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.604,
+        "monthly_cap_rs": 23500
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_045",
+    "name": "Bazaar Max",
+    "bank": "Coastline Bank",
+    "network": "RuPay",
+    "segment": "shopping",
+    "tier": "mid",
+    "annual_fee": 4100,
+    "joining_fee": 0,
+    "fee_waiver_spend": 26000,
+    "min_monthly_income": 120000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 6.201,
+        "monthly_cap_rs": 15500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.9,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_046",
+    "name": "Platinum Edge",
+    "bank": "Kanchan Credit Union",
+    "network": "Visa",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 3100,
+    "fee_waiver_spend": 119000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 20.0,
+    "lounge_visits_per_year": 4,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.6,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.6,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.7,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.65,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Concierge travel desk",
+      "Dedicated relationship manager"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_047",
+    "name": "Starter Card",
+    "bank": "Kanchan Credit Union",
+    "network": "Mastercard",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1300,
+    "joining_fee": 0,
+    "fee_waiver_spend": 14000,
+    "min_monthly_income": 47000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.487,
+        "monthly_cap_rs": 19500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.631,
+        "monthly_cap_rs": 8500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 1.487,
+        "monthly_cap_rs": 24000
+      }
+    ],
+    "benefit_highlights": [
+      "No joining fee",
+      "Free virtual card"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_048",
+    "name": "Biz One",
+    "bank": "Sundara Bank",
+    "network": "Amex",
+    "segment": "business",
+    "tier": "premium",
+    "annual_fee": 17000,
+    "joining_fee": 0,
+    "fee_waiver_spend": 184000,
+    "min_monthly_income": 307000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 18.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 2.741,
+        "monthly_cap_rs": 22500
+      },
+      {
+        "category": "travel",
+        "value_pct": 3.241,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.914,
+        "monthly_cap_rs": 16500
+      }
+    ],
+    "benefit_highlights": [
+      "Higher cash withdrawal limit",
+      "Working capital offers"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_049",
+    "name": "Urban One",
+    "bank": "Northwind Financial",
+    "network": "Visa",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 14350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 165000,
+    "min_monthly_income": 270000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 19.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 2.685,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.014,
+        "monthly_cap_rs": 11500
+      },
+      {
+        "category": "travel",
+        "value_pct": 1.614,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.84,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_050",
+    "name": "Campus Rewards",
+    "bank": "Sundara Bank",
+    "network": "Amex",
+    "segment": "student",
+    "tier": "entry",
+    "annual_fee": 1000,
+    "joining_fee": 250,
+    "fee_waiver_spend": 7000,
+    "min_monthly_income": 40000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 5.018,
+        "monthly_cap_rs": 25000
+      },
+      {
+        "category": "other",
+        "value_pct": 2.346,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Budget EMI options",
+      "No annual fee for the first year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_051",
+    "name": "Everyday One",
+    "bank": "Northwind Financial",
+    "network": "Amex",
+    "segment": "cashback",
+    "tier": "mid",
+    "annual_fee": 3650,
+    "joining_fee": 950,
+    "fee_waiver_spend": 40000,
+    "min_monthly_income": 110000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 28.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 2.546,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 5.093,
+        "monthly_cap_rs": 14500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 2.546,
+        "monthly_cap_rs": 5500
+      }
+    ],
+    "benefit_highlights": [
+      "Unlimited cashback on partner merchants",
+      "Auto-pay discount on every statement"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_052",
+    "name": "Skywards Card",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 17550,
+    "joining_fee": 6050,
+    "fee_waiver_spend": 169000,
+    "min_monthly_income": 315000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 21.7,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 8.927,
+        "monthly_cap_rs": 5000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.976,
+        "monthly_cap_rs": 3500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.11,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Free flight seat upgrades",
+      "Zero foreign transaction markup"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_053",
+    "name": "Fuel Edge",
+    "bank": "Meridian Co-operative Bank",
+    "network": "Amex",
+    "segment": "fuel",
+    "tier": "entry",
+    "annual_fee": 150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 18000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 2.168,
+        "monthly_cap_rs": 21500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.434,
+        "monthly_cap_rs": 4500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.14,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_054",
+    "name": "Bistro Prime",
+    "bank": "Coastline Bank",
+    "network": "RuPay",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 4150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 42000,
+    "min_monthly_income": 121000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 6.534,
+        "monthly_cap_rs": 14000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.089,
+        "monthly_cap_rs": 24000
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_055",
+    "name": "Bazaar Card",
+    "bank": "Northwind Financial",
+    "network": "RuPay",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 2000,
+    "min_monthly_income": 21000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 5.89,
+        "monthly_cap_rs": 23000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.936,
+        "monthly_cap_rs": 13500
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_056",
+    "name": "Platinum Prime",
+    "bank": "Coastline Bank",
+    "network": "Amex",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 129000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.0,
+    "lounge_visits_per_year": 2,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.0,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.0,
+        "monthly_cap_rs": 6000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.25,
+        "monthly_cap_rs": 23500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.02,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Complimentary airport lounge",
+      "Dedicated relationship manager"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_057",
+    "name": "Starter Max",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "beginner",
+    "tier": "secured",
+    "annual_fee": 100,
+    "joining_fee": 50,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 19.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 2.381,
+        "monthly_cap_rs": 11000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 4.571,
+        "monthly_cap_rs": 6000
+      },
+      {
+        "category": "fuel",
+        "value_pct": 2.381,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free virtual card",
+      "One month fee waiver each year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_058",
+    "name": "Trade One",
+    "bank": "Triveni Bank",
+    "network": "Mastercard",
+    "segment": "business",
+    "tier": "mid",
+    "annual_fee": 1900,
+    "joining_fee": 400,
+    "fee_waiver_spend": 12000,
+    "min_monthly_income": 71000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 1.571,
+        "monthly_cap_rs": 12500
+      },
+      {
+        "category": "travel",
+        "value_pct": 1.971,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.524,
+        "monthly_cap_rs": 9000
+      }
+    ],
+    "benefit_highlights": [
+      "Expense insights dashboard",
+      "Working capital offers"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_059",
+    "name": "Urban One",
+    "bank": "Kanchan Credit Union",
+    "network": "Visa",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 18500,
+    "joining_fee": 0,
+    "fee_waiver_spend": 193000,
+    "min_monthly_income": 328000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.593,
+        "monthly_cap_rs": 23500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.445,
+        "monthly_cap_rs": 6000
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.845,
+        "monthly_cap_rs": 14500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.44,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_060",
+    "name": "Campus Edge",
+    "bank": "Meridian Co-operative Bank",
+    "network": "Amex",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 200,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 18.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 4.194,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.796,
+        "monthly_cap_rs": 13500
+      }
+    ],
+    "benefit_highlights": [
+      "No annual fee for the first year",
+      "Fee waiver on Rs 20,000 annual spend"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_061",
+    "name": "Everyday Prime",
+    "bank": "Sundara Bank",
+    "network": "RuPay",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 600,
+    "joining_fee": 250,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 30000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.269,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.537,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.269,
+        "monthly_cap_rs": 15000
+      }
+    ],
+    "benefit_highlights": [
+      "Auto-pay discount on every statement",
+      "Unlimited cashback on partner merchants"
+    ],
+    "is_active": false,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_062",
+    "name": "Aero Edge",
+    "bank": "Rajpath Financial",
+    "network": "RuPay",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 17250,
+    "joining_fee": 4100,
+    "fee_waiver_spend": 115000,
+    "min_monthly_income": 311000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 20.6,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 5.526,
+        "monthly_cap_rs": 15000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.842,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.53,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Free flight seat upgrades",
+      "Airport lounge access"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_063",
+    "name": "Petrol Prime",
+    "bank": "Kanchan Credit Union",
+    "network": "Visa",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 4300,
+    "joining_fee": 1800,
+    "fee_waiver_spend": 48000,
+    "min_monthly_income": 124000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 28.0,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 3.688,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.738,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.95,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_064",
+    "name": "Dine Max",
+    "bank": "Rajpath Financial",
+    "network": "Visa",
+    "segment": "dining",
+    "tier": "entry",
+    "annual_fee": 150,
+    "joining_fee": 50,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 18000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 3.903,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.65,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_065",
+    "name": "Shop Prime",
+    "bank": "Northwind Financial",
+    "network": "Visa",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 500,
+    "joining_fee": 0,
+    "fee_waiver_spend": 5000,
+    "min_monthly_income": 27000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 6.922,
+        "monthly_cap_rs": 15500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.065,
+        "monthly_cap_rs": 20000
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_066",
+    "name": "Platinum Card",
+    "bank": "Ashoka Union Bank",
+    "network": "Visa",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 104000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.8,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 4.8,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "dining",
+        "value_pct": 4.8,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.6,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.5,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Complimentary airport lounge",
+      "Concierge travel desk"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_067",
+    "name": "Nova Edge",
+    "bank": "Ashoka Union Bank",
+    "network": "RuPay",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 950,
+    "joining_fee": 0,
+    "fee_waiver_spend": 9000,
+    "min_monthly_income": 39000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.4,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 3.297,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 5.946,
+        "monthly_cap_rs": 15500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 3.297,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "One month fee waiver each year",
+      "No joining fee"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_068",
+    "name": "Enterprise Rewards",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "business",
+    "tier": "premium",
+    "annual_fee": 14450,
+    "joining_fee": 4450,
+    "fee_waiver_spend": 156000,
+    "min_monthly_income": 271000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 2.526,
+        "monthly_cap_rs": 16000
+      },
+      {
+        "category": "travel",
+        "value_pct": 3.026,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.842,
+        "monthly_cap_rs": 6000
+      }
+    ],
+    "benefit_highlights": [
+      "Higher cash withdrawal limit",
+      "Working capital offers"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_069",
+    "name": "Life Select",
+    "bank": "Kanchan Credit Union",
+    "network": "Visa",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 16400,
+    "joining_fee": 4900,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 298000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 3.587,
+        "monthly_cap_rs": 10500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.691,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.191,
+        "monthly_cap_rs": 23500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.73,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_070",
+    "name": "Scholar Edge",
+    "bank": "Northwind Financial",
+    "network": "Amex",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 50,
+    "joining_fee": 0,
+    "fee_waiver_spend": 0,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 21.4,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 1.693,
+        "monthly_cap_rs": 7500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.629,
+        "monthly_cap_rs": 21000
+      }
+    ],
+    "benefit_highlights": [
+      "Fee waiver on Rs 20,000 annual spend",
+      "Budget EMI options"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_071",
+    "name": "Cashback One",
+    "bank": "Ashoka Union Bank",
+    "network": "Amex",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 400,
+    "joining_fee": 200,
+    "fee_waiver_spend": 4000,
+    "min_monthly_income": 25000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 0.949,
+        "monthly_cap_rs": 23000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.899,
+        "monthly_cap_rs": 14500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.949,
+        "monthly_cap_rs": 11500
+      }
+    ],
+    "benefit_highlights": [
+      "Unlimited cashback on partner merchants",
+      "Auto-pay discount on every statement"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_072",
+    "name": "Miles Prime",
+    "bank": "Coastline Bank",
+    "network": "Visa",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 18250,
+    "joining_fee": 5850,
+    "fee_waiver_spend": 172000,
+    "min_monthly_income": 325000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 19.2,
+    "lounge_visits_per_year": 8,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 4.561,
+        "monthly_cap_rs": 23000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.52,
+        "monthly_cap_rs": 11500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.15,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Airport lounge access",
+      "Free flight seat upgrades"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_073",
+    "name": "Drive Rewards",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 4000,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 118000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 29.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 4.456,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.891,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.15,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_074",
+    "name": "Table Rewards",
+    "bank": "Coastline Bank",
+    "network": "Amex",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 4150,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 121000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 29.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 8.689,
+        "monthly_cap_rs": 15500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.448,
+        "monthly_cap_rs": 9000
+      }
+    ],
+    "benefit_highlights": [
+      "Free dining reservations above Rs 4,000",
+      "2x points at partner restaurants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_075",
+    "name": "Shop Max",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 200,
+    "joining_fee": 0,
+    "fee_waiver_spend": 2000,
+    "min_monthly_income": 19000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 6.952,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.119,
+        "monthly_cap_rs": 8500
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_076",
+    "name": "Reserve One",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 3450,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.8,
+    "lounge_visits_per_year": 8,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.6,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.6,
+        "monthly_cap_rs": 9000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.7,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.56,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Concierge travel desk",
+      "Dedicated relationship manager"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_077",
+    "name": "Nova Edge",
+    "bank": "Rajpath Financial",
+    "network": "RuPay",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1050,
+    "joining_fee": 300,
+    "fee_waiver_spend": 10000,
+    "min_monthly_income": 41000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 2.721,
+        "monthly_cap_rs": 15500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 4.882,
+        "monthly_cap_rs": 6500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 2.721,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "No joining fee",
+      "One month fee waiver each year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_078",
+    "name": "Biz One",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "business",
+    "tier": "mid",
+    "annual_fee": 1750,
+    "joining_fee": 0,
+    "fee_waiver_spend": 19000,
+    "min_monthly_income": 68000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 27.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 1.913,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.413,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.638,
+        "monthly_cap_rs": 8000
+      }
+    ],
+    "benefit_highlights": [
+      "Expense insights dashboard",
+      "Higher cash withdrawal limit"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_079",
+    "name": "Vibe Rewards Lifestyle",
+    "bank": "Ashoka Union Bank",
+    "network": "Amex",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 16850,
+    "joining_fee": 6700,
+    "fee_waiver_spend": 190000,
+    "min_monthly_income": 305000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 3.64,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.73,
+        "monthly_cap_rs": 9500
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.23,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.65,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": false,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_080",
+    "name": "Scholar Edge",
+    "bank": "Rajpath Financial",
+    "network": "Visa",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 200,
+    "joining_fee": 50,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 19.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 2.475,
+        "monthly_cap_rs": 3000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.05,
+        "monthly_cap_rs": 9000
+      }
+    ],
+    "benefit_highlights": [
+      "Budget EMI options",
+      "Fee waiver on Rs 20,000 annual spend"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_081",
+    "name": "Cash Max",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "cashback",
+    "tier": "mid",
+    "annual_fee": 3400,
+    "joining_fee": 1500,
+    "fee_waiver_spend": 28000,
+    "min_monthly_income": 105000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.237,
+        "monthly_cap_rs": 12000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.474,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.237,
+        "monthly_cap_rs": 6500
+      }
+    ],
+    "benefit_highlights": [
+      "Auto-pay discount on every statement",
+      "Unlimited cashback on partner merchants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_082",
+    "name": "Skywards Edge",
+    "bank": "Meridian Co-operative Bank",
+    "network": "RuPay",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 12750,
+    "joining_fee": 0,
+    "fee_waiver_spend": 144000,
+    "min_monthly_income": 246000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 21.6,
+    "lounge_visits_per_year": 6,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 4.753,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.584,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.15,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Zero foreign transaction markup",
+      "Free flight seat upgrades"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_083",
+    "name": "Drive Rewards",
+    "bank": "Northwind Financial",
+    "network": "RuPay",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 3750,
+    "joining_fee": 0,
+    "fee_waiver_spend": 38000,
+    "min_monthly_income": 113000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 27.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 4.316,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.863,
+        "monthly_cap_rs": 21000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.44,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "5% cashback on fuel up to Rs 5,000/month",
+      "Free vehicle insurance add-on"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_084",
+    "name": "Dine Edge",
+    "bank": "Ashoka Union Bank",
+    "network": "Amex",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 3850,
+    "joining_fee": 1200,
+    "fee_waiver_spend": 25000,
+    "min_monthly_income": 114000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 28.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 5.229,
+        "monthly_cap_rs": 11000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.871,
+        "monthly_cap_rs": 19500
+      }
+    ],
+    "benefit_highlights": [
+      "2x points at partner restaurants",
+      "Free dining reservations above Rs 4,000"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_085",
+    "name": "Cart Edge",
+    "bank": "Ashoka Union Bank",
+    "network": "Visa",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 200,
+    "joining_fee": 0,
+    "fee_waiver_spend": 2000,
+    "min_monthly_income": 20000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.549,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.569,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Instant discount on partner app",
+      "Extended warranty on electronics"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_086",
+    "name": "Signature Prime",
+    "bank": "Coastline Bank",
+    "network": "Mastercard",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 3250,
+    "fee_waiver_spend": 111000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 23.8,
+    "lounge_visits_per_year": 6,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 2.4,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "dining",
+        "value_pct": 2.4,
+        "monthly_cap_rs": 22000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.8,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.06,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Complimentary airport lounge",
+      "Concierge travel desk"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_087",
+    "name": "First Prime",
+    "bank": "Triveni Bank",
+    "network": "Visa",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1150,
+    "joining_fee": 450,
+    "fee_waiver_spend": 10000,
+    "min_monthly_income": 43000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 2.815,
+        "monthly_cap_rs": 13000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 5.022,
+        "monthly_cap_rs": 8500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 2.815,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "No joining fee",
+      "One month fee waiver each year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_088",
+    "name": "Biz Edge",
+    "bank": "Sundara Bank",
+    "network": "Visa",
+    "segment": "business",
+    "tier": "mid",
+    "annual_fee": 2250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 19000,
+    "min_monthly_income": 79000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 24.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 2.507,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "travel",
+        "value_pct": 3.107,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.836,
+        "monthly_cap_rs": 12000
+      }
+    ],
+    "benefit_highlights": [
+      "Working capital offers",
+      "Higher cash withdrawal limit"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_089",
+    "name": "Urban Edge",
+    "bank": "Meridian Co-operative Bank",
+    "network": "Amex",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 17150,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 309000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 18.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 7.344,
+        "monthly_cap_rs": 16500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 5.508,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 4.508,
+        "monthly_cap_rs": 11500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.64,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_090",
+    "name": "Campus One",
+    "bank": "Ashoka Union Bank",
+    "network": "Amex",
+    "segment": "student",
+    "tier": "secured",
+    "annual_fee": 150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 0,
+    "min_cibil": null,
+    "min_age": 18,
+    "max_age": 70,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "retired",
+      "homemaker"
+    ],
+    "apr_pct": 19.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.14,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.293,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "No annual fee for the first year",
+      "Budget EMI options"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_091",
+    "name": "Cash Rewards",
+    "bank": "Northwind Financial",
+    "network": "Visa",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 150,
+    "joining_fee": 50,
+    "fee_waiver_spend": 1000,
+    "min_monthly_income": 19000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 30.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 0.658,
+        "monthly_cap_rs": 10000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.317,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.658,
+        "monthly_cap_rs": 23500
+      }
+    ],
+    "benefit_highlights": [
+      "Unlimited cashback on partner merchants",
+      "Auto-pay discount on every statement"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_092",
+    "name": "Miles Rewards",
+    "bank": "Coastline Bank",
+    "network": "Visa",
+    "segment": "travel",
+    "tier": "mid",
+    "annual_fee": 1300,
+    "joining_fee": 0,
+    "fee_waiver_spend": 12000,
+    "min_monthly_income": 58000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.5,
+    "lounge_visits_per_year": 2,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.546,
+        "monthly_cap_rs": 5000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.182,
+        "monthly_cap_rs": 16000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.41,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Zero foreign transaction markup",
+      "Free flight seat upgrades"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_093",
+    "name": "Drive One",
+    "bank": "Kanchan Credit Union",
+    "network": "RuPay",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 3650,
+    "joining_fee": 1050,
+    "fee_waiver_spend": 32000,
+    "min_monthly_income": 110000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 24.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 4.245,
+        "monthly_cap_rs": 18000
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.849,
+        "monthly_cap_rs": 12500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.13,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "5% cashback on fuel up to Rs 5,000/month",
+      "Free vehicle insurance add-on"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_094",
+    "name": "Table One",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "dining",
+    "tier": "entry",
+    "annual_fee": 350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 4000,
+    "min_monthly_income": 23000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.392,
+        "monthly_cap_rs": 17000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.732,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "2x points at partner restaurants",
+      "Free dining reservations above Rs 4,000"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_095",
+    "name": "Cart Card",
+    "bank": "Coastline Bank",
+    "network": "Mastercard",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 350,
+    "joining_fee": 150,
+    "fee_waiver_spend": 4000,
+    "min_monthly_income": 24000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.988,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.624,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_096",
+    "name": "Platinum Card",
+    "bank": "Kanchan Credit Union",
+    "network": "Mastercard",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 20.8,
+    "lounge_visits_per_year": 2,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 6.0,
+        "monthly_cap_rs": 3500
+      },
+      {
+        "category": "dining",
+        "value_pct": 6.0,
+        "monthly_cap_rs": 14000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 4.5,
+        "monthly_cap_rs": 10500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.69,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Concierge travel desk",
+      "Dedicated relationship manager"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_097",
+    "name": "First Max",
+    "bank": "Coastline Bank",
+    "network": "Mastercard",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 13000,
+    "min_monthly_income": 48000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 31.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 3.025,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 5.338,
+        "monthly_cap_rs": 21500
+      },
+      {
+        "category": "fuel",
+        "value_pct": 3.025,
+        "monthly_cap_rs": 13000
+      }
+    ],
+    "benefit_highlights": [
+      "Free virtual card",
+      "One month fee waiver each year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_098",
+    "name": "Biz Prime",
+    "bank": "Rajpath Financial",
+    "network": "RuPay",
+    "segment": "business",
+    "tier": "mid",
+    "annual_fee": 1600,
+    "joining_fee": 0,
+    "fee_waiver_spend": 18000,
+    "min_monthly_income": 65000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.7,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 2.994,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "travel",
+        "value_pct": 3.794,
+        "monthly_cap_rs": 19500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.998,
+        "monthly_cap_rs": 17500
+      }
+    ],
+    "benefit_highlights": [
+      "Higher cash withdrawal limit",
+      "Expense insights dashboard"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_099",
+    "name": "Life Select",
+    "bank": "Triveni Bank",
+    "network": "Visa",
+    "segment": "lifestyle",
+    "tier": "mid",
+    "annual_fee": 900,
+    "joining_fee": 250,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 49000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 26.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.377,
+        "monthly_cap_rs": 25000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.283,
+        "monthly_cap_rs": 16000
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.283,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.11,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Movie and streaming benefits",
+      "Health and fitness partner discounts"
+    ],
+    "is_active": false,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_100",
+    "name": "Campus Edge Student",
+    "bank": "Rajpath Financial",
+    "network": "Mastercard",
+    "segment": "student",
+    "tier": "entry",
+    "annual_fee": 900,
+    "joining_fee": 0,
+    "fee_waiver_spend": 10000,
+    "min_monthly_income": 38000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 33.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 3.842,
+        "monthly_cap_rs": 3500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.762,
+        "monthly_cap_rs": 4000
+      }
+    ],
+    "benefit_highlights": [
+      "Fee waiver on Rs 20,000 annual spend",
+      "Budget EMI options"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_101",
+    "name": "Everyday One Cashback",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "cashback",
+    "tier": "mid",
+    "annual_fee": 3800,
+    "joining_fee": 0,
+    "fee_waiver_spend": 45000,
+    "min_monthly_income": 114000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 27.9,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.563,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.126,
+        "monthly_cap_rs": 23500
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.563,
+        "monthly_cap_rs": 7500
+      }
+    ],
+    "benefit_highlights": [
+      "Auto-pay discount on every statement",
+      "Unlimited cashback on partner merchants"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_102",
+    "name": "Aero Rewards",
+    "bank": "Northwind Financial",
+    "network": "Amex",
+    "segment": "travel",
+    "tier": "mid",
+    "annual_fee": 2300,
+    "joining_fee": 0,
+    "fee_waiver_spend": 21000,
+    "min_monthly_income": 80000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 29.2,
+    "lounge_visits_per_year": 2,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.361,
+        "monthly_cap_rs": 3500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.12,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.89,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Zero foreign transaction markup",
+      "Free flight seat upgrades"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_103",
+    "name": "Petrol Card",
+    "bank": "Rajpath Financial",
+    "network": "RuPay",
+    "segment": "fuel",
+    "tier": "entry",
+    "annual_fee": 250,
+    "joining_fee": 50,
+    "fee_waiver_spend": 3000,
+    "min_monthly_income": 21000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.4,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 5.855,
+        "monthly_cap_rs": 12000
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.171,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.73,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_104",
+    "name": "Table Max",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "dining",
+    "tier": "entry",
+    "annual_fee": 550,
+    "joining_fee": 250,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 28000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.6,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.883,
+        "monthly_cap_rs": 20000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.814,
+        "monthly_cap_rs": 6000
+      }
+    ],
+    "benefit_highlights": [
+      "2x points at partner restaurants",
+      "Free dining reservations above Rs 4,000"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_105",
+    "name": "Shop Rewards",
+    "bank": "Northwind Financial",
+    "network": "Amex",
+    "segment": "shopping",
+    "tier": "mid",
+    "annual_fee": 4650,
+    "joining_fee": 0,
+    "fee_waiver_spend": 53000,
+    "min_monthly_income": 132000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 29.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 10.697,
+        "monthly_cap_rs": 12500
+      },
+      {
+        "category": "other",
+        "value_pct": 1.537,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_106",
+    "name": "Platinum Prime",
+    "bank": "Kanchan Credit Union",
+    "network": "Mastercard",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 118000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 18.0,
+    "lounge_visits_per_year": 4,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.0,
+        "monthly_cap_rs": 23000
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.0,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.25,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.69,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Concierge travel desk",
+      "Complimentary airport lounge"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_107",
+    "name": "Nova Rewards",
+    "bank": "Meridian Co-operative Bank",
+    "network": "Mastercard",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1350,
+    "joining_fee": 0,
+    "fee_waiver_spend": 8000,
+    "min_monthly_income": 49000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.915,
+        "monthly_cap_rs": 6500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.372,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "fuel",
+        "value_pct": 1.915,
+        "monthly_cap_rs": 22500
+      }
+    ],
+    "benefit_highlights": [
+      "Free virtual card",
+      "No joining fee"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_108",
+    "name": "Trade Max",
+    "bank": "Meridian Co-operative Bank",
+    "network": "RuPay",
+    "segment": "business",
+    "tier": "mid",
+    "annual_fee": 1000,
+    "joining_fee": 0,
+    "fee_waiver_spend": 9000,
+    "min_monthly_income": 52000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 29.8,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 1.34,
+        "monthly_cap_rs": 18500
+      },
+      {
+        "category": "travel",
+        "value_pct": 1.74,
+        "monthly_cap_rs": 18000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.447,
+        "monthly_cap_rs": 17500
+      }
+    ],
+    "benefit_highlights": [
+      "Working capital offers",
+      "Expense insights dashboard"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_109",
+    "name": "Urban Prime",
+    "bank": "Northwind Financial",
+    "network": "Visa",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 16800,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 305000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 19.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.364,
+        "monthly_cap_rs": 12000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.273,
+        "monthly_cap_rs": 5500
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.673,
+        "monthly_cap_rs": 20000
+      },
+      {
+        "category": "other",
+        "value_pct": 1.13,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Movie and streaming benefits",
+      "Health and fitness partner discounts"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_110",
+    "name": "Scholar Select",
+    "bank": "Northwind Financial",
+    "network": "RuPay",
+    "segment": "student",
+    "tier": "entry",
+    "annual_fee": 1150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 8000,
+    "min_monthly_income": 44000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 2.668,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.279,
+        "monthly_cap_rs": 24500
+      }
+    ],
+    "benefit_highlights": [
+      "Budget EMI options",
+      "No annual fee for the first year"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_111",
+    "name": "Everyday Select",
+    "bank": "Kanchan Credit Union",
+    "network": "RuPay",
+    "segment": "cashback",
+    "tier": "entry",
+    "annual_fee": 200,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 20000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 32.2,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.698,
+        "monthly_cap_rs": 22500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.396,
+        "monthly_cap_rs": 7000
+      },
+      {
+        "category": "groceries",
+        "value_pct": 1.698,
+        "monthly_cap_rs": 8000
+      }
+    ],
+    "benefit_highlights": [
+      "Unlimited cashback on partner merchants",
+      "Auto-pay discount on every statement"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_112",
+    "name": "Miles Rewards",
+    "bank": "Kanchan Credit Union",
+    "network": "Amex",
+    "segment": "travel",
+    "tier": "premium",
+    "annual_fee": 14850,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 277000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 20.3,
+    "lounge_visits_per_year": 8,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 5.119,
+        "monthly_cap_rs": 24000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 1.706,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 0.8,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Free flight seat upgrades",
+      "Zero foreign transaction markup"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_113",
+    "name": "Petrol One Fuel",
+    "bank": "Triveni Bank",
+    "network": "RuPay",
+    "segment": "fuel",
+    "tier": "mid",
+    "annual_fee": 4050,
+    "joining_fee": 1600,
+    "fee_waiver_spend": 26000,
+    "min_monthly_income": 119000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 28.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "fuel",
+        "value_pct": 3.575,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "groceries",
+        "value_pct": 0.715,
+        "monthly_cap_rs": 15000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.98,
+        "monthly_cap_rs": 10000
+      }
+    ],
+    "benefit_highlights": [
+      "Free vehicle insurance add-on",
+      "5% cashback on fuel up to Rs 5,000/month"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_114",
+    "name": "Bistro Select",
+    "bank": "Triveni Bank",
+    "network": "Amex",
+    "segment": "dining",
+    "tier": "mid",
+    "annual_fee": 4100,
+    "joining_fee": 0,
+    "fee_waiver_spend": null,
+    "min_monthly_income": 120000,
+    "min_cibil": 700,
+    "min_age": 23,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 25.4,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 5.414,
+        "monthly_cap_rs": 8000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.902,
+        "monthly_cap_rs": 13000
+      }
+    ],
+    "benefit_highlights": [
+      "2x points at partner restaurants",
+      "Free dining reservations above Rs 4,000"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_115",
+    "name": "Shop Edge",
+    "bank": "Kanchan Credit Union",
+    "network": "Mastercard",
+    "segment": "shopping",
+    "tier": "entry",
+    "annual_fee": 350,
+    "joining_fee": 100,
+    "fee_waiver_spend": 4000,
+    "min_monthly_income": 23000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 28.3,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 4.659,
+        "monthly_cap_rs": 24500
+      },
+      {
+        "category": "other",
+        "value_pct": 0.732,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Extended warranty on electronics",
+      "Instant discount on partner app"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_116",
+    "name": "Reserve Card",
+    "bank": "Triveni Bank",
+    "network": "Mastercard",
+    "segment": "premium",
+    "tier": "premium",
+    "annual_fee": 11250,
+    "joining_fee": 0,
+    "fee_waiver_spend": 114000,
+    "min_monthly_income": 225000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 22.0,
+    "lounge_visits_per_year": 12,
+    "reward_rules": [
+      {
+        "category": "travel",
+        "value_pct": 3.6,
+        "monthly_cap_rs": 6000
+      },
+      {
+        "category": "dining",
+        "value_pct": 3.6,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 2.7,
+        "monthly_cap_rs": 21000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.82,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Dedicated relationship manager",
+      "Concierge travel desk"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_117",
+    "name": "First Edge",
+    "bank": "Northwind Financial",
+    "network": "Mastercard",
+    "segment": "beginner",
+    "tier": "entry",
+    "annual_fee": 1300,
+    "joining_fee": 550,
+    "fee_waiver_spend": 10000,
+    "min_monthly_income": 47000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 33.0,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "other",
+        "value_pct": 1.858,
+        "monthly_cap_rs": 5500
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.287,
+        "monthly_cap_rs": 12000
+      },
+      {
+        "category": "fuel",
+        "value_pct": 1.858,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Free virtual card",
+      "No joining fee"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_118",
+    "name": "Trade Card",
+    "bank": "Kanchan Credit Union",
+    "network": "RuPay",
+    "segment": "business",
+    "tier": "premium",
+    "annual_fee": 18150,
+    "joining_fee": 0,
+    "fee_waiver_spend": 179000,
+    "min_monthly_income": 323000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 21.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "utilities",
+        "value_pct": 4.545,
+        "monthly_cap_rs": 18000
+      },
+      {
+        "category": "travel",
+        "value_pct": 5.345,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 1.515,
+        "monthly_cap_rs": null
+      }
+    ],
+    "benefit_highlights": [
+      "Expense insights dashboard",
+      "Higher cash withdrawal limit"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_119",
+    "name": "Vibe Edge",
+    "bank": "Triveni Bank",
+    "network": "Mastercard",
+    "segment": "lifestyle",
+    "tier": "premium",
+    "annual_fee": 18450,
+    "joining_fee": 0,
+    "fee_waiver_spend": 204000,
+    "min_monthly_income": 328000,
+    "min_cibil": 780,
+    "min_age": 25,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "business_owner"
+    ],
+    "apr_pct": 20.1,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "dining",
+        "value_pct": 4.59,
+        "monthly_cap_rs": 7000
+      },
+      {
+        "category": "online_shopping",
+        "value_pct": 3.443,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "travel",
+        "value_pct": 2.843,
+        "monthly_cap_rs": 9000
+      },
+      {
+        "category": "other",
+        "value_pct": 0.8,
+        "monthly_cap_rs": 5000
+      }
+    ],
+    "benefit_highlights": [
+      "Health and fitness partner discounts",
+      "Movie and streaming benefits"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  },
+  {
+    "card_id": "CARD_120",
+    "name": "Buddy Prime",
+    "bank": "Rajpath Financial",
+    "network": "Amex",
+    "segment": "student",
+    "tier": "entry",
+    "annual_fee": 1300,
+    "joining_fee": 400,
+    "fee_waiver_spend": 15000,
+    "min_monthly_income": 48000,
+    "min_cibil": 650,
+    "min_age": 21,
+    "max_age": 65,
+    "allowed_employment": [
+      "salaried",
+      "self_employed",
+      "student",
+      "business_owner"
+    ],
+    "apr_pct": 29.5,
+    "lounge_visits_per_year": 0,
+    "reward_rules": [
+      {
+        "category": "online_shopping",
+        "value_pct": 4.483,
+        "monthly_cap_rs": null
+      },
+      {
+        "category": "other",
+        "value_pct": 2.188,
+        "monthly_cap_rs": 17000
+      }
+    ],
+    "benefit_highlights": [
+      "No annual fee for the first year",
+      "Fee waiver on Rs 20,000 annual spend"
+    ],
+    "is_active": true,
+    "assumed_fields": [
+      "apr_pct",
+      "lounge_visits_per_year",
+      "reward_caps"
+    ],
+    "source": "synthetic:tier-template"
+  }
+]

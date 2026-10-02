@@ -1,0 +1,245 @@
+# =============================================================================
+# Bank Sathi - underwriting & reward policy
+#
+# THIS FILE IS THE SINGLE SOURCE OF TRUTH for every threshold, multiplier,
+# reason code and piece of customer-facing wording in the system.
+#
+#   * The rule engine reads it.
+#   * The catalogue generator reads it (tier defaults for assumed fields).
+#   * The RAG policy documents are GENERATED from it.
+#   * A test asserts every number in the generated docs matches this file.
+#
+# Nothing in Python, SQL or a prompt may hardcode a number that lives here.
+# =============================================================================
+
+version: 1
+currency: INR
+
+# -----------------------------------------------------------------------------
+# 1. Global gate. These reject the customer for the *whole* catalogue.
+#    Checked once, before SQL. Hard red flags only.
+# -----------------------------------------------------------------------------
+global_gate:
+  min_age: 18
+  max_age: 70
+  # Company-wide floor. Below this we do not recommend anything at any tier.
+  min_cibil: 550
+  # A CIBIL at or below this means "treated as new to credit": we still
+  # recommend, but only secured/entry products and we say why.
+  new_to_credit_cibil: 650
+  # Hard blockers. Any non-zero value rejects the customer outright.
+  max_missed_payments_12m: 0
+  max_recent_inquiries_6m: 4
+  # Above this the file is too hot to approve on reward maths alone.
+  max_utilization_pct: 90
+  # Rules the engine must be able to evaluate. Used by tests for coverage.
+  reason_codes:
+    - AGE_BELOW_MIN
+    - AGE_ABOVE_MAX
+    - CIBIL_BELOW_COMPANY_MIN
+    - MISSED_PAYMENTS_PRESENT
+    - TOO_MANY_RECENT_INQUIRIES
+    - UTILIZATION_TOO_HIGH
+    - INCOME_NOT_DECLARED
+
+# -----------------------------------------------------------------------------
+# 2. Required profile fields. Missing any of these means we ask a follow-up
+#    rather than guessing. Order = order we ask.
+# -----------------------------------------------------------------------------
+required_profile_fields:
+  - age
+  - monthly_income
+  - employment
+  - city_tier
+  - monthly_spend
+
+# -----------------------------------------------------------------------------
+# 3. Card tiers. Used for assumed-field defaults and credit-limit estimates.
+# -----------------------------------------------------------------------------
+tiers:
+  secured:
+    order: 1
+    min_monthly_income: 0
+    min_cibil: null            # no CIBIL requirement
+    min_age: 18
+    max_age: 70
+    apr_pct: 17.5
+    limit_income_multiplier: 1.0
+    allowed_employment: [salaried, self_employed, student, retired, homemaker]
+    annual_fee_range: [0, 500]
+    reward_value_pct_range: [0.5, 1.0]
+  entry:
+    order: 2
+    min_monthly_income: 15000
+    min_cibil: 650
+    min_age: 21
+    max_age: 65
+    apr_pct: 28.0
+    limit_income_multiplier: 2.0
+    allowed_employment: [salaried, self_employed, student, business_owner]
+    annual_fee_range: [0, 1500]
+    reward_value_pct_range: [1.0, 2.5]
+  mid:
+    order: 3
+    min_monthly_income: 40000
+    min_cibil: 700
+    min_age: 23
+    max_age: 65
+    apr_pct: 24.0
+    limit_income_multiplier: 3.5
+    allowed_employment: [salaried, self_employed, business_owner]
+    annual_fee_range: [500, 5000]
+    reward_value_pct_range: [2.0, 4.0]
+  premium:
+    order: 4
+    min_monthly_income: 100000
+    min_cibil: 780
+    min_age: 25
+    max_age: 65
+    apr_pct: 18.0
+    limit_income_multiplier: 6.0
+    allowed_employment: [salaried, self_employed, business_owner]
+    annual_fee_range: [2500, 20000]
+    reward_value_pct_range: [2.5, 5.0]
+
+# -----------------------------------------------------------------------------
+# 4. Spend categories tracked per customer. `weight` is the fallback share of
+#    income used by the synthetic-profile generator, not by the engine.
+# -----------------------------------------------------------------------------
+spend_categories: [fuel, dining, groceries, online_shopping, travel, utilities, other]
+
+spend_shares:
+  student:      {fuel: 0.02, dining: 0.10, groceries: 0.22, online_shopping: 0.14, travel: 0.06, utilities: 0.08, other: 0.38}
+  early_career: {fuel: 0.05, dining: 0.09, groceries: 0.14, online_shopping: 0.18, travel: 0.07, utilities: 0.09, other: 0.38}
+  mid_career:   {fuel: 0.06, dining: 0.08, groceries: 0.13, online_shopping: 0.12, travel: 0.10, utilities: 0.09, other: 0.42}
+  senior:       {fuel: 0.05, dining: 0.07, groceries: 0.15, online_shopping: 0.06, travel: 0.08, utilities: 0.11, other: 0.48}
+  self_employed: {fuel: 0.08, dining: 0.09, groceries: 0.12, online_shopping: 0.09, travel: 0.08, utilities: 0.10, other: 0.44}
+  new_to_credit: {fuel: 0.04, dining: 0.08, groceries: 0.18, online_shopping: 0.12, travel: 0.04, utilities: 0.10, other: 0.44}
+  risky:        {fuel: 0.09, dining: 0.07, groceries: 0.16, online_shopping: 0.10, travel: 0.05, utilities: 0.10, other: 0.43}
+
+# -----------------------------------------------------------------------------
+# 5. Reward valuation. `point_value_rs` converts a reward point to rupees.
+#    Lounge is valued separately because it is not a spend-category reward.
+# -----------------------------------------------------------------------------
+reward_valuation:
+  point_value_rs: 0.25
+  # If a card's own point value is declared, use it; otherwise use this.
+  default_point_value_rs: 0.25
+  lounge_visit_value_rs: 1500
+  # Only count lounge value if the customer actually wants it.
+  lounge_counts_if_preferred: [travel, lounge]
+  # Cap the lounge benefit we will *credit* into net value, per year.
+  lounge_annual_credit_cap_rs: 20000
+
+# -----------------------------------------------------------------------------
+# 6. Net annual value and ranking weights.
+#    net = rewards + lounge_credit - fee_payable
+# -----------------------------------------------------------------------------
+scoring:
+  # If annual spend meets fee_waiver_spend the fee is waived, else it is payable.
+  fee_waived_if_spend_meets_threshold: true
+  # Ranking weights. Must sum to 1.0. A test enforces this.
+  weights:
+    net_value: 0.55          # primary: rupee value to the customer
+    spend_alignment: 0.20    # does it reward what they actually spend on
+    preference_match: 0.15   # did they ask for cashback / lounge / no fee?
+    fee_fit: 0.10           # is the fee comfortable relative to their value
+  # Below this net annual value we consider the card not worth recommending.
+  min_net_value_rs: 500
+  # If a card scores below this share of the top card we drop it from the list.
+  relative_score_floor: 0.55
+  max_recommendations: 5
+  # Lounge is only credited when the customer prefers it.
+  count_lounge_only_if_preferred: true
+
+# -----------------------------------------------------------------------------
+# 7. Near-miss. A "near miss" is a card the customer fails on exactly one
+#    hard rule, within this slack. Used to compute improvement advice.
+# -----------------------------------------------------------------------------
+near_miss:
+  enabled: true
+  max_failed_rules: 1
+  income_slack_ratio: 0.75   # income >= 75% of the minimum counts as near miss
+  income_slack_absolute: 0   # rupee slack added on top of the ratio slack
+  cibil_absolute_slack: 25   # within 25 points of the minimum
+  age_slack_years: 3
+  fee_tolerance_ratio: 1.5  # fee up to 1.5x their stated max still counts
+  # Only these codes are treated as fixable "you were close" failures. A missed
+  # payment on file, for example, is never a near miss.
+  reason_codes:
+    - AGE_BELOW_MIN
+    - INCOME_BELOW_MIN
+    - CIBIL_BELOW_MIN
+    - EMPLOYMENT_NOT_ALLOWED
+
+# -----------------------------------------------------------------------------
+# 8. Reason codes -> customer-facing wording + generic improvement advice.
+#    `improve` must never suggest taking on debt to game a credit score.
+# -----------------------------------------------------------------------------
+reasons:
+  AGE_BELOW_MIN:
+    message: "Applicants must be at least {required} years old, and you are {actual}."
+    label: "Age"
+    improve: "This card becomes available to you at {required} years."
+  AGE_ABOVE_MAX:
+    message: "This card is offered up to {required} years of age, and you are {actual}."
+    label: "Age limit"
+    improve: "This card is not offered beyond {required} years."
+  INCOME_BELOW_MIN:
+    message: "This card needs a monthly income of at least Rs {required}, and yours is Rs {actual}."
+    label: "Minimum income"
+    improve: "You would need about Rs {gap} more monthly income to meet this card's requirement."
+  CIBIL_BELOW_MIN:
+    message: "This card needs a credit score of at least {required}, and yours is {actual}."
+    label: "Credit score"
+    improve: "Your credit score is {gap} points short. Paying bills on time and keeping card usage low are the usual ways scores move."
+  EMPLOYMENT_NOT_ALLOWED:
+    message: "This card is limited to {required} applicants, and you are {actual}."
+    label: "Employment type"
+    improve: "This card is not offered to your employment type."
+  CARD_INACTIVE:
+    message: "This card is not currently open for applications."
+    label: "Availability"
+    improve: "This card is not accepting applications right now."
+  CIBIL_BELOW_COMPANY_MIN:
+    message: "We need a credit score of at least {required} before we can recommend any card, and yours is {actual}."
+    label: "Credit score"
+    improve: "Start with one of our secured cards, use it lightly and pay in full each month, then review your score after about a year."
+  MISSED_PAYMENTS_PRESENT:
+    # `actual` is the customer's count; `required` is the limit they exceeded.
+    # Rendering `required` here would tell a customer with 2 misses that they
+    # have 0, which is worse than saying nothing.
+    message: "Your credit file shows {actual} missed payment(s) in the last 12 months, and we can only assess applications with none."
+    label: "Payment history"
+    improve: "Set up auto-pay for at least the minimum due amount on every card. Missed payments are the single biggest factor holding a score down."
+  TOO_MANY_RECENT_INQUIRIES:
+    message: "Your file shows {actual} credit enquiries in the last 6 months, and our limit is {required}."
+    label: "Recent applications"
+    improve: "Applying to several cards at once is itself a risk signal. Space applications a few months apart."
+  UTILIZATION_TOO_HIGH:
+    message: "Card usage is {actual}%, above the {required}% level we can assess an application at."
+    label: "Card usage"
+    improve: "Paying your statement balance in full each month, rather than revolving it, lowers usage and your score benefits."
+  INCOME_NOT_DECLARED:
+    message: "We need your approximate monthly income before we can assess a card."
+    label: "Income"
+    # A bare reason code in customer-facing prose reads like a database error.
+    # The model is told not to emit one, but the verifier checks, because a
+    # leaked code is a support ticket waiting to happen.
+    improve: "Share your approximate monthly income and we will re-run this."
+  NEW_TO_CREDIT:
+    message: "You have a limited credit history, so this recommendation is limited to starter cards."
+    label: "Credit history"
+    improve: "Start with a secured card, use it lightly, and pay the full balance every month. About a year of on-time payments is usually enough to move up a tier."
+
+# -----------------------------------------------------------------------------
+# 9. Global copy. Kept here so the frontend, the LLM prompt and the docs all
+#    describe the product the same way.
+# -----------------------------------------------------------------------------
+product:
+  name: Bank Sathi
+  tagline: Credit cards, matched to how you actually spend.
+  disclaimer: >-
+    Bank Sathi is a demonstration system. Cards, banks and rates are fictional.
+    Recommendations are illustrative and are not financial advice, an approval,
+    or an offer of credit.

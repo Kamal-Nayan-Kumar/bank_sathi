@@ -1,0 +1,70 @@
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+ENV/
+
+# --- Test / tooling caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+
+# --- Data artefacts (regenerate with scripts/) ---
+data/policies/*.md
+data/vectors/
+data/*.sqlite3
+data/eval_results.json
+evaluation/results.md
+evaluation/runs/
+
+# --- Frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env*.local
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+
+# --- Editors / OS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# --- Logs ---
+*.log
+logs/
