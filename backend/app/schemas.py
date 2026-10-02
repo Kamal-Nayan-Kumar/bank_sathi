@@ -10,10 +10,11 @@ impossible age, validation must fail loudly rather than quietly clamp.
 
 from __future__ import annotations
 
+import typing
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
 
 CardTier = Literal["secured", "entry", "mid", "premium"]
 Preference = Literal["cashback", "travel", "lounge", "fuel", "lifetime_free"]
@@ -276,6 +277,11 @@ class RecommendationResponse(BaseModel):
     score_breakdown: list[ScoreBreakdown] = Field(default_factory=list)
     verifier: VerifierReport | None = None
     trace: dict[str, float] = Field(default_factory=dict)
+    # The intake result, forwarded so the chat route can persist exactly what
+    # the engine decided on. Deliberately not part of the serialised contract
+    # the customer sees.
+    _partial: typing.Any = PrivateAttr(default=None)
+    partial: PartialProfile | None = Field(default=None, exclude=True)
 
 
 # ---------------------------------------------------------------------------
@@ -288,7 +294,7 @@ class NaturalLanguageRequest(BaseModel):
     # server-side sessions, so without this every follow-up turn starts from
     # nothing and the conversation can never converge: the customer answers one
     # question and the engine forgets the three they gave earlier.
-    prior: dict[str, Any] | None = None
+    prior: dict[str, typing.Any] | None = None
 
 
 class ProfileRequest(BaseModel):

@@ -308,10 +308,34 @@ class RegexExtractor:
             re.I,
         )
         if total:
-            amount, _ = parse_amount(total.group(1))
+            # Same reasoning as above: the digits alone carry no period cue.
+            amount, _ = parse_amount(total.group(1), context=message)
             if amount is not None:
                 claimed = sum(values.values())
                 values["other"] = max(0, amount - claimed)
+        if not values:
+            # People just as often give the total first and name the categories
+            # after it: "18,000 a month, mostly dining and groceries". Nothing
+            # here was captured, so find the stated total and split it across
+            # the categories they named. The split is even because they gave no
+            # proportions - but the total and the categories are both explicit,
+            # so this reads what was said rather than inventing a budget.
+            named = [c for c, p in cats.items() if re.search(p, message, re.I)]
+            if len(named) > 1:
+                m = re.search(
+                    r"(?:₹|rs\.?)?\s*([\d,.]+\s*(?:k\b|l|lakh|lac)?)\s*(?:a|per|/)\s*month",
+                    message,
+                    re.I,
+                )
+                if m:
+                    # Context matters: the capture group stops at the digits, so
+                    # without it parse_amount would read a monthly figure as an
+                    # annual one and divide by twelve.
+                    amount, _ = parse_amount(m.group(1), context=message)
+                    if amount:
+                        share = max(1, amount // len(named))
+                        for c in named:
+                            values[c] = share
         if not values:
             return None
         return SpendMix(**values)
@@ -333,9 +357,16 @@ class LLMExtractor:
         result = llm.chat(
             EXTRACT_SYSTEM, user, model=s.groq_model_extract, json_mode=True
         )
-        if result.json_value is None:
-            # A failed extraction must not lose what the regex path can read.
-            log.info("LLM extraction failed (%s); using regex fallback", result.error)
+        # A non-object answer is a failure, not an extraction. json_mode can
+        # still hand back a bare string ("We need to reason first"), and both
+        # _coerce and _drop_unknown assume a dict, so this used to raise
+        # AttributeError out of the node. That exception unwound the whole graph
+        # and the customer got the hardcoded "tell me your income" fallback over
+        # and over, no matter what they had already said.
+        if not isinstance(result.json_value, dict):
+            log.info(
+                "LLM extraction unusable (%s); using regex fallback", result.error
+            )
             return self.fallback.extract(message, prior)
         try:
             parsed = PartialProfile.model_validate(_coerce(result.json_value))
@@ -410,6 +441,8 @@ def _coerce(data: dict) -> dict:
 
 def _drop_unknown(data: dict) -> dict:
     """Last resort: keep only fields whose schema accepts them."""
+    if not isinstance(data, dict):
+        return {}
     allowed = set(PartialProfile.model_fields)
     return {k: v for k, v in data.items() if k in allowed}
 

@@ -30,7 +30,12 @@ def run_chat(req: NaturalLanguageRequest, prior: PartialProfile | None = None) -
         "mode": "chat",
         "trace": {},
     }
-    return _invoke(state)
+    response = _invoke(state)
+    # Hand back the partial the intake node actually built, so the caller can
+    # persist exactly what the engine saw. Re-extracting here would be a second
+    # LLM call whose answer can disagree with this one.
+    response.partial = response._partial
+    return response
 
 
 def run_profile(req: ProfileRequest, *, explain: bool = True) -> RecommendationResponse:
@@ -94,4 +99,7 @@ def _invoke(state: dict[str, Any]) -> RecommendationResponse:
     trace = dict(response.trace)
     trace["total_ms"] = round((time.perf_counter() - started) * 1000, 1)
     response.trace = trace
+    # Stashed on the response so `run_chat` can forward the graph's own intake
+    # result without re-running extraction.
+    response._partial = out.get("partial")
     return response

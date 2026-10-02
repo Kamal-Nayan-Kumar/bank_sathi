@@ -265,6 +265,10 @@ def candidate_filter_sql(profile: UserProfile):
     """
     from sqlalchemy import text
 
+    # `CAST(:cibil AS INTEGER)` rather than a bare `:cibil IS NULL`: Postgres
+    # cannot infer a type for an untyped NULL bind parameter, so a customer with
+    # no credit score yet raised "could not determine data type of parameter" and
+    # the whole turn died. The cast is what makes the IS NULL branch legal.
     return text(
         """
         SELECT card_id
@@ -272,7 +276,11 @@ def candidate_filter_sql(profile: UserProfile):
         WHERE is_active = :is_active
           AND min_monthly_income <= :income
           AND min_age <= :age AND max_age >= :age
-          AND (min_cibil IS NULL OR :cibil IS NULL OR min_cibil <= :cibil)
+          AND (
+                min_cibil IS NULL
+                OR CAST(:cibil AS INTEGER) IS NULL
+                OR min_cibil <= CAST(:cibil AS INTEGER)
+              )
           AND (:new_to_credit = 0 OR min_monthly_income <= :tier_cap)
         """
     )

@@ -156,9 +156,15 @@ def chat(req: NaturalLanguageRequest) -> ChatReply:
             log.warning("ignoring unusable prior profile: %s", exc)
     response = run_chat(req, prior)
 
-    # Re-extract on the masked text so the stored partial matches what the
-    # engine saw, never what the customer typed.
-    partial = get_extractor().extract(clean, prior)
+    # The partial the graph already extracted, not a second extractor call. Two
+    # calls meant two LLM requests per turn, and the client could be handed a
+    # *different* profile from the one the engine decided on, so the next turn
+    # would re-ask for fields the customer had already given.
+    partial = response.partial
+    if partial is None:
+        # The graph failed before intake produced anything. Extract once here so
+        # the session still accumulates rather than silently resetting to empty.
+        partial = get_extractor().extract(clean, prior)
     return ChatReply(
         response=response,
         session_id=req.session_id or "guest",

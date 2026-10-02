@@ -1,11 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api, ApiError } from "../lib/api";
-import type {
-  Example,
-  ExampleBucket,
-  RecommendationResponse,
-  UserProfile,
-} from "../lib/types";
+import type { Example, RecommendationResponse, UserProfile } from "../lib/types";
+import { SAMPLES, SAMPLES_NOTE } from "../lib/samples";
 import { rupees } from "../lib/format";
 
 const GROUPS = [
@@ -17,9 +13,13 @@ const GROUPS = [
 
 /** Scenario one: pick a sample customer, see what the engine does with them.
  *
- *  Profiles are synthetic and generated from a fixed seed. The bucket they sit
- *  in is computed from the engine's own ground truth, so a "close call" is
- *  actually close and "not eligible" actually fails.
+ *  Profiles are synthetic and generated from a fixed seed, and the buckets are
+ *  baked in at build time by `scripts/build_samples.py`. That is deliberate: the
+ *  data is static, so fetching it made the panel wait on a network round trip
+ *  to classify profiles it already had. The bucket a profile sits in is still
+ *  the engine's own ground truth, not a hand-chosen label.
+ *
+ *  Only the "Check" click calls the engine.
  */
 export function SampleProfiles({
   onResult,
@@ -28,16 +28,8 @@ export function SampleProfiles({
   onResult: (result: RecommendationResponse) => void;
   onPick: (profile: UserProfile | null) => void;
 }) {
-  const [buckets, setBuckets] = useState<ExampleBucket | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    api
-      .examples()
-      .then((d) => setBuckets(d.buckets))
-      .catch(() => setError("Could not load the sample profiles."));
-  }, []);
 
   async function choose(ex: Example) {
     setActive(ex.profile_id);
@@ -52,22 +44,14 @@ export function SampleProfiles({
     }
   }
 
-  if (error && !buckets) {
-    return (
-      <p role="alert" className="border-l-2 border-stamp bg-stamp-10 px-3 py-2 text-[0.8125rem]">
-        {error}
-      </p>
-    );
-  }
-
   return (
     <div className="space-y-8">
       {GROUPS.map(([key, heading]) =>
-        buckets?.[key]?.length ? (
+        SAMPLES[key].length ? (
           <section key={key} aria-label={heading}>
             <h2 className="label rule-heavy pb-2">{heading}</h2>
             <ul className="mt-3 grid gap-3 sm:grid-cols-2">
-              {buckets[key].map((ex) => (
+              {SAMPLES[key].map((ex) => (
                 <li key={ex.profile_id}>
                   <button
                     type="button"
@@ -94,9 +78,7 @@ export function SampleProfiles({
           </section>
         ) : null,
       )}
-      {!buckets ? (
-        <p className="label">Loading the sample customers…</p>
-      ) : null}
+      <p className="label">{SAMPLES_NOTE}</p>
       {error ? (
         <p role="alert" className="border-l-2 border-stamp bg-stamp-10 px-3 py-2 text-[0.8125rem]">
           {error}

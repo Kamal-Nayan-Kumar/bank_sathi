@@ -1,6 +1,5 @@
 import type {
   ChatReply,
-  ExampleBucket,
   HealthStatus,
   ProfileFields,
   RecommendationResponse,
@@ -81,7 +80,6 @@ export const api = {
     }),
 
   fields: () => request<ProfileFields>("/api/profile/fields"),
-  examples: () => request<{ buckets: ExampleBucket; note: string }>("/api/examples"),
   health: () => request<HealthStatus>("/api/health"),
 };
 
