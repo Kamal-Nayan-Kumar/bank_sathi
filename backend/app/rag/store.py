@@ -213,6 +213,10 @@ class InMemoryStore:
 class QdrantStore:
     name = "qdrant"
 
+    # Fields the retriever filters on. Both must be keyword-indexed or Qdrant
+    # rejects the query.
+    _PAYLOAD_INDEXES = ("card_id", "document_type")
+
     def __init__(self, dim: int) -> None:
         from qdrant_client import QdrantClient
 
@@ -242,6 +246,30 @@ class QdrantStore:
                 collection_name=self._collection,
                 vectors_config=VectorParams(size=dim, distance=Distance.COSINE),
             )
+        self._ensure_payload_indexes()
+
+    def _ensure_payload_indexes(self) -> None:
+        """Create the keyword index `card_id` filtering depends on.
+
+        Retrieval filters every card's evidence query by `card_id`. Qdrant
+        rejects an unindexed filter at query time with a 400, so without this the
+        whole evidence node fails on the first real request. It only appears once
+        a remote Qdrant is actually in use, which is why it is created here
+        rather than left to a manual setup step.
+        """
+        from qdrant_client.models import PayloadSchemaType
+
+        for field in self._PAYLOAD_INDEXES:
+            try:
+                self._client.create_payload_index(
+                    collection_name=self._collection,
+                    field_name=field,
+                    field_schema=PayloadSchemaType.KEYWORD,
+                )
+            except Exception as exc:  # noqa: BLE001
+                # Already exists is the normal case on every boot after the first.
+                if "already exists" not in str(exc).lower():
+                    log.warning("could not index %s on %s: %s", field, self._collection, exc)
 
     def upsert(self, chunks: list[Chunk], vectors: list[list[float]]) -> int:
         from qdrant_client.models import PointStruct

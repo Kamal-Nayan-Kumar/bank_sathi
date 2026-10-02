@@ -75,6 +75,20 @@ def test_assumed_fields_disclosed(cards):
         assert "reward_caps" in c.assumed_fields
 
 
+def test_benefits_survive_a_database_round_trip(loaded_db):
+    """A column nothing reads back is a feature the user never sees.
+
+    `benefit_highlights` was written to the row but never rehydrated on read,
+    so every recommended card rendered with no benefits at all.
+    """
+    from app.db import get_all_cards
+
+    live = get_all_cards()
+    assert live, "catalogue is empty"
+    with_benefits = [c for c in live if c.benefit_highlights]
+    assert len(with_benefits) > len(live) * 0.9, "benefits were dropped on read"
+
+
 def test_tier_income_minimum_is_respected(cards):
     """Every card must sit at or above its tier's floor, or the tier table lies."""
     for c in cards:

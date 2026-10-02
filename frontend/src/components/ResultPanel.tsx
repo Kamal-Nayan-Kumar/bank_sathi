@@ -36,7 +36,7 @@ export function VerifierBadge({
 
   return (
     <div
-      className={`stamp-in border px-3 py-2.5 ${
+      className={`stamp-in w-max max-w-full border px-3 py-2 ${
         ok ? "border-ledger/30 bg-ledger-10/50" : "border-stamp/30 bg-stamp-10"
       }`}
     >
@@ -49,7 +49,9 @@ export function VerifierBadge({
         </span>
         <span className="num text-[0.6875rem] text-ink-70">
           {verifier.checks.length - failed.length}/{verifier.checks.length} checks
-          {verifier.retries > 0 ? ` · ${verifier.retries} retr${verifier.retries > 1 ? "ies" : "y"}` : ""}
+          {verifier.retries > 0
+            ? ` · ${verifier.retries} retr${verifier.retries > 1 ? "ies" : "y"}`
+            : ""}
         </span>
       </div>
 

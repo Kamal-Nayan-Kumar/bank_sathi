@@ -65,6 +65,9 @@ class Settings(BaseSettings):
     qdrant_local_path: str = ""
 
     # --- Database ------------------------------------------------------------
+    # A postgres:// or sqlite:// URL. Empty means "use the local file at
+    # data/bank_sathi.sqlite3". A sqlite:// URL is honoured too, which is what
+    # lets a test point at a throwaway file.
     database_url: str = ""
     db_pool_size: int = 5
     db_max_overflow: int = 5

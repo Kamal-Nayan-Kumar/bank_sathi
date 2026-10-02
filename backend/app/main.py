@@ -333,23 +333,42 @@ def policy_summary() -> dict:
 
 @app.get("/api/health", tags=["meta"])
 def health() -> dict:
-    s = get_settings()
+    """What is actually running, not what is configured.
+
+    Reported from live objects rather than from settings, because a degraded
+    fallback that reports itself as the real service is worse than an outage:
+    it hides the difference between a demo and a deployment.
+    """
+    from app import llm
+    from app.db import get_all_cards
+    from app.rag.store import get_embedder, get_store
+
     status = {
-        "database": "postgres" if s.has_postgres else "sqlite-fallback",
-        "vector_store": "qdrant" if s.has_qdrant else "in-process-fallback",
-        "embeddings": "openai" if s.has_remote_embeddings else "hash-fallback",
-        "llm": "groq" if s.has_llm else "template-fallback",
+        "database": "postgres" if get_settings().has_postgres else "sqlite",
         "cards_loaded": 0,
         "policy_chunks": 0,
     }
     try:
-        from app.db import get_all_cards
-        from app.rag.store import get_store
-
         status["cards_loaded"] = len(get_all_cards(include_inactive=True))
-        status["policy_chunks"] = get_store().count()
     except Exception as exc:  # noqa: BLE001
-        status["error"] = str(exc)
+        status["database_error"] = str(exc)[:200]
+
+    try:
+        store = get_store()
+        status["vector_store"] = "qdrant" if store.name == "qdrant" else "in-process"
+        status["policy_chunks"] = store.count()
+    except Exception as exc:  # noqa: BLE001
+        status["vector_store"] = "unavailable"
+        status["vector_store_error"] = str(exc)[:200]
+
+    try:
+        embedder = get_embedder()
+        status["embeddings"] = type(embedder).__name__.replace("Embedder", "").lower()
+    except Exception as exc:  # noqa: BLE001
+        status["embeddings"] = "unavailable"
+        status["embeddings_error"] = str(exc)[:200]
+
+    status["llm"] = " + ".join(name for name, _, _ in llm.providers()) or "template"
     return status
 
 

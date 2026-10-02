@@ -5,12 +5,20 @@ import type { ScoreBreakdown } from "../lib/types";
    the score is made of. */
 type ComponentKey = "net_value" | "spend_alignment" | "preference_match" | "fee_fit";
 
+/* Weights live on the server in `thresholds.SCORING_WEIGHTS` and reach the UI
+   through each card's score_breakdown, so this table is only used for labels and
+   for the fallback line shown before a breakdown arrives. If the two ever
+   disagree, the bar is wrong - so the backend also returns the weights it used
+   and the API test asserts they match this table. */
 const COMPONENTS: Array<{ key: ComponentKey; label: string; weight: number }> = [
   { key: "net_value", label: "Net value", weight: 55 },
   { key: "spend_alignment", label: "Your spending", weight: 20 },
   { key: "preference_match", label: "Preferences", weight: 15 },
   { key: "fee_fit", label: "Fee vs value", weight: 10 },
 ];
+
+const weightOf = (key: ComponentKey) =>
+  COMPONENTS.find((c) => c.key === key)?.weight ?? 0;
 
 /**
  * The clearance block — the signature element.
@@ -27,8 +35,10 @@ export function ClearanceBlock({
   breakdown?: ScoreBreakdown;
   score: number;
 }) {
+  /* breakdown values are 0..1 and weight is 0..100, so the product is already
+     a percentage. Dividing again by 100 made every bar ~1% wide. */
   const contribution = (c: ComponentKey) =>
-    breakdown ? (breakdown[c] * COMPONENTS.find((x) => x.key === c)!.weight) / 100 : 0;
+    breakdown ? breakdown[c] * weightOf(c) : 0;
   const earned = breakdown
     ? COMPONENTS.reduce((sum, c) => sum + contribution(c.key), 0)
     : score * 100;

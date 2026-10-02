@@ -312,7 +312,7 @@ class TestVerifier:
         assert response.verifier is not None
         assert response.verifier.passed, response.verifier.checks
 
-    def test_catches_a_recommendation_for_an_ineligible_card(self, profile, cards):
+    def test_catches_a_recommendation_for_an_ineligible_card(self, profile, cards, loaded_db):
         """The single most important check in the system."""
         from app.verify import verify_response
 
@@ -326,7 +326,7 @@ class TestVerifier:
         check = next(c for c in report.checks if c["name"] == "eligibility_consistency")
         assert not check["passed"]
 
-    def test_catches_approval_language_for_a_rejected_customer(self, profile):
+    def test_catches_approval_language_for_a_rejected_customer(self, profile, loaded_db):
         from app.verify import verify_response
 
         response = _clean_response()
@@ -340,7 +340,7 @@ class TestVerifier:
             c for c in report.checks if c["name"] == "no_approval_language_when_rejected"
         )["passed"]
 
-    def test_catches_an_unsupported_number(self, profile):
+    def test_catches_an_unsupported_number(self, profile, loaded_db):
         from app.verify import verify_response
 
         response = _clean_response()
@@ -363,7 +363,7 @@ class TestVerifier:
             c for c in report.checks if c["name"] == "no_unsupported_numbers"
         )["passed"]
 
-    def test_catches_pii_in_the_output(self, profile):
+    def test_catches_pii_in_the_output(self, profile, loaded_db):
         from app.verify import verify_response
 
         response = _clean_response()
@@ -372,7 +372,7 @@ class TestVerifier:
         report = verify_response(response, self._state(profile, []))
         assert not report.passed
 
-    def test_catches_a_leaked_reason_code(self, profile):
+    def test_catches_a_leaked_reason_code(self, profile, loaded_db):
         from app.verify import verify_response
 
         response = _clean_response()
@@ -384,7 +384,7 @@ class TestVerifier:
             c for c in report.checks if c["name"] == "no_internal_reason_codes"
         )["passed"]
 
-    def test_catches_out_of_order_recommendations(self, profile, cards):
+    def test_catches_out_of_order_recommendations(self, profile, cards, loaded_db):
         from app.verify import verify_response
 
         response = _clean_response()

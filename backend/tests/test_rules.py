@@ -426,6 +426,25 @@ class TestRanking:
         ranked, _ = rank(many, profile)
         assert len(ranked) <= T.MAX_RECOMMENDATIONS
 
+    def test_breakdown_components_match_the_published_weights(self):
+        """The clearance bar in the UI is drawn from these weights.
+
+        The frontend keeps its own copy of the table for labels; if the two
+        drift, the bar silently misrepresents the ranking. Pinning the numbers
+        here makes that a failing test rather than a wrong visualisation.
+        """
+        ui_weights = {
+            "net_value": 55,
+            "spend_alignment": 20,
+            "preference_match": 15,
+            "fee_fit": 10,
+        }
+        # The server stores fractions and the UI stores percentages; compare in
+        # percentage terms or the test would pass by accident on a 100x error.
+        assert {k: v * 100 for k, v in T.SCORING_WEIGHTS.items()} == pytest.approx(
+            ui_weights, abs=0.001
+        )
+
     def test_breakdown_weights_sum_to_total(self, profile):
         c = card(reward_rules=[RewardRule(category="travel", value_pct=3.0)], annual_fee=0)
         bd = score_breakdown(c, profile)

@@ -157,5 +157,7 @@ export interface HealthStatus {
   llm: string;
   cards_loaded: number;
   policy_chunks: number;
-  error?: string;
+  database_error?: string;
+  vector_store_error?: string;
+  embeddings_error?: string;
 }

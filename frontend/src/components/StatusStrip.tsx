@@ -13,12 +13,7 @@ export function StatusStrip({ health }: { health: HealthStatus | null }) {
     <div className="label flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.625rem]">
       {health ? (
         <>
-          <Item label="engine" value={health.llm === "groq" ? "Groq" : "template"} />
-          <Item label="catalogue" value={health.cards_loaded.toString()} />
-          <Item
-            label="db"
-            value={health.database === "postgres" ? "Neon" : "SQLite"}
-          />
+          <Item label="engine" value={health.llm} />
           <Item
             label="policy"
             value={
@@ -27,9 +22,12 @@ export function StatusStrip({ health }: { health: HealthStatus | null }) {
                 : `${health.policy_chunks} in-process`
             }
           />
+          <Item label="embed" value={health.embeddings} />
           <Item
-            label="embed"
-            value={health.embeddings === "openai" ? "OpenAI" : "MiniLM"}
+            label="cards"
+            value={`${health.cards_loaded} in ${
+              health.database === "postgres" ? "Neon" : "SQLite"
+            }`}
           />
         </>
       ) : (

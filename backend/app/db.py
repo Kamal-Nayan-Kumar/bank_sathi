@@ -20,7 +20,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from app import thresholds as T
-from app.config import get_settings
+from app.config import REPO_ROOT, get_settings
 from app.schemas import Card
 
 SCHEMA_SQL = """
@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS cards (
     max_age              INTEGER       NOT NULL,
     apr_pct              FLOAT         NOT NULL,
     lounge_visits_year   INTEGER       NOT NULL DEFAULT 0,
+    benefit_highlights   JSON          NOT NULL DEFAULT '[]',
     is_active            BOOLEAN       NOT NULL DEFAULT TRUE,
     assumed_fields       JSON          NOT NULL DEFAULT '[]',
     source               VARCHAR(64)   NOT NULL DEFAULT 'synthetic'
@@ -97,6 +98,9 @@ class CardRow(Base):
     max_age: Mapped[int] = mapped_column(Integer)
     apr_pct: Mapped[float] = mapped_column()
     lounge_visits_year: Mapped[int] = mapped_column(Integer, default=0)
+    # Published highlights. Without this column the UI showed a card with no
+    # benefits at all, because nothing rehydrated them on read.
+    benefit_highlights: Mapped[list] = mapped_column(JSON, default=list)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     assumed_fields: Mapped[list] = mapped_column(JSON, default=list)
     source: Mapped[str] = mapped_column(String(64), default="synthetic")
@@ -128,6 +132,14 @@ class CardRow(Base):
 
 @lru_cache(maxsize=1)
 def get_engine() -> Engine:
+    """The database engine, chosen from settings.
+
+    `DATABASE_URL` is honoured for SQLite as well as Postgres. An earlier
+    version ignored it for SQLite and always wrote to `data/bank_sathi.sqlite3`,
+    which meant a test run quietly read and rewrote the developer's real
+    catalogue — and silently compared a 60-card fixture against a stale 120-card
+    table.
+    """
     s = get_settings()
     if s.has_postgres:
         url = s.database_url
@@ -137,12 +149,15 @@ def get_engine() -> Engine:
             "pool_pre_ping": True,  # Neon closes idle connections aggressively
         }
     else:
-        # SQLite fallback: no pooling, and check_same_thread=False because
-        # FastAPI serves requests from a thread pool.
-        from app.config import REPO_ROOT
-
-        url = f"sqlite:///{REPO_ROOT / 'data' / 'bank_sathi.sqlite3'}"
+        url = s.database_url or f"sqlite:///{REPO_ROOT / 'data' / 'bank_sathi.sqlite3'}"
+        if not url.startswith("sqlite"):
+            # A malformed URL should fail loudly here rather than silently
+            # falling back to a local file and looking like it connected.
+            raise ValueError(
+                f"DATABASE_URL must be a postgres:// or sqlite:// URL, got {url[:16]!r}"
+            )
         kwargs = {"connect_args": {"check_same_thread": False}}
+
     eng = create_engine(url, **kwargs)
     if s.has_postgres:
         with eng.connect() as conn:
@@ -181,7 +196,7 @@ def session_scope() -> Iterator[Session]:
 
 
 def init_db() -> None:
-    """Create tables and indexes from SCHEMA_SQL.
+    """Create tables and indexes from SCHEMA_SQL, then apply additive migrations.
 
     Written as explicit DDL rather than `metadata.create_all` so the same text
     can be run by hand against Neon without going through the ORM.
@@ -191,6 +206,32 @@ def init_db() -> None:
         for stmt in SCHEMA_SQL.split(";"):
             if stmt.strip():
                 conn.execute(text(stmt))
+        _apply_additive_migrations(conn)
+
+
+# Columns added after the first release. `CREATE TABLE IF NOT EXISTS` silently
+# skips an existing table, so a new column has to be added separately or a
+# deployed database silently keeps the old shape.
+_ADDITIVE_COLUMNS = [
+    ("cards", "benefit_highlights", "JSON"),
+]
+
+
+def _apply_additive_migrations(conn) -> None:
+    dialect = conn.engine.dialect.name
+    for table, column, kind in _ADDITIVE_COLUMNS:
+        sql = (
+            f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {column} {kind}"
+            if dialect == "postgresql"
+            else f"ALTER TABLE {table} ADD COLUMN {column} {kind}"
+        )
+        try:
+            conn.execute(text(sql))
+        except Exception as exc:  # noqa: BLE001
+            # SQLite has no IF NOT EXISTS for ADD COLUMN; "duplicate column"
+            # means the migration has already run, which is the normal case.
+            if "duplicate column" not in str(exc).lower():
+                raise
 
 
 def upsert_cards(cards: list[Card], rules_by_card: dict[str, list[dict]]) -> int:
@@ -214,6 +255,7 @@ def upsert_cards(cards: list[Card], rules_by_card: dict[str, list[dict]]) -> int
                 "max_age": c.max_age,
                 "apr_pct": c.apr_pct,
                 "lounge_visits_year": c.lounge_visits_per_year,
+                "benefit_highlights": c.benefit_highlights,
                 "is_active": c.is_active,
                 "assumed_fields": c.assumed_fields,
                 "source": c.source,
@@ -327,6 +369,7 @@ def _rehydrate(row: CardRow, rules: list[dict]) -> Card:
         apr_pct=row.apr_pct,
         lounge_visits_per_year=row.lounge_visits_year,
         reward_rules=rules,
+        benefit_highlights=list(row.benefit_highlights or []),
         is_active=row.is_active,
         assumed_fields=list(row.assumed_fields or []),
         source=row.source,
