@@ -58,7 +58,27 @@ def run_profile(req: ProfileRequest, *, explain: bool = True) -> RecommendationR
 def _invoke(state: dict[str, Any]) -> RecommendationResponse:
     started = time.perf_counter()
     graph = get_graph()
-    out = graph.invoke(state)
+    try:
+        out = graph.invoke(state)
+    except Exception as exc:  # noqa: BLE001
+        # Better to answer with an honest, visible failure than a 500: the
+        # customer sees what happened, and the logs carry the detail.
+        import traceback
+
+        log.error(
+            "graph failed (%s %s -> %s):\n%s",
+            state.get("mode"), type(state.get("profile") or state.get("partial")).__name__,
+            exc, traceback.format_exc(),
+        )
+        out = {
+            "response": RecommendationResponse(
+                profile_id=state.get("session_id", "guest"),
+                status="need_more_information",
+                decision="pending",
+                summary="I could not complete that request. Please try again.",
+                question="Could you tell me your monthly income and where you live?",
+            )
+        }
     response: RecommendationResponse | None = out.get("response")
     if response is None:
         # Should not happen, but an API returning null is worse than a clear
