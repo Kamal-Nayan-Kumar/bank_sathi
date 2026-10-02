@@ -19,6 +19,7 @@ from sqlalchemy import JSON, Boolean, Integer, String, Text, create_engine, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
+from app import thresholds as T
 from app.config import get_settings
 from app.schemas import Card
 
@@ -138,7 +139,7 @@ def get_engine() -> Engine:
     else:
         # SQLite fallback: no pooling, and check_same_thread=False because
         # FastAPI serves requests from a thread pool.
-        from app.policy import REPO_ROOT
+        from app.config import REPO_ROOT
 
         url = f"sqlite:///{REPO_ROOT / 'data' / 'bank_sathi.sqlite3'}"
         kwargs = {"connect_args": {"check_same_thread": False}}
@@ -301,14 +302,13 @@ def _load_rules(db: Session, card_ids: list[str]) -> dict[str, list[dict]]:
 def _rehydrate(row: CardRow, rules: list[dict]) -> Card:
     """Rebuild a Card, restoring employment from the tier default.
 
-    allowed_employment is tier-wide in our synthetic catalogue, so it is
-    derived from policy.yaml on read rather than duplicated per row. That keeps
-    a policy change from silently disagreeing with the database.
+    allowed_employment is tier-wide in our synthetic catalogue, so it is derived
+    from `thresholds` on read rather than duplicated per row. That keeps a tier
+    change from silently disagreeing with the database.
     """
-    from app.policy import get_policy
     from app.schemas import Employment
 
-    cfg = get_policy().tier(row.tier)
+    cfg = T.TIERS[row.tier]
     return Card(
         card_id=row.card_id,
         name=row.name,
@@ -323,7 +323,7 @@ def _rehydrate(row: CardRow, rules: list[dict]) -> Card:
         min_cibil=row.min_cibil,
         min_age=row.min_age,
         max_age=row.max_age,
-        allowed_employment=[Employment(e) for e in cfg["allowed_employment"]],
+        allowed_employment=[Employment(e) for e in cfg.allowed_employment],
         apr_pct=row.apr_pct,
         lounge_visits_per_year=row.lounge_visits_year,
         reward_rules=rules,

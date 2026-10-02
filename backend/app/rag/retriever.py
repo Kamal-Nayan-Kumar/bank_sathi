@@ -9,12 +9,12 @@ rule engine already made.
 from __future__ import annotations
 
 from app.config import get_settings
-from app.policy import get_policy
+from app import thresholds as T
 from app.rag.store import get_embedder, get_store
 from app.schemas import PolicyEvidence
 
 
-def _query_for_card(card, profile, policy) -> str:
+def _query_for_card(card, profile) -> str:
     """A retrieval query built from computed facts, not from LLM prose.
 
     Using the card's own numbers makes retrieval precise, and it removes any
@@ -36,8 +36,8 @@ def _query_for_card(card, profile, policy) -> str:
     return ", ".join(bits)
 
 
-def _query_for_rejection(reason_code: str, policy) -> str:
-    return f"{policy.label(reason_code).lower()}, {reason_code.replace('_', ' ').lower()}"
+def _query_for_rejection(reason_code: str) -> str:
+    return f"{T.label(reason_code).lower()}, {reason_code.replace('_', ' ').lower()}"
 
 
 def _query_global(profile) -> str:
@@ -54,7 +54,7 @@ def _query_global(profile) -> str:
     return ", ".join(bits)
 
 
-def _to_evidence(hit, policy) -> PolicyEvidence:
+def _to_evidence(hit) -> PolicyEvidence:
     chunk, score = hit
     md = chunk.metadata
     return PolicyEvidence(
@@ -68,14 +68,13 @@ def _to_evidence(hit, policy) -> PolicyEvidence:
 
 def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence]:
     s = get_settings()
-    policy = get_policy()
     store = get_store()
     embedder = get_embedder()
     out: list[PolicyEvidence] = []
     seen: set[str] = set()
 
     for card in cards:
-        q = _query_for_card(card, profile, policy)
+        q = _query_for_card(card, profile)
         vec = embedder.embed([q])[0]
         # Filtered by card_id so the explanation for card A can never be
         # grounded in card B's terms.
@@ -83,7 +82,7 @@ def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence
         for hit in hits:
             if hit[1] < s.rag_min_score:
                 continue
-            ev = _to_evidence(hit, policy)
+            ev = _to_evidence(hit)
             key = f"{ev.card_id}:{ev.section}"
             if key not in seen:
                 seen.add(key)
@@ -96,7 +95,7 @@ def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence
         vec = embedder.embed([q])[0]
         for hit in store.search(vec, limit=s.rag_top_k):
             if hit[1] >= s.rag_min_score:
-                ev = _to_evidence(hit, policy)
+                ev = _to_evidence(hit)
                 key = f"{ev.card_id}:{ev.section}"
                 if key not in seen:
                     seen.add(key)
@@ -106,12 +105,11 @@ def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence
 
 def retrieve_for_reason_codes(reason_codes: list[str], profile=None) -> list[PolicyEvidence]:
     s = get_settings()
-    policy = get_policy()
     store = get_store()
     embedder = get_embedder()
     out: list[PolicyEvidence] = []
     seen: set[str] = set()
-    queries = [_query_for_rejection(c, policy) for c in reason_codes[:4]]
+    queries = [_query_for_rejection(c) for c in reason_codes[:4]]
     if profile is not None:
         queries.append(_query_global(profile))
     if not queries:
@@ -122,7 +120,7 @@ def retrieve_for_reason_codes(reason_codes: list[str], profile=None) -> list[Pol
         for hit in store.search(vec, limit=per):
             if hit[1] < s.rag_min_score:
                 continue
-            ev = _to_evidence(hit, policy)
+            ev = _to_evidence(hit)
             key = f"{ev.card_id}:{ev.section}"
             if key not in seen:
                 seen.add(key)

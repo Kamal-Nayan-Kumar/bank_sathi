@@ -20,7 +20,7 @@ import re
 
 from app import llm
 from app.config import get_settings
-from app.policy import get_policy
+from app import thresholds as T
 from app.schemas import Employment, PartialProfile, SpendMix
 
 log = logging.getLogger(__name__)
@@ -76,19 +76,22 @@ _PER_MONTH = re.compile(r"(?:per month|/ ?month|a month|monthly|pm\b)", re.I)
 _PER_YEAR = re.compile(r"(?:per year|/ ?year|a year|annually|p\.?a\.?\b|pa\b|lpa\b)", re.I)
 
 
-def parse_amount(text: str, context: str = "") -> tuple[int | None, str]:
+def parse_amount(text: str, context: str | None = None) -> tuple[int | None, str]:
     """Parse a rupee amount and its period. Returns (monthly_rupees, unit).
 
-    `text` is the amount fragment ("1.2L", "60,000"). `context` is the clause
-    it came from, used only to decide monthly vs annual. They are separate
-    arguments because period cues appear on both sides of the amount
-    ("monthly income is 45000" vs "1.2L per month") and gluing the two together
-    would let the number's own leading digits absorb the cue words.
+    `text` is the amount fragment ("1.2L", "60,000"). `context` is the clause it
+    came from, used only to decide monthly vs annual, and defaults to `text`
+    itself so a bare call still reads the period from whatever it was given.
+
+    They are separate arguments because period cues appear on both sides of the
+    amount ("monthly income is 45000" vs "1.2L per month") and gluing the two
+    together would let the number's own leading digits absorb the cue words.
 
     Normalising to a monthly figure here means the rest of the system only ever
     deals in one unit, and "12 lakh per annum" cannot become an income of
     12,000 a month by accident.
     """
+    context = text if context is None else context
     m = _CRORE.search(text)
     if m:
         annual = float(m.group(1)) * 10_000_000
@@ -335,10 +338,18 @@ class LLMExtractor:
             log.info("LLM extraction failed (%s); using regex fallback", result.error)
             return self.fallback.extract(message, prior)
         try:
-            parsed = PartialProfile.model_validate(result.json_value)
+            parsed = PartialProfile.model_validate(_coerce(result.json_value))
         except Exception as exc:  # noqa: BLE001
-            log.warning("LLM returned an invalid profile (%s); regex fallback", exc)
-            return self.fallback.extract(message, prior)
+            # Losing an otherwise good extraction because one preference was
+            # spelled "online_shopping" instead of "cashback" is a bad trade:
+            # age, income, score and spend are the fields that matter. Retry
+            # once with the offending field dropped, then fall back.
+            log.warning("LLM profile invalid (%s); retrying without extras", exc)
+            relaxed = _drop_unknown(result.json_value)
+            try:
+                parsed = PartialProfile.model_validate(relaxed)
+            except Exception:
+                return self.fallback.extract(message, prior)
         if prior:
             parsed = prior.merged_with(parsed)
         return parsed
@@ -350,40 +361,87 @@ def json_dumps(value) -> str:
     return json.dumps(value, default=str)
 
 
+VALID_PREFERENCES = {"cashback", "travel", "lounge", "fuel", "lifetime_free"}
+VALID_EMPLOYMENT = {e.value for e in Employment}
+
+# A model that answers "online_shopping" when asked for a preference is
+# describing a spend category, not a preference. Mapping the closest valid
+# value is better than discarding the whole extraction, and better than
+# passing an unvalidated string into a Literal field.
+_PREF_ALIASES = {
+    "online_shopping": "cashback",
+    "shopping": "cashback",
+    "cash_back": "cashback",
+    "miles": "travel",
+    "flights": "travel",
+    "hotels": "travel",
+    "airport": "lounge",
+    "no_annual_fee": "lifetime_free",
+    "lifetime": "lifetime_free",
+    "free_card": "lifetime_free",
+}
+
+
+def _coerce(data: dict) -> dict:
+    """Nudge a plausible-but-off-schema model response into the schema.
+
+    Only ever *narrows* what the model said. It never fills a blank and never
+    invents a value, because guessing is the failure mode that matters.
+    """
+    out = dict(data)
+    prefs = out.get("preferences")
+    if isinstance(prefs, list):
+        cleaned = []
+        for p in prefs:
+            key = str(p).strip().lower().replace(" ", "_").replace("-", "_")
+            key = _PREF_ALIASES.get(key, key)
+            if key in VALID_PREFERENCES and key not in cleaned:
+                cleaned.append(key)
+        out["preferences"] = cleaned or None
+    emp = out.get("employment")
+    if isinstance(emp, str):
+        key = emp.strip().lower().replace(" ", "_").replace("-", "_")
+        if key not in VALID_EMPLOYMENT:
+            out["employment"] = None
+        else:
+            out["employment"] = key
+    return out
+
+
+def _drop_unknown(data: dict) -> dict:
+    """Last resort: keep only fields whose schema accepts them."""
+    allowed = set(PartialProfile.model_fields)
+    return {k: v for k, v in data.items() if k in allowed}
+
+
 def get_extractor() -> LLMExtractor | RegexExtractor:
     return LLMExtractor() if get_settings().has_llm else RegexExtractor()
 
 
 # ---------------------------------------------------------------- follow-ups
-FIELD_QUESTIONS = {
-    "age": "How old are you?",
-    "monthly_income": "What is your approximate monthly income?",
-    "employment": "Are you salaried, self-employed, a business owner, a student, retired, or a homemaker?",
-    "city_tier": "Which city do you live in?",
-    "monthly_spend": "Roughly how much do you spend on your card each month?",
-}
 
-PREFERENCE_QUESTION = (
-    "Anything you care about more, like cashback, travel, lounge access or fuel? "
-    "You can skip this."
-)
 
 
 def missing_fields(partial: PartialProfile) -> list[str]:
-    policy = get_policy()
-    missing = []
-    for field in policy.required_fields:
-        if getattr(partial, field, None) in (None, 0):
-            missing.append(field)
-    return missing
+    """Required fields still unknown, in the order we ask for them.
+
+    Order matters: income is the single most useful thing to ask for, because
+    it changes both eligibility and the ranking, while preferences barely
+    change the answer.
+    """
+    return [
+        field
+        for field in T.REQUIRED_PROFILE_FIELDS
+        if getattr(partial, field, None) in (None, 0)
+    ]
 
 
 def next_question(partial: PartialProfile) -> str | None:
     missing = missing_fields(partial)
     if missing:
-        return FIELD_QUESTIONS[missing[0]]
+        return T.FOLLOWUP_QUESTIONS[missing[0]]
     if partial.preferences is None:
-        return PREFERENCE_QUESTION
+        return T.PREFERENCE_QUESTION
     return None
 
 

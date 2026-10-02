@@ -56,8 +56,6 @@ def _invoke(state: dict[str, Any]) -> RecommendationResponse:
     if response is None:
         # Should not happen, but an API returning null is worse than a clear
         # refusal, so we surface it rather than raising into the client.
-        from app.policy import get_policy
-
         response = RecommendationResponse(
             profile_id=state.get("session_id", "guest"),
             status="need_more_information",

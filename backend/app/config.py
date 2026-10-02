@@ -27,17 +27,20 @@ class Settings(BaseSettings):
 
     # --- LLM -----------------------------------------------------------------
     groq_api_key: str = ""
-    # Extraction is the cheaper, faster call; explanations get the stronger
-    # model because grounded prose is the part a customer actually reads.
-    groq_model_extract: str = "qwen/qwen3.8-27b"
+    # One model for both jobs: openai/gpt-oss-120b is the strongest available on
+    # the free tier and is reliable at JSON extraction as well as prose.
+    groq_model_extract: str = "openai/gpt-oss-120b"
     groq_model_explain: str = "openai/gpt-oss-120b"
     groq_base_url: str = "https://api.groq.com/openai/v1"
     llm_timeout_s: float = 30.0
 
     # --- Embeddings ----------------------------------------------------------
+    # all-MiniLM-L6-v2 runs locally via fastembed. No API key, no cost.
+    # Override only to force a deterministic embedder in tests.
+    embed_backend: str = "auto"  # auto | fastembed | openai | hash
     openai_api_key: str = ""
     openai_embedding_model: str = "text-embedding-ada-002"
-    embed_dim: int = 512
+    embed_dim: int = 512  # only used by the hash fallback
 
     # --- Vector store --------------------------------------------------------
     qdrant_url: str = ""

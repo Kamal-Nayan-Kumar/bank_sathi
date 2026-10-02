@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 
 import httpx
@@ -25,6 +26,11 @@ import httpx
 from app.config import get_settings
 
 log = logging.getLogger(__name__)
+
+# Two attempts with backoff. A free-tier 429 that survives this degrades to the
+# template path, which is correct behaviour, not a failure.
+LLM_MAX_ATTEMPTS = 2
+LLM_RETRY_BASE_S = 2.0
 
 _USAGE = {"prompt_tokens": 0, "completion_tokens": 0, "calls": 0}
 
@@ -39,7 +45,7 @@ def reset_usage() -> None:
 
 @dataclass
 class LLMResult:
-    text: str
+    text: str = ""
     json_value: dict | None = None
     used_llm: bool = True
     error: str | None = None
@@ -51,6 +57,30 @@ def available() -> bool:
 
 
 _REASONING_MODELS = {"openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"}
+
+
+def chat_multi(messages: list[dict], model: str | None = None) -> LLMResult:
+    """Multi-turn call. Used by the chat tool loop, which needs to feed a tool
+    result back in as a further turn."""
+    s = get_settings()
+    if not s.has_llm:
+        return LLMResult(text="", used_llm=False, error="no_api_key")
+    use_model = model or s.groq_model_explain
+    last_error = ""
+    for attempt in range(LLM_MAX_ATTEMPTS):
+        try:
+            text = _post(messages, use_model, json_mode=False)
+            return LLMResult(text=text, model=use_model)
+        except httpx.HTTPStatusError as exc:
+            last_error = f"HTTP {exc.response.status_code}"
+            if exc.response.status_code != 429 or attempt == LLM_MAX_ATTEMPTS - 1:
+                break
+            time.sleep(LLM_RETRY_BASE_S * (2**attempt))
+        except Exception as exc:  # noqa: BLE001
+            last_error = str(exc)
+            break
+    log.warning("LLM multi-turn failed (%s)", last_error)
+    return LLMResult(text="", used_llm=False, error=last_error, model=use_model)
 
 
 def _post(messages: list[dict], model: str, json_mode: bool = False, temperature: float = 0.1):
@@ -91,23 +121,42 @@ def _post(messages: list[dict], model: str, json_mode: bool = False, temperature
 def chat(
     system: str, user: str, *, model: str | None = None, json_mode: bool = False
 ) -> LLMResult:
+    """One call, with bounded retry on 429 only.
+
+    Retrying is limited to rate limiting and is capped at two attempts with a
+    backoff. A 429 here means the shared free tier is saturated; retrying a
+    400 or a 500 just wastes the customer's wait. After the retries are
+    exhausted the caller gets `used_llm=False` and degrades, which is the
+    behaviour every call site already handles.
+    """
     s = get_settings()
     if not s.has_llm:
         return LLMResult(text="", used_llm=False, error="no_api_key")
     use_model = model or s.groq_model_explain
-    try:
-        text = _post(
-            [{"role": "system", "content": system}, {"role": "user", "content": user}],
-            use_model,
-            json_mode=json_mode,
-        )
-        parsed = None
-        if json_mode:
-            parsed = _parse_json(text)
-        return LLMResult(text=text, json_value=parsed, model=use_model)
-    except Exception as exc:  # noqa: BLE001 - any failure must degrade, not 500
-        log.warning("LLM call failed: %s", exc)
-        return LLMResult(text="", used_llm=False, error=str(exc), model=use_model)
+
+    last_error = ""
+    for attempt in range(LLM_MAX_ATTEMPTS):
+        try:
+            text = _post(
+                [{"role": "system", "content": system}, {"role": "user", "content": user}],
+                use_model,
+                json_mode=json_mode,
+            )
+            parsed = _parse_json(text) if json_mode else None
+            return LLMResult(text=text, json_value=parsed, model=use_model)
+        except httpx.HTTPStatusError as exc:
+            last_error = f"HTTP {exc.response.status_code}"
+            if exc.response.status_code != 429:
+                break
+            if attempt < LLM_MAX_ATTEMPTS - 1:
+                time.sleep(LLM_RETRY_BASE_S * (2**attempt))
+                continue
+        except Exception as exc:  # noqa: BLE001 - any failure must degrade, not 500
+            last_error = str(exc)
+            break
+
+    log.warning("LLM call failed (%s) for model %s", last_error, use_model)
+    return LLMResult(text="", used_llm=False, error=last_error, model=use_model)
 
 
 def _parse_json(text: str) -> dict | None:

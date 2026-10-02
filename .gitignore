@@ -32,9 +32,11 @@ coverage.xml
 .tox/
 
 # --- Data artefacts (regenerate with scripts/) ---
-data/policies/*.md
+# NOTE: data/policies/*.md is intentionally NOT ignored. It is hand-written
+# source content, not a build output.
 data/vectors/
 data/*.sqlite3
+data/bank_sathi.sqlite3
 data/eval_results.json
 evaluation/results.md
 evaluation/runs/

@@ -13,26 +13,31 @@ from __future__ import annotations
 import re
 
 # Each pattern is (compiled regex, replacement, label).
+#
+# Order and anchoring both matter here. A 16-digit card number and a 12-digit
+# Aadhaar number are both "groups of four digits", so:
+#   * the longest form is tried first, and
+#   * every digit run asserts `(?<!\d)` / `(?!\d)` at its edges.
+# Without the adjacency guards a card number is silently matched as an Aadhaar
+# number and rewritten with the wrong label, which looks like it worked.
 PATTERNS: list[tuple[re.Pattern, str, str]] = [
-    (re.compile(r"\b\d{4}\s?\d{4}\s?\d{4}\b"), "[PAN]", "pan"),
-    (re.compile(r"\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b"), "[AADHAAR]", "aadhaar"),
+    # 19-digit account number, then 16-digit card, then 12-digit Aadhaar.
+    (re.compile(r"(?<!\d)\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{3}(?!\d)"), "[ACCOUNT]", "account"),
+    (re.compile(r"(?<!\d)\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}(?!\d)"), "[PAN]", "pan"),
+    (re.compile(r"(?<!\d)\d{4}[\s-]?\d{4}[\s-]?\d{4}(?!\d)"), "[AADHAAR]", "aadhaar"),
     (re.compile(r"\b[A-Z]{5}\d{4}[A-Z]\b"), "[PAN]", "pan_alpha"),
+    # Indian mobile numbers: +91 optional, and people write them grouped
+    # ("98765 43210") as often as solid.
     (
-        re.compile(r"\b(?:\+91[-\s]?)?[6-9]\d{9}\b"),
+        re.compile(
+            r"(?<![\d+])(?:\+91[-\s]?)?[6-9]\d{4}[\s-]?\d{5}(?!\d)"
+        ),
         "[PHONE]",
         "phone",
     ),
-    (
-        re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b"),
-        "[EMAIL]",
-        "email",
-    ),
-    (
-        re.compile(r"\b\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\s?\d{2}\b"),
-        "[ACCOUNT]",
-        "account",
-    ),
-    # CVV / expiry fragments next to a card word.
+    (re.compile(r"(?<![\d+])\+91[\s-]?\d[\s-]?\d{5}[\s-]?\d{5}(?!\d)"), "[PHONE]", "phone"),
+    (re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b"), "[EMAIL]", "email"),
+    # CVV / expiry, which only make sense next to the word naming them.
     (re.compile(r"(?i)\b(?:cvv|cvc)\s*(?:is|:)?\s*\d{3,4}\b"), "CVV [REDACTED]", "cvv"),
     (
         re.compile(r"(?i)\b(?:expiry|expires|valid till)\s*(?:is|:)?\s*\d{2}[/-]\d{2,4}\b"),
@@ -40,8 +45,6 @@ PATTERNS: list[tuple[re.Pattern, str, str]] = [
         "expiry",
     ),
 ]
-
-_EMAIL_LIKE = re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b")
 
 
 def mask(text: str) -> tuple[str, list[str]]:

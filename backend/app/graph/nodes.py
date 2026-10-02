@@ -17,7 +17,6 @@ from app import intake, llm
 from app.config import get_settings
 from app.db import get_all_cards, session_scope
 from app.explain import explain_response, template_response
-from app.policy import get_policy
 from app.rag.retriever import retrieve_for_cards, retrieve_for_reason_codes
 from app.rules.engine import (
     evaluate_card,
@@ -183,10 +182,9 @@ def node_prefilter(state: dict[str, Any]) -> dict[str, Any]:
     """SQL narrows 5000 cards to a few hundred. No LLM involved."""
     profile: UserProfile = state["profile"]
     trace = state.setdefault("trace", {})
-    policy = get_policy()
     with Timer("prefilter", trace):
         with session_scope() as db:
-            ids = fetch_candidates(db, profile, policy)
+            ids = fetch_candidates(db, profile)
         all_cards = {c.card_id: c for c in get_all_cards()}
     candidates = [all_cards[i] for i in ids if i in all_cards]
     trace["candidates_returned"] = float(len(candidates))
@@ -202,17 +200,16 @@ def node_evaluate(state: dict[str, Any]) -> dict[str, Any]:
     """
     profile: UserProfile = state["profile"]
     candidates: list[Card] = state.get("candidates", [])
-    policy = get_policy()
     trace = state.setdefault("trace", {})
 
     with Timer("eligibility", trace):
-        evaluations = [evaluate_card(profile, c, policy) for c in candidates]
+        evaluations = [evaluate_card(profile, c) for c in candidates]
 
     eligible = [
         c for c, ev in zip(candidates, evaluations, strict=True) if ev.eligible
     ]
     rejected = [ev for ev in evaluations if not ev.eligible]
-    near = near_misses(rejected, {c.card_id: c for c in candidates}, policy)
+    near = near_misses(rejected)
 
     trace["eligible_count"] = float(len(eligible))
     trace["rejected_count"] = float(len(rejected))
@@ -221,7 +218,7 @@ def node_evaluate(state: dict[str, Any]) -> dict[str, Any]:
         "eligible_cards": eligible,
         "rejected": rejected,
         "near": near,
-        "improvement_steps": improvement_steps(near, policy, profile),
+        "improvement_steps": improvement_steps(near, profile),
         "trace": trace,
     }
 
@@ -231,11 +228,10 @@ def node_rank(state: dict[str, Any]) -> dict[str, Any]:
     """Deterministic ordering. Every score is a number in the trace."""
     profile: UserProfile = state["profile"]
     eligible: list[Card] = state.get("eligible_cards", [])
-    policy = get_policy()
     trace = state.setdefault("trace", {})
 
     with Timer("rank", trace):
-        ranked, dropped = rank(eligible, profile, policy)
+        ranked, dropped = rank(eligible, profile)
         recommendations = [
             Recommendation(
                 rank=i + 1,
@@ -244,10 +240,10 @@ def node_rank(state: dict[str, Any]) -> dict[str, Any]:
                 bank=c.bank,
                 tier=c.tier,
                 score=round(score, 4),
-                net_annual_value_rs=net_annual_value(c, profile, policy),
-                est_credit_limit_rs=est_credit_limit(c, profile, policy),
+                net_annual_value_rs=net_annual_value(c, profile),
+                est_credit_limit_rs=est_credit_limit(c, profile),
                 apr_pct=c.apr_pct,
-                fee_payable_rs=fee_payable(c, profile, policy),
+                fee_payable_rs=fee_payable(c, profile),
                 key_benefits=c.benefit_highlights[:2],
                 sources=[f"{c.card_id}.md"],
             )
@@ -306,17 +302,16 @@ def node_explain(state: dict[str, Any]) -> dict[str, Any]:
     ladder exists because a recommendation with awkward prose is far better
     than a 500.
     """
-    policy = get_policy()
     trace = state.setdefault("trace", {})
     s = get_settings()
-    response = _assemble(state, policy, summary="", used_llm=False)
+    response = _assemble(state, summary="")
     evidence = state.get("evidence", [])
     used_llm = False
 
     with Timer("explain", trace):
         for attempt in range(s.max_explain_retries + 1):
             attempt_response = explain_response(response, evidence, state, attempt)
-            report = verify_response(attempt_response, state, policy)
+            report = verify_response(attempt_response, state)
             report.retries = attempt
             if report.passed:
                 response = attempt_response
@@ -332,7 +327,7 @@ def node_explain(state: dict[str, Any]) -> dict[str, Any]:
             if attempt == s.max_explain_retries:
                 # Out of retries: repair the text from the engine's own numbers
                 # rather than shipping an unsupported claim.
-                fallback = template_response(response, state, policy)
+                fallback = template_response(response, state)
                 fallback.verifier = VerifierReport(
                     passed=True,
                     checks=report.checks,
@@ -352,7 +347,7 @@ def node_explain(state: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _assemble(state: dict[str, Any], policy, summary: str, used_llm: bool):
+def _assemble(state: dict[str, Any], summary: str):
     """Build the response object from state. Numbers come from state only."""
     profile: UserProfile | None = state.get("profile")
     ranked: list[Recommendation] = state.get("ranked", [])
@@ -404,10 +399,17 @@ def _assemble(state: dict[str, Any], policy, summary: str, used_llm: bool):
 # ------------------------------------------------------------------ output
 def node_respond(state: dict[str, Any]) -> dict[str, Any]:
     """Final node. For the missing-info path this just returns the question."""
-    policy = get_policy()
     response = state.get("response")
     if response is None:
-        response = _assemble(state, policy, summary="", used_llm=False)
-    if not response.summary:
-        response = template_response(response, state, policy)
+        response = _assemble(state, summary="")
+    if not response.summary.strip():
+        # The explain node left nothing readable, which happens when the LLM
+        # is unavailable. Fill it from the engine's own numbers and say so, so
+        # the UI can distinguish "the model wrote this" from "the template did".
+        response = template_response(response, state)
+        if response.verifier is not None and not response.verifier.used_fallback:
+            response.verifier.used_fallback = True
+            response.verifier.notes.append(
+                "Fell back to the deterministic template; no model was available."
+            )
     return {"response": response}

@@ -12,7 +12,8 @@ import json
 import random
 from pathlib import Path
 
-from app.policy import REPO_ROOT, get_policy
+from app import thresholds as T
+from app.config import REPO_ROOT
 from app.schemas import Card, CardTier, Employment, RewardRule
 
 BANKS = [
@@ -107,7 +108,7 @@ def _lerp(low: float, high: float, t: float) -> float:
     return low + (high - low) * t
 
 
-def _build_card(idx: int, rng: random.Random, policy) -> Card:
+def _build_card(idx: int, rng: random.Random) -> Card:
     segment = SEGMENTS[idx % len(SEGMENTS)]
     tier_lo, tier_hi = SEGMENT_TIER[segment]
     tiers_in_order = ["secured", "entry", "mid", "premium"]
@@ -122,7 +123,7 @@ def _build_card(idx: int, rng: random.Random, policy) -> Card:
         if lo_i == hi_i
         else (tier_idx - lo_i + rng.uniform(0.15, 0.85)) / (hi_i - lo_i + 1)
     )
-    tier_cfg = policy.tier(tier)
+    tier_cfg = T.TIERS[tier]
 
     # --- Identity -----------------------------------------------------------
     bank = rng.choice(BANKS)
@@ -133,7 +134,7 @@ def _build_card(idx: int, rng: random.Random, policy) -> Card:
     network = rng.choice(["Visa", "Mastercard", "RuPay", "Amex"])
 
     # --- Money --------------------------------------------------------------
-    fee_lo, fee_hi = tier_cfg["annual_fee_range"]
+    fee_lo, fee_hi = tier_cfg.annual_fee_range
     annual_fee = int(round(_lerp(fee_lo, fee_hi, t) / 50.0) * 50)
     joining_fee = 0 if rng.random() < 0.55 else int(round(annual_fee * rng.uniform(0.2, 0.5) / 50) * 50)
 
@@ -150,16 +151,16 @@ def _build_card(idx: int, rng: random.Random, policy) -> Card:
         fee_waiver_spend = None
 
     income_lo, income_hi = (
-        tier_cfg["min_monthly_income"],
-        tier_cfg["min_monthly_income"] * 3.5 if tier_cfg["min_monthly_income"] > 0 else 0,
+        tier_cfg.min_monthly_income,
+        tier_cfg.min_monthly_income * 3.5 if tier_cfg.min_monthly_income > 0 else 0,
     )
     min_income = (
         int(round(_lerp(income_lo, income_hi, t) / 1000.0) * 1000)
         if income_hi > 0
         else 0
     )
-    min_cibil = tier_cfg["min_cibil"]
-    apr = round(_lerp(tier_cfg["apr_pct"], tier_cfg["apr_pct"] + 6.0, rng.random()), 1)
+    min_cibil = tier_cfg.min_cibil
+    apr = round(_lerp(tier_cfg.apr_pct, tier_cfg.apr_pct + 6.0, rng.random()), 1)
     lounge = 0
     if segment in ("travel", "premium") and tier in ("mid", "premium"):
         lounge = rng.choice([2, 4, 6, 8, 12])
@@ -205,9 +206,9 @@ def _build_card(idx: int, rng: random.Random, policy) -> Card:
         fee_waiver_spend=fee_waiver_spend,
         min_monthly_income=min_income,
         min_cibil=min_cibil,
-        min_age=tier_cfg["min_age"],
-        max_age=tier_cfg["max_age"],
-        allowed_employment=[Employment(e) for e in tier_cfg["allowed_employment"]],
+        min_age=tier_cfg.min_age,
+        max_age=tier_cfg.max_age,
+        allowed_employment=[Employment(e) for e in tier_cfg.allowed_employment],
         apr_pct=apr,
         lounge_visits_per_year=lounge,
         reward_rules=reward_rules,
@@ -220,9 +221,8 @@ def _build_card(idx: int, rng: random.Random, policy) -> Card:
 
 def generate_cards(count: int = 120, seed: int = 20_240_607) -> list[Card]:
     """Deterministic: same seed and count gives byte-identical output."""
-    policy = get_policy()
     rng = random.Random(seed)
-    cards = [_build_card(i, rng, policy) for i in range(count)]
+    cards = [_build_card(i, rng) for i in range(count)]
 
     # A handful of cards are withdrawn, so `is_active` is exercised.
     for card in rng.sample(cards, k=max(2, count // 30)):

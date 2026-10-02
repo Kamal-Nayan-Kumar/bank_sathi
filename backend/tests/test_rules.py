@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import pytest
 
+from app import thresholds as T
 from app.rules.engine import (
     candidate_filter_sql,
     candidate_params,
@@ -71,28 +72,28 @@ class TestGlobalGate:
         with pytest.raises(ValueError):
             make_profile(age=17)
 
-    def test_gate_age_branch_still_fires_when_bypassed(self, policy):
+    def test_gate_age_branch_still_fires_when_bypassed(self):
         # model_construct skips validation on purpose: this probes the gate's own
         # branch, which is otherwise unreachable because the schema is stricter.
-        raw = make_profile(age=policy.min_age)
-        bad = raw.model_copy(update={"age": policy.min_age - 1})
+        raw = make_profile(age=T.MIN_AGE)
+        bad = raw.model_copy(update={"age": T.MIN_AGE - 1})
         r = global_gate(bad)
         assert not r.passed
         assert r.reasons[0].code == "AGE_BELOW_MIN"
         assert r.reasons[0].gap == 1
 
-    def test_age_at_min_passes(self, policy):
-        assert global_gate(make_profile(age=policy.min_age)).passed
+    def test_age_at_min_passes(self):
+        assert global_gate(make_profile(age=T.MIN_AGE)).passed
 
-    def test_age_above_max_rejected(self, policy):
-        r = global_gate(make_profile(age=policy.max_age + 1))
+    def test_age_above_max_rejected(self):
+        r = global_gate(make_profile(age=T.MAX_AGE + 1))
         assert any(x.code == "AGE_ABOVE_MAX" for x in r.reasons)
 
-    def test_cibil_at_company_min_passes(self, policy):
-        assert global_gate(make_profile(cibil_score=policy.min_cibil)).passed
+    def test_cibil_at_company_min_passes(self):
+        assert global_gate(make_profile(cibil_score=T.MIN_CIBIL)).passed
 
-    def test_cibil_one_below_company_min_fails(self, policy):
-        r = global_gate(make_profile(cibil_score=policy.min_cibil - 1))
+    def test_cibil_one_below_company_min_fails(self):
+        r = global_gate(make_profile(cibil_score=T.MIN_CIBIL - 1))
         assert not r.passed
         assert r.reasons[0].code == "CIBIL_BELOW_COMPANY_MIN"
 
@@ -101,26 +102,26 @@ class TestGlobalGate:
         r = global_gate(make_profile(cibil_score=None, existing_cards=0))
         assert r.passed
 
-    def test_missed_payment_is_a_hard_fail(self, policy):
+    def test_missed_payment_is_a_hard_fail(self):
         at_limit = global_gate(
-            make_profile(missed_payments_12m=policy.max_missed_payments_12m)
+            make_profile(missed_payments_12m=T.MAX_MISSED_PAYMENTS_12M)
         )
         assert at_limit.passed
         over = global_gate(
-            make_profile(missed_payments_12m=policy.max_missed_payments_12m + 1)
+            make_profile(missed_payments_12m=T.MAX_MISSED_PAYMENTS_12M + 1)
         )
         assert not over.passed
         assert over.reasons[0].code == "MISSED_PAYMENTS_PRESENT"
 
-    def test_inquiries_boundary(self, policy):
-        limit = policy.max_recent_inquiries_6m
+    def test_inquiries_boundary(self):
+        limit = T.MAX_RECENT_INQUIRIES_6M
         assert global_gate(make_profile(recent_inquiries_6m=limit)).passed
         assert not global_gate(make_profile(recent_inquiries_6m=limit + 1)).passed
 
-    def test_utilization_boundary(self, policy):
-        assert global_gate(make_profile(utilization_pct=policy.max_utilization_pct)).passed
+    def test_utilization_boundary(self):
+        assert global_gate(make_profile(utilization_pct=T.MAX_UTILIZATION_PCT)).passed
         assert not global_gate(
-            make_profile(utilization_pct=policy.max_utilization_pct + 0.1)
+            make_profile(utilization_pct=T.MAX_UTILIZATION_PCT + 0.1)
         ).passed
 
     def test_zero_income_rejected(self):
@@ -128,11 +129,11 @@ class TestGlobalGate:
         assert not r.passed
         assert r.reasons[0].code == "INCOME_NOT_DECLARED"
 
-    def test_all_failures_reported_not_just_first(self, profile, policy):
+    def test_all_failures_reported_not_just_first(self, profile):
         r = global_gate(
             make_profile(
                 missed_payments_12m=2,
-                recent_inquiries_6m=policy.max_recent_inquiries_6m + 1,
+                recent_inquiries_6m=T.MAX_RECENT_INQUIRIES_6M + 1,
                 utilization_pct=99.0,
             )
         )
@@ -146,27 +147,24 @@ class TestGlobalGate:
 
 # --------------------------------------------------------------- new to credit
 class TestNewToCredit:
-    def test_no_cibil_is_new(self, profile, policy):
-        assert is_new_to_credit(make_profile(cibil_score=None), policy)
+    def test_no_cibil_is_new(self, profile):
+        assert is_new_to_credit(make_profile(cibil_score=None))
 
-    def test_at_threshold_is_new(self, policy):
-        assert is_new_to_credit(make_profile(cibil_score=policy.new_to_credit_cibil), policy)
+    def test_at_threshold_is_new(self):
+        assert is_new_to_credit(make_profile(cibil_score=T.NEW_TO_CREDIT_CIBIL))
 
-    def test_above_threshold_is_not_new(self, policy):
+    def test_above_threshold_is_not_new(self):
         assert not is_new_to_credit(
-            make_profile(cibil_score=policy.new_to_credit_cibil + 1), policy
-        )
+            make_profile(cibil_score=T.NEW_TO_CREDIT_CIBIL + 1))
 
-    def test_zero_existing_cards_with_no_score_is_new(self, profile, policy):
+    def test_zero_existing_cards_with_no_score_is_new(self, profile):
         assert is_new_to_credit(
-            make_profile(existing_cards=0, cibil_score=None), policy
-        )
+            make_profile(existing_cards=0, cibil_score=None))
 
-    def test_a_high_score_with_no_cards_is_not_new(self, profile, policy):
+    def test_a_high_score_with_no_cards_is_not_new(self, profile):
         """No cards but a strong score means they have history elsewhere."""
         assert not is_new_to_credit(
-            make_profile(existing_cards=0, cibil_score=800), policy
-        )
+            make_profile(existing_cards=0, cibil_score=800))
 
 
 # ----------------------------------------------------------------- evaluate
@@ -224,7 +222,7 @@ class TestEvaluateCard:
 
 # ----------------------------------------------------------------- near miss
 class TestNearMiss:
-    def test_small_income_gap_is_a_near_miss(self, profile, policy):
+    def test_small_income_gap_is_a_near_miss(self, profile):
         c = card(min_monthly_income=100_000)
         r = evaluate_card(make_profile(monthly_income=95_000), c)
         assert r.reasons[0].near_miss
@@ -239,29 +237,29 @@ class TestNearMiss:
 
     def test_two_failures_is_not_a_near_miss(self, profile):
         ev = evaluate_card(profile, card(min_monthly_income=100_000, min_cibil=790))
-        assert not near_misses([ev], {})
+        assert not near_misses([ev])
 
     def test_missed_payments_are_never_a_near_miss(self, profile):
         """An on-file default is not a small margin; do not imply it is."""
         r = evaluate_card(profile, card(min_monthly_income=100_000))
         assert r.reasons[0].near_miss
         ev = type(r)(card_id="X", eligible=False, reasons=[r.reasons[0]])
-        assert near_misses([ev], {})
+        assert near_misses([ev])
 
     def test_improvement_step_quotes_the_gap(self, profile):
         ev = evaluate_card(profile, card(min_monthly_income=110_000))
-        steps = improvement_steps(near_misses([ev], {}, None), None, profile)
+        steps = improvement_steps(near_misses([ev]), profile)
         assert any("15,000" in s or "15000" in s for s in steps)
 
     def test_no_debt_advice_in_steps(self, profile):
         ev = evaluate_card(profile, card(min_cibil=780))
-        steps = improvement_steps(near_misses([ev], {}, None), None, profile)
+        steps = improvement_steps(near_misses([ev]), profile)
         joined = " ".join(steps).lower()
         assert "loan" not in joined and "borrow" not in joined
 
     def test_new_to_credit_gets_the_starter_route_first(self):
         prof = make_profile(cibil_score=None, existing_cards=0)
-        steps = improvement_steps([], None, prof)
+        steps = improvement_steps([], prof)
         assert steps and "secured" in steps[0].lower()
 
 
@@ -318,7 +316,7 @@ class TestFeeAndValue:
     def test_fee_paid_when_no_waiver(self, profile):
         assert fee_payable(card(annual_fee=5_000), profile) == 5_000
 
-    def test_fee_waived_at_threshold(self, profile, policy):
+    def test_fee_waived_at_threshold(self, profile):
         c = card(annual_fee=5_000, fee_waiver_spend=50_000)
         assert profile.monthly_spend.total() * 12 >= 50_000
         assert fee_payable(c, profile) == 0
@@ -347,14 +345,14 @@ class TestFeeAndValue:
         prof = make_profile(monthly_spend=SpendMix(fuel=0, other=1_000))
         assert category_rewards(c, prof) == 0
 
-    def test_lounge_credit_only_when_preferred(self, profile, policy):
+    def test_lounge_credit_only_when_preferred(self, profile):
         c = card(lounge_visits_per_year=8)
         assert lounge_credit(c, profile) > 0  # profile prefers travel + lounge
         assert lounge_credit(c, make_profile(preferences=["cashback"])) == 0
 
-    def test_lounge_credit_is_capped(self, profile, policy):
+    def test_lounge_credit_is_capped(self, profile):
         c = card(lounge_visits_per_year=100)
-        assert lounge_credit(c, profile) == policy.lounge_annual_credit_cap_rs
+        assert lounge_credit(c, profile) == T.LOUNGE_ANNUAL_CREDIT_CAP_RS
 
     def test_net_value_subtracts_fee(self, profile):
         """Rs 1% on 'other' (Rs 6,000) is Rs 720 a year, so the fee must win."""
@@ -377,9 +375,9 @@ class TestFeeAndValue:
         prof = make_profile(monthly_spend=SpendMix(travel=100, other=100))
         assert net_annual_value(c, prof) == 0
 
-    def test_credit_limit_uses_tier_multiplier(self, profile, policy):
+    def test_credit_limit_uses_tier_multiplier(self, profile):
         c = card(tier="premium")
-        mult = policy.tier("premium")["limit_income_multiplier"]
+        mult = T.TIERS["premium"].limit_income_multiplier
         assert est_credit_limit(c, profile) == int(profile.monthly_income * mult // 5000 * 5000)
 
 
@@ -408,7 +406,7 @@ class TestRanking:
         ranked, _ = rank([paid, free], profile)
         assert [c.card_id for c, _, _ in ranked][0] == "FREE"
 
-    def test_low_value_cards_dropped(self, profile, policy):
+    def test_low_value_cards_dropped(self, profile):
         junk = card(
             card_id="JUNK",
             annual_fee=40_000,
@@ -417,7 +415,7 @@ class TestRanking:
         _, dropped = rank([junk], profile)
         assert [c.card_id for c in dropped] == ["JUNK"]
 
-    def test_respects_max_recommendations(self, profile, policy):
+    def test_respects_max_recommendations(self, profile):
         many = [
             card(
                 card_id=f"C{i}",
@@ -426,12 +424,12 @@ class TestRanking:
             for i in range(20)
         ]
         ranked, _ = rank(many, profile)
-        assert len(ranked) <= policy.max_recommendations
+        assert len(ranked) <= T.MAX_RECOMMENDATIONS
 
     def test_breakdown_weights_sum_to_total(self, profile):
         c = card(reward_rules=[RewardRule(category="travel", value_pct=3.0)], annual_fee=0)
         bd = score_breakdown(c, profile)
-        w = profile_scoring_weights()
+        w = T.SCORING_WEIGHTS
         assert bd.total == pytest.approx(
             w["net_value"] * bd.net_value
             + w["spend_alignment"] * bd.spend_alignment
@@ -465,10 +463,7 @@ class TestRanking:
         ).spend_alignment
 
 
-def profile_scoring_weights():
-    from app.policy import get_policy
 
-    return get_policy().scoring_weights
 
 
 # ------------------------------------------------------------------ schema

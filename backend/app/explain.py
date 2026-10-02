@@ -14,9 +14,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from app import llm
+from app import llm, thresholds as T
 from app.config import get_settings
-from app.policy import get_policy
 from app.schemas import RecommendationResponse
 
 log = logging.getLogger(__name__)
@@ -49,7 +48,6 @@ Rules you must follow:
 def build_prompt(response: RecommendationResponse, evidence, state) -> str:
     """The FACTS block. Everything the model is allowed to use."""
     profile = response.profile
-    policy = get_policy()
     lines: list[str] = ["FACTS (from our rules engine, all values are exact):"]
 
     if profile:
@@ -117,7 +115,7 @@ def build_prompt(response: RecommendationResponse, evidence, state) -> str:
         lines.append("- (none retrieved; rely only on FACTS)")
 
     lines.append("")
-    lines.append(f"Required disclaimer to include: {policy.product['disclaimer'].strip()}")
+    lines.append(f"Required disclaimer to include: {T.DISCLAIMER.strip()}")
     lines.append("Do not repeat the disclaimer word for word if it clutters the reply; keep the substance.")
     return "\n".join(lines)
 
@@ -157,7 +155,7 @@ def _money(n: int | float) -> str:
     return f"Rs {int(round(n)):,}"
 
 
-def template_response(response: RecommendationResponse, state, policy) -> RecommendationResponse:
+def template_response(response: RecommendationResponse, state) -> RecommendationResponse:
     """Deterministic prose built from the engine's own numbers.
 
     Kept genuinely readable: this is what a user sees when the LLM is down, and

@@ -22,7 +22,7 @@ from app.bootstrap import ensure_ready  # noqa: E402
 from app.catalogue import generate_cards  # noqa: E402
 from app.config import get_settings  # noqa: E402
 from app.db import get_all_cards, init_db, upsert_cards  # noqa: E402
-from app.docs_gen import assert_docs_consistent, generate_policy_docs  # noqa: E402
+
 from app.survey import (  # noqa: E402
     edge_case_profiles,
     generate_profiles,
@@ -52,9 +52,8 @@ def main() -> None:
     print(f"cards        : {len(cards)} -> {cards_path.relative_to(REPO_ROOT)}")
 
     # --- policy documents --------------------------------------------------
-    docs = dict(generate_policy_docs())
-    assert_docs_consistent(docs)
-    print(f"policy docs  : {len(docs)} rendered from policy.yaml, consistency verified")
+    docs = sorted(settings.resolve(settings.policy_docs_dir).glob("*.md"))
+    print(f"policy docs  : {len(docs)} hand-written markdown files (no generation)")
 
     # --- profiles + ground truth ------------------------------------------
     profiles = generate_profiles(args.profiles, settings.synthetic_seed, cards)

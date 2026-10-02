@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import re
 
+from app import thresholds as T
 from app.config import get_settings
 from app.masking import mask
-from app.policy import Policy
 from app.schemas import RecommendationResponse, VerifierReport
 
 _NUM = re.compile(r"(?:rs\.?|₹|inr)?\s*([\d,]+(?:\.\d+)?)\s*(lakh|lac|l\b|crore|cr)?", re.I)
@@ -40,13 +40,13 @@ def _check(name: str, passed: bool, detail: str) -> dict:
     return {"name": name, "passed": passed, "detail": "" if passed else detail}
 
 
-def verify_response(
-    response: RecommendationResponse, state: dict, policy: Policy | None = None
-) -> VerifierReport:
-    policy = policy or state.get("_policy")
-    from app.policy import get_policy
+def verify_response(response: RecommendationResponse, state: dict) -> VerifierReport:
+    """Check that the prose does not contradict the engine.
 
-    policy = policy or get_policy()
+    The verifier can block or repair text. It cannot change a decision, and no
+    check here re-derives eligibility: it only compares what was written
+    against what the engine already computed.
+    """
     checks: list[dict] = []
 
     ranked_ids = [r.card_id for r in response.recommendations]
@@ -185,11 +185,9 @@ def verify_response(
     checks.append(_check("no_pii_in_output", not pii, f"output contains {pii}"))
 
     # --- 6b. no internal reason codes in customer-facing prose -------------
-    # A leaked code is a support ticket. Cheap to catch and impossible to catch
-    # downstream, so it is checked here.
-    from app.policy import get_policy as _gp
-
-    leaked_codes = [c for c in _gp().reasons if c in text]
+    # A leaked code is a support ticket. Cheap to catch here and impossible to
+    # catch downstream, so it is checked at the boundary.
+    leaked_codes = [c for c in T.REASON_LABELS if c in text]
     checks.append(
         _check(
             "no_internal_reason_codes",
@@ -198,7 +196,27 @@ def verify_response(
         )
     )
 
-    # --- 7. every claim has support when it cites policy -------------------
+    # --- 7. there is actually something to read ---------------------------
+    # Without this, a failed LLM call produces an empty summary that sails
+    # through every other check and is reported as a clean run.
+    if response.status == "need_more_information":
+        checks.append(
+            _check(
+                "has_a_question",
+                bool(response.question),
+                "asked for more information but posed no question",
+            )
+        )
+    else:
+        checks.append(
+            _check(
+                "has_a_summary",
+                len((response.summary or "").strip()) > 40,
+                "produced no usable explanation",
+            )
+        )
+
+    # --- 8. every claim has support when it cites policy -------------------
     if response.recommendations and not response.evidence:
         checks.append(
             _check(
@@ -210,7 +228,7 @@ def verify_response(
     else:
         checks.append(_check("has_evidence", True, ""))
 
-    # --- 8. status matches the outcome -------------------------------------
+    # --- 9. status matches the outcome -------------------------------------
     expected = (
         "recommendations_available"
         if response.recommendations

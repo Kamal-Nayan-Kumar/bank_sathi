@@ -104,7 +104,7 @@ def build_card_policy_chunks(cards: list) -> list[Chunk]:
     Generated from the card object rather than a separate document so a policy
     sentence cannot state an income minimum the engine does not use.
     """
-    from app.docs_gen import _money
+    from app.thresholds import money as _money
 
     chunks: list[Chunk] = []
     for c in cards:

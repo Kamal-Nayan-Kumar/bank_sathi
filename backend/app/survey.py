@@ -18,7 +18,7 @@ import random
 from pathlib import Path
 
 from app.config import get_settings
-from app.policy import get_policy
+from app import thresholds as T
 from app.rules.engine import evaluate_card, global_gate
 from app.rules.scoring import rank
 from app.schemas import Employment, SpendMix, UserProfile
@@ -85,10 +85,10 @@ def _cibil(rng: random.Random, segment: str, missed: int, util: float) -> int | 
     return int(max(300, min(900, round(score))))
 
 
-def _spend(rng: random.Random, policy, segment: str, income: int) -> SpendMix:
-    shares = policy.spend_shares[segment]
+def _spend(rng: random.Random, segment: str, income: int) -> SpendMix:
+    shares = T.SPEND_SHARES[segment]
     values = {c: int(round(income * shares.get(c, 0.0) * rng.uniform(0.7, 1.3) / 100) * 100)
-              for c in policy.spend_categories}
+              for c in T.SPEND_CATEGORIES}
     # Keep total spend inside the schema's plausibility bound.
     total = sum(values.values())
     cap = income * 2
@@ -101,7 +101,6 @@ def _spend(rng: random.Random, policy, segment: str, income: int) -> SpendMix:
 def generate_profiles(
     count: int = 300, seed: int | None = None, cards: list | None = None
 ) -> list[UserProfile]:
-    policy = get_policy()
     seed = seed if seed is not None else get_settings().synthetic_seed
     rng = random.Random(seed)
     out: list[UserProfile] = []
@@ -133,7 +132,7 @@ def generate_profiles(
                 missed_payments_12m=missed,
                 recent_inquiries_6m=rng.randint(0, 3),
                 utilization_pct=round(util, 1),
-                monthly_spend=_spend(rng, policy, segment, income),
+                monthly_spend=_spend(rng, segment, income),
                 preferences=prefs,
             )
         )
@@ -250,17 +249,20 @@ def edge_case_profiles(cards: list) -> list[UserProfile]:
 # ------------------------------------------------------------------ ground truth
 def ground_truth(profile: UserProfile, cards: list) -> dict:
     """The engine's own answer, computed without the graph, LLM or RAG."""
-    policy = get_policy()
-    gate = global_gate(profile, policy)
-    evaluations = [evaluate_card(profile, c, policy) for c in cards if c.is_active]
-    eligible = [c for c, ev in zip(cards, evaluations, strict=False) if ev.eligible and c.is_active]
-    ranked, _ = rank(eligible, profile, policy)
+    gate = global_gate(profile)
+    # Pair each evaluation with its card *before* filtering. Filtering first and
+    # zipping after silently misaligns the two lists, which produces a ground
+    # truth that disagrees with the engine on exactly the withdrawn cards.
+    evaluated = [(c, evaluate_card(profile, c)) for c in cards if c.is_active]
+    eligible = [c for c, ev in evaluated if ev.eligible]
+    rejected = [ev for _, ev in evaluated if not ev.eligible]
+    ranked, _ = rank(eligible, profile)
     return {
         "profile_id": profile.profile_id,
         "gate_passed": gate.passed,
         "gate_reason_codes": [r.code for r in gate.reasons],
         "eligible_card_ids": sorted(c.card_id for c in eligible),
-        "rejected_card_ids": sorted(ev.card_id for ev in evaluations if not ev.eligible),
+        "rejected_card_ids": sorted(ev.card_id for ev in rejected),
         "expected_top5": [c.card_id for c, _, _ in ranked],
         "expected_top1": ranked[0][0].card_id if ranked else None,
     }
@@ -329,11 +331,10 @@ def load_examples() -> dict:
 
 def _is_borderline(profile: UserProfile, cards: list) -> bool:
     """Close to a card's requirement, not comfortably past it."""
-    policy = get_policy()
     for c in cards:
         if not c.is_active:
             continue
-        ev = evaluate_card(profile, c, policy)
+        ev = evaluate_card(profile, c)
         if ev.eligible:
             continue
         if any(r.near_miss for r in ev.reasons):

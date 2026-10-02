@@ -8,12 +8,15 @@ which backend is live.
 from __future__ import annotations
 
 import hashlib
+import logging
 import math
 import re
 from dataclasses import dataclass, field
 from typing import Protocol
 
 from app.config import get_settings
+
+log = logging.getLogger(__name__)
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
 
@@ -38,13 +41,34 @@ class Embedder(Protocol):
     def embed(self, texts: list[str]) -> list[list[float]]: ...
 
 
-class HashingEmbedder:
-    """Deterministic bag-of-words embedding used when no API key is set.
+class FastEmbedEmbedder:
+    """all-MiniLM-L6-v2, run locally through Qdrant's fastembed wrapper.
 
-    Not competitive with a real model, but it is honest about what it is: a
-    lexical fallback so retrieval runs offline. Retrieval quality with this is
-    measured and reported separately in the evaluation harness, never claimed as
-    semantic performance.
+    ~22M parameters, 384 dimensions, and fast enough on CPU that there is no
+    reason to pay for a hosted embedding API here. It also means retrieval
+    quality does not depend on a third-party key being present in production,
+    which is worth more than the marginal quality of a larger hosted model.
+    """
+
+    def __init__(self, dim: int = 384) -> None:
+        from fastembed import TextEmbedding
+
+        self._model = TextEmbedding("sentence-transformers/all-MiniLM-L6-v2")
+        self.dim = dim
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        vectors = [_normalize(list(map(float, v))) for v in self._model.embed(texts)]
+        if vectors:
+            self.dim = len(vectors[0])
+        return vectors
+
+
+class HashingEmbedder:
+    """Deterministic bag-of-words embedding, for tests and offline CI.
+
+    Not competitive with a real model, and not claimed to be: it exists so the
+    retrieval path, the chunking and the graph can be exercised with no model
+    download. `ENV EMBED_BACKEND=hash` forces it even where fastembed exists.
     """
 
     def __init__(self, dim: int = 512) -> None:
@@ -102,9 +126,29 @@ class OpenAIEmbedder:
 
 
 def get_embedder() -> Embedder:
+    """Pick an embedder, degrading rather than failing.
+
+    Order: fastembed (local MiniLM, no key) -> OpenAI (if a key is set and
+    fastembed is unavailable) -> hashing (tests, offline CI). Whichever is
+    chosen, its dimension is reported so the Qdrant collection is created to
+    match on the first call rather than failing on the first insert.
+    """
     s = get_settings()
+    if s.embed_backend != "auto":
+        if s.embed_backend == "hash":
+            return HashingEmbedder(dim=s.embed_dim)
+        if s.embed_backend == "openai" and s.has_remote_embeddings:
+            return OpenAIEmbedder(s.openai_api_key, s.openai_embedding_model)
+        return FastEmbedEmbedder()
+    try:
+        return FastEmbedEmbedder()
+    except Exception as exc:  # noqa: BLE001
+        log.info("fastembed unavailable (%s); falling back", exc)
     if s.has_remote_embeddings:
-        return OpenAIEmbedder(s.openai_api_key, s.openai_embedding_model)
+        try:
+            return OpenAIEmbedder(s.openai_api_key, s.openai_embedding_model)
+        except Exception as exc:  # noqa: BLE001
+            log.info("OpenAI embeddings unavailable (%s); falling back", exc)
     return HashingEmbedder(dim=s.embed_dim)
 
 
@@ -251,10 +295,20 @@ _STORE: VectorStore | None = None
 
 
 def get_store() -> VectorStore:
+    """Pick a vector store and size it to the embedder actually in use.
+
+    The dimension comes from the embedder rather than from config, because a
+    mismatch between collection size and vector length fails on the first insert
+    with an opaque error.
+    """
     global _STORE
     if _STORE is None:
         s = get_settings()
-        _STORE = QdrantStore(s.embed_dim) if s.has_qdrant else InMemoryStore()
+        if s.has_qdrant:
+            embedder = get_embedder()
+            _STORE = QdrantStore(embedder.dim)
+        else:
+            _STORE = InMemoryStore()
     return _STORE
 
 

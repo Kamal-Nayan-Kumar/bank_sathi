@@ -14,12 +14,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "backend"))
 
-from app.catalogue import generate_cards  # noqa: E402
-from app.config import get_settings  # noqa: E402
-from app.db import init_db, upsert_cards  # noqa: E402
-from app.docs_gen import write_policy_docs  # noqa: E402
+from app.bootstrap import ensure_ready  # noqa: E402
 from app.graph.run import run_chat, run_profile  # noqa: E402
-from app.rag.ingest import ingest  # noqa: E402
 from app.rag.store import InMemoryStore, set_store  # noqa: E402
 from app.schemas import ProfileRequest  # noqa: E402
 from tests.conftest import make_profile  # noqa: E402
@@ -27,13 +23,7 @@ from tests.conftest import make_profile  # noqa: E402
 
 def bootstrap(count: int = 120) -> list:
     set_store(InMemoryStore())
-    init_db()
-    s = get_settings()
-    write_policy_docs(s.resolve(s.policy_docs_dir))
-    cards = generate_cards(count)
-    upsert_cards(cards, {c.card_id: [r.model_dump(mode="json") for r in c.reward_rules] for c in cards})
-    ingest(cards=cards)
-    return cards
+    return ensure_ready(count)
 
 
 def show(response) -> None:
@@ -80,7 +70,8 @@ def show(response) -> None:
 
 
 def main() -> None:
-    bootstrap()
+    info = bootstrap()
+    print(f"bootstrapped: {info}")
     from app.schemas import NaturalLanguageRequest
 
     print("\n### FORM ROUTE")

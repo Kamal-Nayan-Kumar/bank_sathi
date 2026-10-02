@@ -14,10 +14,9 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "backend"))
 
+from app import thresholds as T  # noqa: E402
 from app.catalogue import generate_cards  # noqa: E402
 from app.db import init_db, session_scope, upsert_cards  # noqa: E402
-from app.policy import REPO_ROOT as POLICY_ROOT  # noqa: E402
-from app.policy import get_policy  # noqa: E402
 from app.rag.ingest import ingest  # noqa: E402
 from app.rag.store import InMemoryStore, set_store  # noqa: E402
 from app.schemas import Employment, SpendMix, UserProfile  # noqa: E402
@@ -32,15 +31,22 @@ def cards():
 
 @pytest.fixture(scope="session")
 def policy():
-    return get_policy()
+    """Kept as a fixture name so tests read naturally. The data is a module."""
+    return T
 
 
 @pytest.fixture(autouse=True)
 def _isolated_state(monkeypatch, tmp_path):
-    """Point the app at a throwaway SQLite file and a fresh vector store."""
+    """Point the app at a throwaway SQLite file and a fresh vector store.
+
+    `EMBED_BACKEND=hash` is forced so tests never download a model and never
+    make retrieval quality depend on network availability. The MiniLM path is
+    covered separately in test_rag.
+    """
     from app.config import get_settings
 
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'test.sqlite3'}")
+    monkeypatch.setenv("EMBED_BACKEND", "hash")
     get_settings.cache_clear()
     from app import db as db_mod
 

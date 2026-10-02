@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-10-02T11:19:35",
+  "cards": 120,
+  "profiles": 322,
+  "llm_enabled": true,
+  "sections": [
+    {
+      "section": "extraction",
+      "n": 40,
+      "metrics": {
+        "field_accuracy": 0.7322,
+        "correct_blanks": 0.8807,
+        "complete_profiles": 0.025,
+        "per_field": {
+          "age": 1.0,
+          "monthly_income": 0.925,
+          "employment": 0.706,
+          "cibil_score": 1.0,
+          "monthly_spend": 0.1
+        }
+      },
+      "notes": [
+        "field_accuracy is scored only over fields the message stated. correct_blanks measures fields it did not state and must stay empty."
+      ]
+    },
+    {
+      "section": "extraction_regex_only",
+      "n": 40,
+      "metrics": {
+        "field_accuracy": 0.7104,
+        "correct_blanks": 0.8864,
+        "per_field": {
+          "age": 1.0,
+          "monthly_income": 0.925,
+          "employment": 0.706,
+          "cibil_score": 1.0,
+          "monthly_spend": 0.0
+        }
+      },
+      "notes": [
+        "The offline path. This is the number that applies in CI and it is the floor the LLM path has to beat."
+      ]
+    },
+    {
+      "section": "ground_truth_agreement",
+      "n": 25,
+      "metrics": {
+        "card_level_agreement": 1.0,
+        "profiles_with_any_disagreement": 0,
+        "examples": []
+      },
+      "notes": [
+        "Ground truth and the engine share code, so this should be exactly 1.0. Anything else is a bug in the pipeline, not a finding."
+      ]
+    },
+    {
+      "section": "rules_spec_conformance",
+      "n": 322,
+      "metrics": {
+        "gate_conformance": 1.0,
+        "eligibility_conformance": 1.0,
+        "false_eligible_rate": 0.0,
+        "cards_evaluated": 37352
+      },
+      "notes": [
+        "Ground truth is produced by this same engine. These numbers measure spec conformance and pipeline faithfulness, not policy correctness."
+      ]
+    },
+    {
+      "section": "ranking",
+      "n": 112,
+      "metrics": {
+        "top1_accuracy": 0.9821,
+        "top3_hit_rate": 0.9911,
+        "ndcg_at_3": 0.9842,
+        "latency_ms_p50": 161.3,
+        "latency_ms_p95": 2294.2
+      },
+      "notes": []
+    },
+    {
+      "section": "explanations",
+      "n": 25,
+      "metrics": {
+        "verifier_pass_rate": 1.0,
+        "template_fallback_rate": 0.0,
+        "mean_retries": 0,
+        "check_failures": {},
+        "unsupported_number_examples": []
+      },
+      "notes": []
+    },
+    {
+      "section": "ablation_llm_only",
+      "n": 12,
+      "metrics": {
+        "api_failures_excluded": 12,
+        "profiles_answered": 0,
+        "profiles_given_a_card_list": 0.0,
+        "cards_recommended_that_rules_reject": 0.0,
+        "invented_card_ids_per_profile": 0.0,
+        "gate_rejected_but_recommended": 0.0,
+        "tokens_used": 0
+      },
+      "notes": [
+        "The LLM-only run gets the catalogue as text and is asked to decide. Compare cards_recommended_that_rules_reject against false_eligible_rate in the rules section, and profiles_given_a_card_list to see how often the model simply refused to answer. API failures are counted and excluded rather than treated as correct."
+      ]
+    },
+    {
+      "section": "robustness",
+      "n": 7,
+      "metrics": {
+        "invariants_held": 1.0,
+        "results": {
+          "no_cards_for_thin_file": true,
+          "thin_file_status": true,
+          "gated_has_no_recommendations": true,
+          "gated_status": true,
+          "gated_no_approval_language": true,
+          "deterministic": true,
+          "pii_never_survives_masking": true
+        }
+      },
+      "notes": [
+        "Injection attempts are tested against the form route, which is the strongest possible case: that route never lets a model touch a decision. The chat route's extractor is separately constrained to a Pydantic schema."
+      ]
+    }
+  ]
+}
