@@ -73,20 +73,24 @@ def retrieve_for_cards(cards, profile, per_card: int = 2) -> list[PolicyEvidence
     out: list[PolicyEvidence] = []
     seen: set[str] = set()
 
-    for card in cards:
-        q = _query_for_card(card, profile)
-        vec = embedder.embed([q])[0]
-        # Filtered by card_id so the explanation for card A can never be
-        # grounded in card B's terms.
-        hits = store.search(vec, limit=per_card, must={"card_id": card.card_id})
-        for hit in hits:
-            if hit[1] < s.rag_min_score:
-                continue
-            ev = _to_evidence(hit)
-            key = f"{ev.card_id}:{ev.section}"
-            if key not in seen:
-                seen.add(key)
-                out.append(ev)
+    if cards:
+        # One embedding call for the whole batch. Encoding five queries
+        # individually meant five model invocations on the request path, and
+        # measured ~5s of the request.
+        queries = [_query_for_card(card, profile) for card in cards]
+        vectors = embedder.embed(queries)
+        for card, vec in zip(cards, vectors, strict=True):
+            # Filtered by card_id so the explanation for card A can never be
+            # grounded in card B's terms.
+            hits = store.search(vec, limit=per_card, must={"card_id": card.card_id})
+            for hit in hits:
+                if hit[1] < s.rag_min_score:
+                    continue
+                ev = _to_evidence(hit)
+                key = f"{ev.card_id}:{ev.section}"
+                if key not in seen:
+                    seen.add(key)
+                    out.append(ev)
 
     if not out:
         # Fall back to the general reward-valuation page so an explanation is

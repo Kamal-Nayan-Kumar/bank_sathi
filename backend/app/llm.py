@@ -27,10 +27,11 @@ from app.config import get_settings
 
 log = logging.getLogger(__name__)
 
-# Two attempts with backoff. A free-tier 429 that survives this degrades to the
-# template path, which is correct behaviour, not a failure.
+# One retry, and only for transient server faults. Rate limits fail over
+# immediately (see `_should_fail_over`): measured end to end, retrying a
+# saturated free tier added ~40s to a 56s request without a single success.
 LLM_MAX_ATTEMPTS = 2
-LLM_RETRY_BASE_S = 2.0
+LLM_RETRY_BASE_S = 1.0
 
 # Generous because reasoning models (gpt-oss-120b, the Nemotron fallbacks) emit
 # a `reasoning` field that consumes the same budget as the answer. Measured: a
@@ -151,18 +152,32 @@ def _dispatch(
             except httpx.HTTPStatusError as exc:
                 status = exc.response.status_code
                 last_error = f"{name}: HTTP {status}"
-                # 429 is worth one more try; anything else is a bad request or
-                # a broken key, and retrying only delays the fallback.
-                if status != 429 or attempt == LLM_MAX_ATTEMPTS - 1:
+                if _should_fail_over(status) or attempt == LLM_MAX_ATTEMPTS - 1:
                     break
                 time.sleep(LLM_RETRY_BASE_S * (2**attempt))
             except Exception as exc:  # noqa: BLE001
                 last_error = f"{name}: {exc}"
                 break
-        log.warning("provider %s exhausted (%s)", name, last_error)
+        log.info("provider %s exhausted (%s)", name, last_error)
 
     log.warning("all LLM providers failed: %s", last_error)
     return LLMResult(used_llm=False, error=last_error)
+
+
+def _should_fail_over(status: int) -> bool:
+    """Whether to abandon this provider immediately rather than retry it.
+
+    429 is the interesting case. Both providers here are free tiers over shared
+    capacity, so retrying the same one after a rate limit competes with the same
+    saturated pool and adds the backoff straight to the customer's wait. A 5xx
+    is different: the provider is reachable and the fault may be transient, so
+    one retry is worth it.
+    """
+    if status == 429:
+        return True
+    if 400 <= status < 500:
+        return True  # bad request, bad key, no access: retrying cannot help
+    return status < 500
 
 
 def _post(

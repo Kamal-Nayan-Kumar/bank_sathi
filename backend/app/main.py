@@ -54,7 +54,41 @@ async def lifespan(app: FastAPI):
         # A missing catalogue should surface as a clear API error on first use,
         # not as a crash loop that hides the reason.
         log.error("startup failed: %s", exc)
+        yield
+        return
+
+    # Warm the expensive lazy paths while nothing is waiting. Measured on a cold
+    # start: ~3s for the first Neon connection and ~4s for the first Qdrant
+    # round trip plus embedding-model load. Paying that on the first customer's
+    # request instead of at boot is the difference between a responsive demo and
+    # an apparent hang.
+    _warm_up()
     yield
+
+
+def _warm_up() -> None:
+    import time as _time
+
+    started = _time.perf_counter()
+    stages: dict[str, float] = {}
+
+    def timed(name: str, fn):
+        t0 = _time.perf_counter()
+        try:
+            fn()
+        except Exception as exc:  # noqa: BLE001 - never block boot on a warm-up
+            log.warning("warm-up step %s failed: %s", name, exc)
+        stages[name] = round((_time.perf_counter() - t0) * 1000, 1)
+
+    timed("embedder", lambda: __import__("app.rag.store", fromlist=["x"]).get_embedder().embed(["warm up"]))
+    timed("vector_store", lambda: __import__("app.rag.store", fromlist=["x"]).get_store().count())
+    timed("catalogue", lambda: __import__("app.db", fromlist=["x"]).get_all_cards())
+
+    log.info(
+        "warm-up: %s (%.0fms)",
+        ", ".join(f"{k}={v}ms" for k, v in stages.items()),
+        (_time.perf_counter() - started) * 1000,
+    )
 
 
 app = FastAPI(

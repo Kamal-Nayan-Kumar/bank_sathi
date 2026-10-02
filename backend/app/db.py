@@ -308,6 +308,37 @@ def get_card(card_id: str) -> Card | None:
         return _rehydrate(row, rules)
 
 
+def get_cards_by_ids(card_ids: list[str], db: Session | None = None) -> list[Card]:
+    """Load exactly the cards asked for, in the order given.
+
+    The prefilter narrows 120 cards to ~60, and the old path then re-read the
+    entire catalogue to resolve them. Over a network round trip to Neon that was
+    ~3s of the request for rows nobody looked at.
+
+    Pass `db` to reuse an open session. Opening one costs ~750ms against Neon,
+    because `pool_pre_ping` adds a validation round trip per checkout - so two
+    logical steps should share one session.
+    """
+    if not card_ids:
+        return []
+    from sqlalchemy import select
+
+    def load(conn: Session) -> list[Card]:
+        rows = list(
+            conn.execute(select(CardRow).where(CardRow.card_id.in_(card_ids))).scalars()
+        )
+        rules = _load_rules(conn, card_ids)
+        by_id = {r.card_id: _rehydrate(r, rules.get(r.card_id, [])) for r in rows}
+        # Preserve the prefilter's order: it is the order the query returned, and
+        # downstream tie-breaks assume a deterministic sequence.
+        return [by_id[cid] for cid in card_ids if cid in by_id]
+
+    if db is not None:
+        return load(db)
+    with session_scope() as own:
+        return load(own)
+
+
 def get_all_cards(include_inactive: bool = False) -> list[Card]:
     from sqlalchemy import select
 

@@ -15,7 +15,7 @@ from typing import Any
 
 from app import intake, llm
 from app.config import get_settings
-from app.db import get_all_cards, session_scope
+from app.db import get_all_cards, get_cards_by_ids, session_scope
 from app.explain import explain_response, template_response
 from app.rag.retriever import retrieve_for_cards, retrieve_for_reason_codes
 from app.rules.engine import (
@@ -179,14 +179,17 @@ def node_gate(state: dict[str, Any]) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- prefilter
 def node_prefilter(state: dict[str, Any]) -> dict[str, Any]:
-    """SQL narrows 5000 cards to a few hundred. No LLM involved."""
+    """SQL narrows the catalogue to the cards worth checking. No LLM involved."""
     profile: UserProfile = state["profile"]
     trace = state.setdefault("trace", {})
     with Timer("prefilter", trace):
+        # One session for both queries: opening one costs ~750ms against a remote
+        # database, and this step is the first thing on the request path.
         with session_scope() as db:
             ids = fetch_candidates(db, profile)
-        all_cards = {c.card_id: c for c in get_all_cards()}
-    candidates = [all_cards[i] for i in ids if i in all_cards]
+            # Only the survivors are loaded. Re-reading the entire catalogue
+            # here cost ~3s per request, for rows nobody looked at.
+            candidates = get_cards_by_ids(ids, db)
     trace["candidates_returned"] = float(len(candidates))
     return {"candidate_ids": ids, "candidates": candidates, "trace": trace}
 
