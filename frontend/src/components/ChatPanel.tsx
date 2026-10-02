@@ -164,7 +164,7 @@ export function ChatPanel({
   const settled = partial && Object.keys(partial).length > 0;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <div
         ref={logRef}
         className="max-h-[26rem] min-h-[14rem] space-y-4 overflow-y-auto border border-rule bg-slip/60 px-4 py-5"

@@ -85,7 +85,7 @@ export function ProfileForm({
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <form onSubmit={submit} className="min-w-0 space-y-8">
         <Section title="About you">
           <div className="grid gap-4 sm:grid-cols-2">
