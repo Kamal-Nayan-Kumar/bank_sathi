@@ -223,6 +223,11 @@ class QdrantStore:
     # which is what keeps a 512MB container alive. Same MiniLM family as the
     # local path, same 384 dimensions, so vectors from either side mix freely.
     INFERENCE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+    # Dimension of that model, stated rather than measured. all-MiniLM-L6-v2
+    # always outputs 384 floats; the only other way to learn it was to load the
+    # model, and get_store() needs it before any embedding ever happens. Loading
+    # ~80MB of ONnx just to read a constant defeated the whole point above.
+    INFERENCE_DIM = 384
 
     def __init__(self, dim: int) -> None:
         from qdrant_client import QdrantClient
@@ -354,14 +359,14 @@ def get_store() -> VectorStore:
 
     The dimension comes from the embedder rather than from config, because a
     mismatch between collection size and vector length fails on the first insert
-    with an opaque error.
+    with an opaque error. On the Qdrant path it is a class constant instead,
+    so opening the store never pulls the local model into memory.
     """
     global _STORE
     if _STORE is None:
         s = get_settings()
         if s.has_qdrant:
-            embedder = get_embedder()
-            _STORE = QdrantStore(embedder.dim)
+            _STORE = QdrantStore(QdrantStore.INFERENCE_DIM)
         else:
             _STORE = InMemoryStore()
     return _STORE

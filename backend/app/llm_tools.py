@@ -202,17 +202,16 @@ def search_policy(query: str, limit: int = 4) -> list[dict]:
     reason code. One embedding per query here, rather than four per code.
     """
     from app.config import get_settings
-    from app.rag.retriever import _to_evidence
-    from app.rag.store import get_embedder, get_store
+    from app.rag.retriever import _search, _to_evidence
+    from app.rag.store import get_store
 
     if not query or not query.strip():
         return {"error": "Give me something to search for."}
     s = get_settings()
     store = get_store()
-    vec = get_embedder().embed([query.strip()])[0]
     hits = [
         _to_evidence(hit)
-        for hit in store.search(vec, limit=limit)
+        for hit in _search(store, query.strip(), limit=limit)
         if hit[1] >= s.rag_min_score
     ]
     if not hits:
