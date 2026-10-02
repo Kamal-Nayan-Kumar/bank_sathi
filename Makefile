@@ -1,4 +1,4 @@
-# Bank Sathi — local commands.
+# Card Sathi — local commands.
 #
 # Targets are ordered so a newcomer can run them top to bottom and end up with
 # a working system. `make setup` -> `make data` -> `make dev`.
@@ -64,4 +64,4 @@ clean: ## Remove caches and the local SQLite database
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +
 	find . -type d -name .pytest_cache -prune -exec rm -rf {} +
 	rm -rf .ruff_cache frontend/dist
-	@echo "Note: data/bank_sathi.sqlite3 left alone; delete it by hand to reset."
+	@echo "Note: data/card_sathi.sqlite3 left alone; delete it by hand to reset."

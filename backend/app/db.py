@@ -134,7 +134,7 @@ def get_engine() -> Engine:
     """The database engine, chosen from settings.
 
     `DATABASE_URL` is honoured for SQLite as well as Postgres. An earlier
-    version ignored it for SQLite and always wrote to `data/bank_sathi.sqlite3`,
+    version ignored it for SQLite and always wrote to `data/card_sathi.sqlite3`,
     which meant a test run quietly read and rewrote the developer's real
     catalogue — and silently compared a 60-card fixture against a stale 120-card
     table.
@@ -148,7 +148,7 @@ def get_engine() -> Engine:
             "pool_pre_ping": True,  # Neon closes idle connections aggressively
         }
     else:
-        url = s.database_url or f"sqlite:///{REPO_ROOT / 'data' / 'bank_sathi.sqlite3'}"
+        url = s.database_url or f"sqlite:///{REPO_ROOT / 'data' / 'card_sathi.sqlite3'}"
         if not url.startswith("sqlite"):
             # A malformed URL should fail loudly here rather than silently
             # falling back to a local file and looking like it connected.

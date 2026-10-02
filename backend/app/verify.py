@@ -115,11 +115,20 @@ def verify_response(response: RecommendationResponse, state: dict) -> VerifierRe
     # Only flag name-shaped tokens that are absent from the whole catalogue and
     # from the policy product name. Prose nouns like "Monthly" are filtered by
     # requiring at least two capitalised words or a Card keyword.
+    #
+    # The product name itself is explicitly excluded: the model is required to
+    # include the disclaimer ("Card Sathi is a demonstration system"), so
+    # without this the verifier fails every explanation that complies with the
+    # prompt. Found in production, not in a test.
+    product_name = T.PRODUCT_NAME.lower()
     suspicious = [
         phrase
         for phrase in capitalised
-        if ("card" in phrase.lower() and phrase not in known_names)
-        or (phrase.endswith("Card") and phrase not in known_names)
+        if phrase.lower() != product_name
+        and (
+            ("card" in phrase.lower() and phrase not in known_names)
+            or (phrase.endswith("Card") and phrase not in known_names)
+        )
     ]
     checks.append(
         _check(

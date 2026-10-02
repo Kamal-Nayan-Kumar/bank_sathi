@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Project: **Bank Sathi** — an agentic credit-card recommendation engine (India, INR).
+Project: **Card Sathi** — an agentic credit-card recommendation engine (India, INR).
 Read this file before writing any code in this repo.
 
 ## Stack

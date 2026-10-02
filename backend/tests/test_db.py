@@ -15,7 +15,7 @@ from app.db import get_engine, init_db, session_scope, upsert_cards
 def test_sqlite_url_is_honoured(monkeypatch, tmp_path):
     """Regression: the SQLite fallback used to ignore DATABASE_URL entirely.
 
-    Every test therefore read and rewrote `data/bank_sathi.sqlite3`, the
+    Every test therefore read and rewrote `data/card_sathi.sqlite3`, the
     developer's real catalogue. A 60-card fixture was then compared against a
     stale 120-card table, and the failure looked like a rule bug.
     """
@@ -42,7 +42,7 @@ def test_empty_url_falls_back_to_the_local_file(monkeypatch):
     db_mod.get_sessionmaker.cache_clear()
     try:
         url = str(get_engine().url)
-        assert url.endswith("data/bank_sathi.sqlite3")
+        assert url.endswith("data/card_sathi.sqlite3")
     finally:
         db_mod.get_engine.cache_clear()
         db_mod.get_sessionmaker.cache_clear()

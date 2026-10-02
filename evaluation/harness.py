@@ -320,7 +320,7 @@ def eval_ranking(profiles: list[UserProfile], limit: int = 120) -> Report:
         if not expected:
             continue
         t0 = time.perf_counter()
-        response = run_profile(ProfileRequest(profile=p))
+        response = run_profile(ProfileRequest(profile=p), explain=False)
         latencies.append((time.perf_counter() - t0) * 1000)
         got = [r.card_id for r in response.recommendations]
         if not got:

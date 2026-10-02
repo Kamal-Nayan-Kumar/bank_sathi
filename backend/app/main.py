@@ -90,7 +90,7 @@ def _warm_up() -> None:
 
 
 app = FastAPI(
-    title="Bank Sathi",
+    title="Card Sathi",
     description="Credit card recommendation engine with an LLM interface.",
     version="0.1.0",
     lifespan=lifespan,

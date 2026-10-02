@@ -33,8 +33,14 @@ def run_chat(req: NaturalLanguageRequest, prior: PartialProfile | None = None) -
     return _invoke(state)
 
 
-def run_profile(req: ProfileRequest) -> RecommendationResponse:
-    """Form route. Pydantic has already validated the body, so intake is skipped."""
+def run_profile(req: ProfileRequest, *, explain: bool = True) -> RecommendationResponse:
+    """Form route. Pydantic has already validated the body, so intake is skipped.
+
+    `explain=False` skips the explanation node. The evaluation harness uses it:
+    measuring ranking or eligibility accuracy does not require generating prose,
+    and doing so meant 112 LLM calls and an hour of wall clock for a number that
+    has nothing to do with prose.
+    """
     profile: UserProfile = req.profile
     state: dict[str, Any] = {
         "session_id": profile.profile_id,
@@ -44,6 +50,7 @@ def run_profile(req: ProfileRequest) -> RecommendationResponse:
         "profile_complete": True,
         "missing_fields": [],
         "trace": {},
+        "skip_explain": not explain,
     }
     return _invoke(state)
 

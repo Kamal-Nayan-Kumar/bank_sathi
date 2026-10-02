@@ -26,10 +26,10 @@ from dataclasses import dataclass
 
 CURRENCY = "INR"
 
-PRODUCT_NAME = "Bank Sathi"
-PRODUCT_TAGLINE = "Credit cards, matched to how you actually spend."
+PRODUCT_NAME = "Card Sathi"
+PRODUCT_TAGLINE = "The right card, with the workings shown."
 DISCLAIMER = (
-    "Bank Sathi is a demonstration system. Cards, banks and rates are fictional. "
+    "Card Sathi is a demonstration system. Cards, banks and rates are fictional. "
     "Recommendations are illustrative and are not financial advice, an approval, "
     "or an offer of credit."
 )

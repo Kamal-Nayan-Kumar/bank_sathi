@@ -305,6 +305,13 @@ def node_explain(state: dict[str, Any]) -> dict[str, Any]:
     ladder exists because a recommendation with awkward prose is far better
     than a 500.
     """
+    if state.get("skip_explain"):
+        # Evaluation-only path. Ranking and eligibility accuracy do not depend on
+        # prose, and generating it turned a ~30s evaluation into an hour of
+        # LLM calls that measured nothing relevant.
+        response = _assemble(state, summary="")
+        return {"response": response, "summary": "", "used_llm": False}
+
     trace = state.setdefault("trace", {})
     s = get_settings()
     response = _assemble(state, summary="")

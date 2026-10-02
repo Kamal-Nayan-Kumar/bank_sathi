@@ -382,6 +382,23 @@ class TestVerifier:
             c for c in report.checks if c["name"] == "no_internal_reason_codes"
         )["passed"]
 
+    def test_product_name_is_not_an_invented_card(self, profile, loaded_db):
+        """Regression: the disclaimer names the product, and the name check
+        flagged it as an invented card — failing every explanation that
+        complied with the prompt. Seen in production, not in a test."""
+        from app import thresholds as T
+        from app.verify import verify_response
+
+        response = _clean_response()
+        response.summary = (
+            f"Skywards Max is a fit. {T.PRODUCT_NAME} is a demonstration system; "
+            "cards, banks and rates are fictional."
+        )
+        report = verify_response(response, self._state(profile, []))
+        assert next(
+            c for c in report.checks if c["name"] == "no_invented_card_names"
+        )["passed"], report.checks
+
     def test_catches_out_of_order_recommendations(self, profile, cards, loaded_db):
         from app.verify import verify_response
 

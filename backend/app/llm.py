@@ -205,8 +205,8 @@ def _post(
         # OpenRouter routes on these headers for attribution and for its
         # own free-tier fairness accounting. Missing them is not an error, but
         # being a good citizen costs nothing.
-        headers["HTTP-Referer"] = "https://bank-sathi.vercel.app"
-        headers["X-Title"] = "Bank Sathi"
+        headers["HTTP-Referer"] = "https://cardsahi.vercel.app"
+        headers["X-Title"] = "Card Sathi"
 
     with httpx.Client(timeout=s.llm_timeout_s) as client:
         r = client.post(

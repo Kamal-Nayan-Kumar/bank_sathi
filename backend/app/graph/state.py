@@ -67,4 +67,7 @@ class GraphState(TypedDict, total=False):
     response: RecommendationResponse | None
     verifier: VerifierReport | None
     trace: dict[str, float]
+    # Set by the evaluation harness to bypass the explanation node. Never set on
+    # a request path.
+    skip_explain: bool
     chat_history: Annotated[list[dict], _replace]

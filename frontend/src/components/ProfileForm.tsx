@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api, ApiError } from "../lib/api";
 import type {
-  ExampleBucket,
   ProfileFields,
   RecommendationResponse,
   SpendCategory,
@@ -48,7 +47,6 @@ export function ProfileForm({
   onProfile: (profile: UserProfile | null) => void;
 }) {
   const [fields, setFields] = useState<ProfileFields | null>(null);
-  const [examples, setExamples] = useState<ExampleBucket | null>(null);
   const [profile, setProfile] = useState<UserProfile>(BLANK);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,10 +54,6 @@ export function ProfileForm({
 
   useEffect(() => {
     api.fields().then(setFields).catch(() => undefined);
-    api
-      .examples()
-      .then((d) => setExamples(d.buckets))
-      .catch(() => undefined);
   }, []);
 
   const spendTotal = useMemo(() => totalSpend(profile.monthly_spend), [profile.monthly_spend]);
@@ -91,7 +85,7 @@ export function ProfileForm({
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_17rem]">
+    <div className="mx-auto max-w-3xl">
       <form onSubmit={submit} className="min-w-0 space-y-8">
         <Section title="About you">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -312,57 +306,10 @@ export function ProfileForm({
             {busy ? "Checking" : "Show me what fits"}
           </button>
           <p className="text-[0.75rem] text-ink-45">
-            Takes about a second. Nothing is stored.
+            Nothing is stored. The explanation takes a few seconds to write.
           </p>
         </div>
       </form>
-
-      <aside className="space-y-5">
-        <section>
-          <h3 className="label rule-heavy pb-2">Or start from an example</h3>
-          <p className="mt-2 text-[0.75rem] leading-relaxed text-ink-45">
-            Synthetic profiles generated from a fixed seed. No real people.
-          </p>
-          {examples ? (
-            <div className="mt-3 space-y-4">
-              {(
-                [
-                  ["recommended", "Clear fit"],
-                  ["borderline", "Close call"],
-                  ["rejected", "Not eligible"],
-                  ["edge_case", "Edge cases"],
-                ] as const
-              ).map(([key, heading]) =>
-                examples[key]?.length ? (
-                  <div key={key}>
-                    <p className="label mb-1.5 text-[0.5625rem]">{heading}</p>
-                    <ul className="space-y-1">
-                      {examples[key].map((ex) => (
-                        <li key={ex.profile_id}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setProfile(ex.profile);
-                              onProfile(ex.profile);
-                            }}
-                            className="num w-full border-l-2 border-rule px-2 py-1 text-left text-[0.6875rem] text-ink-70 hover:border-ledger hover:text-ledger"
-                          >
-                            {ex.profile_id}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null,
-              )}
-            </div>
-          ) : (
-            <p className="mt-3 text-[0.75rem] text-ink-45">
-              Run <code className="num">make data</code> to generate examples.
-            </p>
-          )}
-        </section>
-      </aside>
     </div>
   );
 }
