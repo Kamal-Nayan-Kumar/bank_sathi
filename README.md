@@ -6,6 +6,10 @@ card it does not show comes with the exact requirement you missed.
 
 The point is not the recommendation. The point is that you can check it.
 
+**Live:** [card-sathi.vercel.app](https://card-sathi.vercel.app) ·
+**API:** `card-sathi-api.onrender.com` (Render blueprint in `render.yaml`) ·
+**Report:** [`report/Card_Sathi_Report.pdf`](report/Card_Sathi_Report.pdf)
+
 ---
 
 ## Why this exists
@@ -211,11 +215,18 @@ quality does not depend on a third-party key being present in production.
 
 ### Deployment
 
-- **Backend → Render.** `render.yaml` is a blueprint. Set the four `sync: false`
-  vars (Groq key, OpenRouter key, Neon URL, Qdrant URL + key) and deploy.
-- **Frontend → Vercel.** Root directory `frontend`, output `dist`, and set
-  `VITE_API_URL` to the Render origin. It is a build-time variable; Vite inlines
-  it.
+- **Frontend → Vercel.** Live at
+  [card-sathi.vercel.app](https://card-sathi.vercel.app). Root directory
+  `frontend`, output `dist`, `VITE_API_URL` set to the Render origin.
+  `frontend/vercel.json` pins the same settings for CLI deploys.
+- **Backend → Render.** `render.yaml` is a blueprint (New → Blueprint → point at
+  this repo, region Singapore). Set the four `sync: false` vars (Groq key,
+  OpenRouter key, Neon URL, Qdrant URL + key) and deploy. Health check is
+  `/api/health`.
+- **Catalogue → Neon Postgres.** **Policy → Qdrant Cloud.**
+- **Once the API is up**, point the frontend at it:
+  `vercel env add VITE_API_URL production` (value: the Render origin), then
+  `vercel --prod`.
 
 Both fall back gracefully, so a partial configuration still deploys.
 
