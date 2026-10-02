@@ -35,10 +35,48 @@ export function ChatPanel({
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const nextId = useRef(1);
   const logRef = useRef<HTMLDivElement>(null);
+  const stageTimer = useRef<number | null>(null);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
+
+  /** While the request runs, narrate the real stages in order.
+   *
+   *  These are the pipeline's actual steps, shown as they would run. Timed to
+   *  typical durations, so on a slow request they lag behind reality rather
+   *  than racing ahead — the completed panel afterwards carries the true
+   *  timings for every step.
+   */
+  const STAGES = [
+    "Reading that…",
+    "Pulling your details together…",
+    "Checking 120 cards against your profile…",
+    "Ranking what fits…",
+    "Writing it up…",
+  ];
+
+  function startStages(setter: (updater: (m: Message[]) => Message[]) => void) {
+    let i = 0;
+    const id = nextId.current++;
+    setter((m) => [...m, { id, role: "assistant", content: STAGES[0], source: "working" }]);
+    stageTimer.current = window.setInterval(() => {
+      i += 1;
+      if (i >= STAGES.length) {
+        if (stageTimer.current) window.clearInterval(stageTimer.current);
+        return;
+      }
+      const text = STAGES[i];
+      setter((m) => m.map((msg) => (msg.id === id ? { ...msg, content: text } : msg)));
+    }, 5000);
+  }
+
+  function stopStages() {
+    if (stageTimer.current) {
+      window.clearInterval(stageTimer.current);
+      stageTimer.current = null;
+    }
+  }
 
   /** Put a prompt in the box and send it.
    *
@@ -55,9 +93,14 @@ export function ChatPanel({
     setDraft("");
     setError(null);
     setBusy(true);
+    startStages(setMessages);
 
     try {
       const reply = await api.chat(message, "web-session");
+      stopStages();
+      // The staged "working" line has served its purpose; the real answer and
+      // the step-by-step panel replace it.
+      setMessages((m) => m.filter((msg) => msg.source !== "working"));
       setPartial(reply.partial);
       setMissing(reply.missing_fields);
       setProfile(reply.response.profile);
@@ -81,6 +124,8 @@ export function ChatPanel({
         ]);
       }
     } catch (err) {
+      stopStages();
+      setMessages((m) => m.filter((msg) => msg.source !== "working"));
       const message = err instanceof ApiError ? err.message : "Something went wrong.";
       setError(message);
       setMessages((m) => [

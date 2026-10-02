@@ -17,7 +17,7 @@ type Input = "chat" | "form";
  *  Both land on the same result panel, because they run the same decision path.
  */
 export default function App() {
-  const [scenario, setScenario] = useState<Scenario>("samples");
+  const [scenario, setScenario] = useState<Scenario>("yours");
   const [input, setInput] = useState<Input>("chat");
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [health, setHealth] = useState<HealthStatus | null>(null);
@@ -59,8 +59,8 @@ export default function App() {
           <nav aria-label="Scenarios" className="flex border border-rule bg-slip">
             {(
               [
-                ["samples", "Sample profiles"],
                 ["yours", "Your details"],
+                ["samples", "Sample profiles"],
               ] as const
             ).map(([value, label]) => (
               <button
@@ -109,6 +109,7 @@ export default function App() {
         ) : null}
 
         <main className="pb-16">
+          <FirstVisit />
           {result ? (
             <div>
               <ResultPanel result={result} />
@@ -145,5 +146,75 @@ export default function App() {
         </footer>
       </div>
     </div>
+  );
+}
+
+/** The thirty-second orientation.
+ *
+ *  Shown once, then never again. Three rows: what this is, the two ways in,
+ *  and what you get out. Written for someone who has never seen the product —
+ *  an evaluator opening it cold should not have to guess what to click first.
+ */
+function FirstVisit() {
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return localStorage.getItem("cardsathi-seen") === "1";
+    } catch {
+      return false;
+    }
+  });
+  if (dismissed) return null;
+
+  function hide() {
+    try {
+      localStorage.setItem("cardsathi-seen", "1");
+    } catch {
+      /* private mode: the card just comes back next visit */
+    }
+    setDismissed(true);
+  }
+
+  return (
+    <section
+      aria-label="First time here"
+      className="slip mb-8 border border-rule px-5 py-4"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <p className="label text-ledger">First time here — 30 seconds</p>
+        <button
+          type="button"
+          onClick={hide}
+          aria-label="Dismiss"
+          className="label hover:text-ink"
+        >
+          ✕
+        </button>
+      </div>
+      <dl className="mt-3 space-y-2.5 text-[0.875rem] leading-relaxed">
+        <div className="flex gap-3">
+          <dt className="w-24 shrink-0 font-cond font-semibold text-ink">What it is</dt>
+          <dd className="text-ink-70">
+            A card finder that checks every card against your income, score, age
+            and spending — in code, not by asking a chatbot to guess.
+          </dd>
+        </div>
+        <div className="flex gap-3">
+          <dt className="w-24 shrink-0 font-cond font-semibold text-ink">Two ways in</dt>
+          <dd className="text-ink-70">
+            <strong className="font-semibold text-ink">Your details</strong> is the
+            real thing: describe yourself in words, or fill the form.{" "}
+            <strong className="font-semibold text-ink">Sample profiles</strong> picks
+            a customer for you, if you would rather watch first.
+          </dd>
+        </div>
+        <div className="flex gap-3">
+          <dt className="w-24 shrink-0 font-cond font-semibold text-ink">What you get</dt>
+          <dd className="text-ink-70">
+            Ranked cards with every figure explained, the cards you missed and
+            by how much, and a step-by-step of what the engine just did.
+          </dd>
+        </div>
+      </dl>
+    </section>
   );
 }

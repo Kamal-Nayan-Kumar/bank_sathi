@@ -1,6 +1,7 @@
 import type { RecommendationResponse, VerifierReport } from "../lib/types";
 import { CardRow } from "./CardRow";
 import { TraceList } from "./StatusStrip";
+import { PipelineSteps } from "./PipelineSteps";
 
 const VERIFIER_LABELS: Record<string, string> = {
   eligibility_consistency: "every recommended card passed eligibility",
@@ -83,11 +84,17 @@ export function ResultPanel({ result }: { result: RecommendationResponse }) {
 
   return (
     <section aria-live="polite" className="space-y-6">
-      <Summary result={result} />
+      <StatusLine result={result} />
       <VerifierBadge verifier={result.verifier} />
 
-      {status === "need_more_information" ? null : (
+      {status === "need_more_information" ? (
+        <Summary result={result} />
+      ) : (
         <>
+          <PipelineSteps result={result} />
+
+          <Summary result={result} />
+
           {result.recommendations.length ? (
             <section aria-labelledby="recs-heading" className="space-y-0">
               <h2 id="recs-heading" className="label rule-heavy pb-2">
@@ -126,6 +133,26 @@ export function ResultPanel({ result }: { result: RecommendationResponse }) {
         </>
       )}
     </section>
+  );
+}
+
+function StatusLine({ result }: { result: RecommendationResponse }) {
+  const tone =
+    result.status === "need_more_information"
+      ? "text-ochre"
+      : result.status === "recommendations_available"
+        ? "text-ledger"
+        : "text-stamp";
+  const text =
+    result.status === "need_more_information"
+      ? "One more thing"
+      : result.decision === "recommended"
+        ? "Done — here is what fits"
+        : "Done — not yet";
+  return (
+    <h2 className={`font-cond text-[0.6875rem] font-semibold tracking-[0.12em] uppercase ${tone}`}>
+      {text}
+    </h2>
   );
 }
 
