@@ -32,7 +32,13 @@ log = logging.getLogger(__name__)
 LLM_MAX_ATTEMPTS = 2
 LLM_RETRY_BASE_S = 2.0
 
-_USAGE = {"prompt_tokens": 0, "completion_tokens": 0, "calls": 0}
+# Generous because reasoning models (gpt-oss-120b, the Nemotron fallbacks) emit
+# a `reasoning` field that consumes the same budget as the answer. Measured: a
+# Nemotron explanation returned 446 completion tokens of which roughly 400 were
+# thinking, and at 500 tokens the visible answer was cut mid-sentence.
+MAX_TOKENS = 2048
+
+_USAGE = {"prompt_tokens": 0, "completion_tokens": 0, "calls": 0, "fallbacks": 0}
 
 
 def usage() -> dict[str, int]:
@@ -40,7 +46,7 @@ def usage() -> dict[str, int]:
 
 
 def reset_usage() -> None:
-    _USAGE.update(prompt_tokens=0, completion_tokens=0, calls=0)
+    _USAGE.update(prompt_tokens=0, completion_tokens=0, calls=0, fallbacks=0)
 
 
 @dataclass
@@ -56,107 +62,158 @@ def available() -> bool:
     return get_settings().has_llm
 
 
+def providers() -> list[tuple[str, str, str]]:
+    """Configured providers as (name, base_url, api_key), primary first.
+
+    Order matters: the primary carries the model choice and the retry budget,
+    and a fallback only gets what the primary left behind. Groq's free tier
+    rate-limits aggressively, so "Groq is 429, try the other one" is a normal
+    production path here rather than an edge case.
+    """
+    s = get_settings()
+    out: list[tuple[str, str, str]] = []
+    if s.groq_api_key:
+        out.append(("groq", s.groq_base_url, s.groq_api_key))
+    if s.openrouter_api_key:
+        out.append(("openrouter", s.openrouter_base_url, s.openrouter_api_key))
+    return out
+
+
+def _model_for(provider: str, role: str, settings) -> str:
+    """Resolve the model name, remapping if the fallback lacks the primary's."""
+    if provider == "groq":
+        return settings.groq_model_extract if role == "extract" else settings.groq_model_explain
+    return (
+        settings.openrouter_model_extract
+        if role == "extract"
+        else settings.openrouter_model_explain
+    )
+
+
 _REASONING_MODELS = {"openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"}
 
 
 def chat_multi(messages: list[dict], model: str | None = None) -> LLMResult:
     """Multi-turn call. Used by the chat tool loop, which needs to feed a tool
     result back in as a further turn."""
-    s = get_settings()
-    if not s.has_llm:
-        return LLMResult(text="", used_llm=False, error="no_api_key")
-    use_model = model or s.groq_model_explain
-    last_error = ""
-    for attempt in range(LLM_MAX_ATTEMPTS):
-        try:
-            text = _post(messages, use_model, json_mode=False)
-            return LLMResult(text=text, model=use_model)
-        except httpx.HTTPStatusError as exc:
-            last_error = f"HTTP {exc.response.status_code}"
-            if exc.response.status_code != 429 or attempt == LLM_MAX_ATTEMPTS - 1:
-                break
-            time.sleep(LLM_RETRY_BASE_S * (2**attempt))
-        except Exception as exc:  # noqa: BLE001
-            last_error = str(exc)
-            break
-    log.warning("LLM multi-turn failed (%s)", last_error)
-    return LLMResult(text="", used_llm=False, error=last_error, model=use_model)
-
-
-def _post(messages: list[dict], model: str, json_mode: bool = False, temperature: float = 0.1):
-    s = get_settings()
-    payload: dict = {
-        "model": model,
-        "messages": messages,
-        "max_tokens": 1400,
-    }
-    if json_mode:
-        payload["response_format"] = {"type": "json_object"}
-        # Some Groq models emit a `reasoning` field and reject an explicit
-        # temperature; sending neither keeps every available model working.
-    elif model not in _REASONING_MODELS:
-        payload["temperature"] = temperature
-    with httpx.Client(timeout=s.llm_timeout_s) as client:
-        r = client.post(
-            f"{s.groq_base_url}/chat/completions",
-            headers={"Authorization": f"Bearer {s.groq_api_key}"},
-            json=payload,
-        )
-        r.raise_for_status()
-        data = r.json()
-    usage_meta = data.get("usage", {})
-    _USAGE["prompt_tokens"] += int(usage_meta.get("prompt_tokens", 0))
-    _USAGE["completion_tokens"] += int(usage_meta.get("completion_tokens", 0))
-    _USAGE["calls"] += 1
-    # Reasoning models put their thinking in a separate field; the answer is
-    # still in `content`, but a truncated answer shows up as an empty content
-    # string, so record why in case it matters upstream.
-    message = data["choices"][0]["message"]
-    text = (message.get("content") or "").strip()
-    if not text and message.get("reasoning"):
-        log.info("model returned reasoning but no content (likely hit max_tokens)")
-    return text
+    return _dispatch(messages, role="explain", json_mode=False, forced_model=model)
 
 
 def chat(
     system: str, user: str, *, model: str | None = None, json_mode: bool = False
 ) -> LLMResult:
-    """One call, with bounded retry on 429 only.
+    """One call, with bounded retry, then failover.
 
-    Retrying is limited to rate limiting and is capped at two attempts with a
-    backoff. A 429 here means the shared free tier is saturated; retrying a
-    400 or a 500 just wastes the customer's wait. After the retries are
-    exhausted the caller gets `used_llm=False` and degrades, which is the
-    behaviour every call site already handles.
+    Retry is limited to rate limiting and capped; after that the next provider
+    is tried. Every call site already handles `used_llm=False` by degrading, so
+    a total outage produces a correct but plainer answer rather than an error.
     """
-    s = get_settings()
-    if not s.has_llm:
-        return LLMResult(text="", used_llm=False, error="no_api_key")
-    use_model = model or s.groq_model_explain
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": user},
+    ]
+    forced = model if model and model in (
+        get_settings().groq_model_extract,
+        get_settings().groq_model_explain,
+    ) else None
+    return _dispatch(messages, role="explain", json_mode=json_mode, forced_model=forced)
+
+
+def _dispatch(
+    messages: list[dict],
+    *,
+    role: str,
+    json_mode: bool,
+    forced_model: str | None = None,
+) -> LLMResult:
+    settings = get_settings()
+    if not settings.has_llm:
+        return LLMResult(used_llm=False, error="no_api_key")
 
     last_error = ""
-    for attempt in range(LLM_MAX_ATTEMPTS):
-        try:
-            text = _post(
-                [{"role": "system", "content": system}, {"role": "user", "content": user}],
-                use_model,
-                json_mode=json_mode,
-            )
-            parsed = _parse_json(text) if json_mode else None
-            return LLMResult(text=text, json_value=parsed, model=use_model)
-        except httpx.HTTPStatusError as exc:
-            last_error = f"HTTP {exc.response.status_code}"
-            if exc.response.status_code != 429:
-                break
-            if attempt < LLM_MAX_ATTEMPTS - 1:
+    for name, base_url, api_key in providers():
+        use_model = forced_model or _model_for(name, role, settings)
+        for attempt in range(LLM_MAX_ATTEMPTS):
+            try:
+                text = _post(
+                    messages,
+                    use_model,
+                    base_url=base_url,
+                    api_key=api_key,
+                    provider=name,
+                    json_mode=json_mode,
+                )
+                parsed = _parse_json(text) if json_mode else None
+                _USAGE["calls"] += 1
+                if name != "groq":
+                    _USAGE["fallbacks"] += 1
+                return LLMResult(text=text, json_value=parsed, model=use_model)
+            except httpx.HTTPStatusError as exc:
+                status = exc.response.status_code
+                last_error = f"{name}: HTTP {status}"
+                # 429 is worth one more try; anything else is a bad request or
+                # a broken key, and retrying only delays the fallback.
+                if status != 429 or attempt == LLM_MAX_ATTEMPTS - 1:
+                    break
                 time.sleep(LLM_RETRY_BASE_S * (2**attempt))
-                continue
-        except Exception as exc:  # noqa: BLE001 - any failure must degrade, not 500
-            last_error = str(exc)
-            break
+            except Exception as exc:  # noqa: BLE001
+                last_error = f"{name}: {exc}"
+                break
+        log.warning("provider %s exhausted (%s)", name, last_error)
 
-    log.warning("LLM call failed (%s) for model %s", last_error, use_model)
-    return LLMResult(text="", used_llm=False, error=last_error, model=use_model)
+    log.warning("all LLM providers failed: %s", last_error)
+    return LLMResult(used_llm=False, error=last_error)
+
+
+def _post(
+    messages: list[dict],
+    model: str,
+    *,
+    base_url: str,
+    api_key: str,
+    provider: str,
+    json_mode: bool = False,
+    temperature: float = 0.1,
+) -> str:
+    """One HTTP call to an OpenAI-compatible endpoint.
+
+    Groq and OpenRouter differ only in headers, so there is one implementation.
+    """
+    s = get_settings()
+    payload: dict = {"model": model, "messages": messages, "max_tokens": MAX_TOKENS}
+    if json_mode:
+        payload["response_format"] = {"type": "json_object"}
+    elif model not in _REASONING_MODELS:
+        payload["temperature"] = temperature
+
+    headers = {"Authorization": f"Bearer {api_key}"}
+    if provider == "openrouter":
+        # OpenRouter routes on these headers for attribution and for its
+        # own free-tier fairness accounting. Missing them is not an error, but
+        # being a good citizen costs nothing.
+        headers["HTTP-Referer"] = "https://bank-sathi.vercel.app"
+        headers["X-Title"] = "Bank Sathi"
+
+    with httpx.Client(timeout=s.llm_timeout_s) as client:
+        r = client.post(
+            f"{base_url.rstrip('/')}/chat/completions",
+            headers=headers,
+            json=payload,
+        )
+        r.raise_for_status()
+        data = r.json()
+
+    usage_meta = data.get("usage", {})
+    _USAGE["prompt_tokens"] += int(usage_meta.get("prompt_tokens", 0))
+    _USAGE["completion_tokens"] += int(usage_meta.get("completion_tokens", 0))
+
+    # Reasoning models put their thinking in a separate field; the answer is
+    # still in `content`, but a truncated answer shows up as an empty string.
+    message = data["choices"][0]["message"]
+    text = (message.get("content") or "").strip()
+    if not text and message.get("reasoning"):
+        log.info("%s/%s returned reasoning but no content (likely hit max_tokens)", provider, model)
+    return text
 
 
 def _parse_json(text: str) -> dict | None:

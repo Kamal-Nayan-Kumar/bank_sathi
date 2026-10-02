@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Bank Sathi — the bank ledger.
+
+   Palette taken from the artefacts this product stands in for: passbook paper,
+   ink, the green of a printed ledger column, the red of a clearance stamp.
+
+   Restraint note: stamp red appears only on failures. It is the one accent, so
+   it stays loud. Everything else is paper and ink.
+   ========================================================================== */
+@theme {
+  --color-paper: #edf0ec;
+  --color-ink: #12211f;
+  --color-ink-70: #4a5a56;
+  --color-ink-45: #7d8b87;
+  --color-ledger: #1f4b3f;
+  --color-ledger-10: #dde7e3;
+  --color-stamp: #b03a2e;
+  --color-stamp-10: #f6e3e1;
+  --color-ochre: #9a7414;
+  --color-ochre-10: #f7eed7;
+  --color-slip: #fbfcfa;
+  --color-rule: #c9d2ce;
+
+  /* One superfamily, three voices. Plex was commissioned for a corporate
+     financial identity; its mono is a ticket-punch face, which is exactly the
+     register for machine-generated figures. */
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", ui-sans-serif, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Passbook paper: a faint warm-to-cool wash plus a very light ruling.
+       The ruling is what makes the ledger reading legible as a material rather
+       than a background colour, and it stays invisible until you look for it. */
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 2.0625rem,
+        rgb(31 75 63 / 0.028) 2.0625rem,
+        rgb(31 75 63 / 0.028) calc(2.0625rem + 1px)
+      ),
+      radial-gradient(120% 70% at 15% -10%, #ffffff 0%, transparent 55%),
+      radial-gradient(90% 60% at 100% 110%, #dfe7e2 0%, transparent 50%);
+    background-attachment: fixed;
+    font-feature-settings: "cv05" 1, "ss01" 1;
+  }
+
+  /* Every figure in this product comes out of a calculation, so figures are
+     monospaced and tabular everywhere without exception. */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "zero" 1;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ledger);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+
+  ::selection {
+    background: var(--color-ledger);
+    color: var(--color-slip);
+  }
+}
+
+@layer components {
+  /* A ruled line, the way a passbook has them: not a border, a drawn rule. */
+  .rule {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .rule-heavy {
+    border-bottom: 2px solid var(--color-ledger);
+  }
+
+  /* Small caps form furniture: labels on a form, headers on a slip. */
+  .label {
+    font-family: var(--font-cond);
+    font-size: 0.6875rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-ink-45);
+  }
+
+  .slip {
+    background: var(--color-slip);
+    box-shadow:
+      0 1px 0 0 rgb(18 33 31 / 0.04),
+      0 1px 3px 0 rgb(18 33 31 / 0.05);
+  }
+}
+
+/* Ledger rows settle in rather than sliding. One orchestrated moment on
+   results, nothing else animates. */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.settle {
+  animation: settle 340ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes stamp {
+  0% {
+    opacity: 0;
+    transform: scale(1.35) rotate(-7deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-3deg);
+  }
+}
+
+.stamp-in {
+  animation: stamp 260ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

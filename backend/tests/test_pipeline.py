@@ -134,6 +134,69 @@ class TestLLMCoercion:
         assert set(p.preferences) == {"cashback", "travel"}
 
 
+class TestProviderFailover:
+    """Groq's free tier rate-limits, so the second provider is a normal path."""
+
+    def test_providers_are_ordered_primary_first(self, monkeypatch):
+        from app.config import get_settings
+
+        s = get_settings()
+        monkeypatch.setattr(s, "groq_api_key", "k1")
+        monkeypatch.setattr(s, "openrouter_api_key", "")
+        assert [name for name, _, _ in llm.providers()] == ["groq"]
+
+        monkeypatch.setattr(s, "openrouter_api_key", "k2")
+        assert [name for name, _, _ in llm.providers()] == ["groq", "openrouter"]
+
+    def test_second_provider_is_used_when_the_first_is_unauthorised(self, monkeypatch):
+        import httpx
+
+        from app.config import get_settings
+
+        s = get_settings()
+        monkeypatch.setattr(s, "groq_api_key", "bad")
+        monkeypatch.setattr(s, "openrouter_api_key", "good")
+        monkeypatch.setattr(llm, "LLM_MAX_ATTEMPTS", 1)
+        llm.reset_usage()
+
+        def fake_post(messages, model, *, base_url, api_key, provider, **kw):
+            if provider == "groq":
+                raise httpx.HTTPStatusError(
+                    "401",
+                    request=httpx.Request("POST", "https://api.groq.com"),
+                    response=httpx.Response(401, request=httpx.Request("POST", "https://api.groq.com")),
+                )
+            return '{"ok": true}'
+
+        monkeypatch.setattr(llm, "_post", fake_post)
+        result = llm.chat("go", "go", json_mode=True)
+        assert result.used_llm
+        assert result.json_value == {"ok": True}
+        assert llm.usage()["fallbacks"] == 1
+
+    def test_total_outage_degrades_rather_than_raising(self, monkeypatch):
+        import httpx
+
+        from app.config import get_settings
+
+        s = get_settings()
+        monkeypatch.setattr(s, "groq_api_key", "bad")
+        monkeypatch.setattr(s, "openrouter_api_key", "bad")
+        monkeypatch.setattr(llm, "LLM_MAX_ATTEMPTS", 1)
+
+        def always_401(messages, model, *, base_url, api_key, provider, **kw):
+            raise httpx.HTTPStatusError(
+                "401",
+                request=httpx.Request("POST", "https://x"),
+                response=httpx.Response(401, request=httpx.Request("POST", "https://x")),
+            )
+
+        monkeypatch.setattr(llm, "_post", always_401)
+        result = llm.chat("go", "go")
+        assert result.used_llm is False
+        assert result.error
+
+
 class TestFallbackOnLLMFailure:
     def test_extraction_survives_a_failed_call(self, monkeypatch):
         monkeypatch.setattr(llm, "chat", lambda *a, **k: llm.LLMResult(used_llm=False, error="boom"))

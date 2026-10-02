@@ -25,13 +25,29 @@ class Settings(BaseSettings):
     app_env: str = "development"
     log_level: str = "INFO"
 
-    # --- LLM -----------------------------------------------------------------
+    # --- LLM: Groq primary, OpenRouter fallback -----------------------------
     groq_api_key: str = ""
     # One model for both jobs: openai/gpt-oss-120b is the strongest available on
     # the free tier and is reliable at JSON extraction as well as prose.
     groq_model_extract: str = "openai/gpt-oss-120b"
     groq_model_explain: str = "openai/gpt-oss-120b"
     groq_base_url: str = "https://api.groq.com/openai/v1"
+
+    # Groq's free tier rate-limits hard, which is exactly the condition that
+    # makes a second provider worth having. Only consulted after Groq fails.
+    #
+    # The OpenRouter model is the one free endpoint that reliably honours
+    # `response_format: json_object`, which extraction depends on. Verified
+    # against the live catalogue: `qwen/*:free` and `gemma/*:free` both returned
+    # 429 or ignored the parameter when checked.
+    openrouter_api_key: str = ""
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    # These must be `:free` endpoints. Verified against the live catalogue:
+    # only these honoured `response_format: json_object` on the free tier, which
+    # profile extraction depends on. Others returned 429, 403, 400, or ignored
+    # the parameter and answered with prose.
+    openrouter_model_extract: str = "nvidia/nemotron-3-super-120b-a12b:free"
+    openrouter_model_explain: str = "nvidia/nemotron-3-super-120b-a12b:free"
     llm_timeout_s: float = 30.0
 
     # --- Embeddings ----------------------------------------------------------
@@ -69,7 +85,17 @@ class Settings(BaseSettings):
 
     @property
     def has_llm(self) -> bool:
+        """True if any provider is configured. Callers degrade on a per-call
+        basis, so this only gates the question of whether to try at all."""
+        return bool(self.groq_api_key or self.openrouter_api_key)
+
+    @property
+    def has_groq(self) -> bool:
         return bool(self.groq_api_key)
+
+    @property
+    def has_openrouter(self) -> bool:
+        return bool(self.openrouter_api_key)
 
     @property
     def has_remote_embeddings(self) -> bool:

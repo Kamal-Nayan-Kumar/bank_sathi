@@ -1,0 +1,306 @@
+import { useEffect, useRef, useState } from "react";
+import { api, ApiError, type ChatTurn } from "../lib/api";
+import type { RecommendationResponse, UserProfile } from "../lib/types";
+import { fieldLabel, rupees } from "../lib/format";
+
+const PROMPTS = [
+  "I'm 34, salaried in Bangalore, earning 1.4 lakh a month. Credit score 780. I travel about 20,000 a month and eat out a lot, and I'd like lounge access.",
+  "22, student in Pune, 18,000 a month, never used a credit card before. I mostly shop online.",
+  "I earn 95k a month, CIBIL 690, self-employed in Jaipur. I spend about 8,000 on fuel and 12,000 on groceries.",
+];
+
+interface Message {
+  id: number;
+  role: "user" | "assistant";
+  content: string;
+  /** Attached to assistant turns so the transcript stays honest about where
+   *  an answer came from. */
+  source?: string;
+}
+
+/** The chat route.
+ *
+ *  The session's memory lives in the client, not in a server-side session
+ *  table: the API stays stateless and horizontally scalable, and the sidebar
+ *  can show exactly what the engine currently believes about the customer,
+ *  which is the more useful thing to display anyway.
+ */
+export function ChatPanel({
+  onResult,
+  onProfile,
+}: {
+  onResult: (result: RecommendationResponse) => void;
+  onProfile: (profile: UserProfile | null) => void;
+}) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [draft, setDraft] = useState("");
+  const [partial, setPartial] = useState<Record<string, unknown>>({});
+  const [missing, setMissing] = useState<string[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const nextId = useRef(1);
+  const logRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, busy]);
+
+  /** Put a prompt in the box and send it.
+   *
+   *  Example prompts used to only focus the input, which looked like a broken
+   *  button. A demo that needs two clicks to try itself is a demo nobody
+   *  tries, so this fills and submits.
+   */
+  async function send(text: string) {
+    const message = text.trim();
+    if (!message || busy) return;
+
+    const turn: Message = { id: nextId.current++, role: "user", content: message };
+    setMessages((m) => [...m, turn]);
+    setDraft("");
+    setError(null);
+    setBusy(true);
+
+    try {
+      const reply = await api.chat(message, "web-session");
+      setPartial(reply.partial);
+      setMissing(reply.missing_fields);
+      setProfile(reply.response.profile);
+      onProfile(reply.response.profile);
+      onResult(reply.response);
+
+      const answer = reply.response.question ?? reply.response.summary;
+      if (answer) {
+        setMessages((m) => [
+          ...m,
+          {
+            id: nextId.current++,
+            role: "assistant",
+            content: answer,
+            source: reply.response.status === "need_more_information"
+              ? "asking for one more detail"
+              : reply.response.verifier?.used_fallback
+                ? "written from the engine's figures"
+                : undefined,
+          },
+        ]);
+      }
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : "Something went wrong.";
+      setError(message);
+      setMessages((m) => [
+        ...m,
+        { id: nextId.current++, role: "assistant", content: message, source: "error" },
+      ]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function ask(question: string) {
+    if (busy) return;
+    setMessages((m) => [
+      ...m,
+      { id: nextId.current++, role: "user", content: question },
+    ]);
+    setBusy(true);
+    setError(null);
+    try {
+      const history: ChatTurn[] = messages
+        .filter((m) => !m.source || m.source !== "error")
+        .map((m) => ({ role: m.role, content: m.content }));
+      const { reply } = await api.followup(question, profile, history);
+      setMessages((m) => [
+        ...m,
+        { id: nextId.current++, role: "assistant", content: reply },
+      ]);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Something went wrong.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const settled = partial && Object.keys(partial).length > 0;
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_17rem]">
+      <div className="min-w-0">
+        <div
+          ref={logRef}
+          className="max-h-[26rem] min-h-[16rem] space-y-4 overflow-y-auto border border-rule bg-slip/60 px-4 py-5"
+        >
+          {messages.length === 0 ? (
+            <Opening onPick={(text) => void send(text)} />
+          ) : (
+            messages.map((m) => (
+              <div key={m.id} className={m.role === "user" ? "text-right" : ""}>
+                <p
+                  className={`inline-block max-w-[85%] text-[0.9375rem] leading-relaxed ${
+                    m.role === "user"
+                      ? "bg-ledger px-3.5 py-2 text-slip"
+                      : "border-l-2 border-ledger bg-paper/70 px-3.5 py-2 text-ink"
+                  }`}
+                >
+                  {m.content}
+                </p>
+                {m.source ? (
+                  <p className="label mt-1 text-[0.5625rem]">{m.source}</p>
+                ) : null}
+              </div>
+            ))
+          )}
+          {busy ? (
+            <p className="label flex items-center gap-2">
+              <span className="inline-block size-1.5 animate-pulse bg-ledger" />
+              {settled ? "Checking your profile against the catalogue" : "Reading that"}
+            </p>
+          ) : null}
+        </div>
+
+        {messages.length > 0 && profile ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["Why not the second one?", "Compare my top two", "What is the lounge policy?"].map(
+              (q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => ask(q)}
+                  disabled={busy}
+                  className="label border border-rule px-2.5 py-1.5 text-ink-70 hover:border-ledger hover:text-ledger disabled:opacity-40"
+                >
+                  {q}
+                </button>
+              ),
+            )}
+          </div>
+        ) : null}
+
+        <form
+          className="mt-4 flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void send(draft);
+          }}
+        >
+          <label htmlFor="chat-input" className="sr-only">
+            Describe yourself in your own words
+          </label>
+          <input
+            id="chat-input"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Describe yourself in your own words…"
+            autoComplete="off"
+            disabled={busy}
+            className="flex-1 border border-rule bg-slip px-3.5 py-3 text-[0.9375rem] text-ink placeholder:text-ink-45 focus:border-ledger focus:outline-none disabled:opacity-60"
+          />
+          <button
+            type="submit"
+            disabled={busy || !draft.trim()}
+            className="bg-ledger px-5 py-3 font-cond text-sm font-semibold tracking-wide text-slip uppercase hover:bg-ink disabled:opacity-40"
+          >
+            Check
+          </button>
+        </form>
+
+        {error ? (
+          <p role="alert" className="mt-3 border-l-2 border-stamp bg-stamp-10 px-3 py-2 text-[0.8125rem] text-ink">
+            {error}
+          </p>
+        ) : null}
+      </div>
+
+      {/* Sidebar: what the engine currently believes, and what it still needs. */}
+      <aside className="space-y-5">
+        <section>
+          <h3 className="label rule-heavy pb-2">What we have on you</h3>
+          {settled ? (
+            <dl className="mt-3 space-y-1.5">
+              {Object.entries(partial)
+                .filter(([k, v]) => k !== "monthly_spend" && v !== null)
+                .map(([k, v]) => (
+                  <div key={k} className="flex items-baseline justify-between gap-3">
+                    <dt className="label text-[0.5625rem]">{fieldLabel(k)}</dt>
+                    <dd className="num text-[0.75rem] text-ink">{String(v)}</dd>
+                  </div>
+                ))}
+              {profile?.monthly_spend ? (
+                <div className="flex items-baseline justify-between gap-3">
+                  <dt className="label text-[0.5625rem]">Spending total</dt>
+                  <dd className="num text-[0.75rem] text-ink">
+                    {rupees(
+                      Object.values(profile.monthly_spend).reduce((a, b) => a + b, 0),
+                    )}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : (
+            <p className="mt-3 text-[0.8125rem] text-ink-45">
+              Nothing yet. Tell me your income, where you live and what you spend
+              on, and I&apos;ll fill this in as we go.
+            </p>
+          )}
+        </section>
+
+        {missing.length ? (
+          <section>
+            <h3 className="label rule-heavy pb-2 text-ochre">Still needed</h3>
+            <ul className="mt-3 space-y-1">
+              {missing.map((f) => (
+                <li key={f} className="flex gap-2 text-[0.8125rem] text-ink-70">
+                  <span aria-hidden className="text-ochre">
+                    ○
+                  </span>
+                  {fieldLabel(f)}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        <p className="text-[0.75rem] leading-relaxed text-ink-45">
+          Please don&apos;t include your PAN, Aadhaar number or card details.
+          Anything that looks like one is stripped out before your message
+          reaches the model.
+        </p>
+      </aside>
+    </div>
+  );
+}
+
+function Opening({ onPick }: { onPick: (text: string) => void }) {
+  return (
+    <div className="space-y-4 py-2">
+      <p className="max-w-prose text-[0.9375rem] leading-relaxed text-ink-70">
+        Tell me about yourself however you like. I&apos;ll work out which cards
+        you actually qualify for, rank them by what they&apos;d be worth to you,
+        and show my working.
+      </p>
+      <div className="space-y-1.5">
+        <p className="label">Or start from one of these</p>
+        <ul className="space-y-1">
+          {PROMPTS.map((p) => (
+            <li key={p}>
+              <button
+                type="button"
+                onClick={() => onPick(p)}
+                className="group flex w-full items-start gap-3 border-l-2 border-rule py-1.5 pl-3 text-left text-[0.8125rem] leading-relaxed text-ink-70 transition-colors hover:border-ledger hover:text-ink"
+              >
+                <span
+                  aria-hidden
+                  className="mt-1 text-[0.5rem] text-ink-45 transition-transform group-hover:translate-x-0.5"
+                >
+                  →
+                </span>
+                <span className="flex-1">{p}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
