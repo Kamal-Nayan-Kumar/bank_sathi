@@ -109,9 +109,33 @@ def node_followup(state: dict[str, Any]) -> dict[str, Any]:
     """
     partial = state.get("partial")
     if partial is None:
-        return {"followup_question": "Tell me a little about yourself first."}
+        question = "Tell me a little about yourself first."
+        return {"followup_question": question, "response": _followup_response(state, question)}
+
     question = intake.ask_followup(partial, state.get("user_message", ""))
-    return {"followup_question": question}
+    if not question:
+        question = intake.next_question(partial) or "Tell me a little about yourself first."
+    return {"followup_question": question, "response": _followup_response(state, question)}
+
+
+def _followup_response(state: dict[str, Any], question: str) -> RecommendationResponse:
+    """A real pending response for the missing-info turn.
+
+    Without this the graph ended the turn holding only a question, so the API
+    had no response to send and every chat message looked like a server
+    failure. The summary is plain text built from the fields we still need —
+    no LLM, because a question must never depend on a provider being up.
+    """
+    missing = state.get("missing_fields") or []
+    if missing:
+        pretty = [f.replace("_", " ") for f in missing]
+        summary = "I still need a little more before I can recommend anything: " + ", ".join(pretty) + "."
+    else:
+        summary = "I could not read that clearly. Try telling me your monthly income, age and city."
+    response = _assemble({**state, "followup_question": question}, summary=summary)
+    response.trace = dict(state.get("trace") or {})
+    response.trace["awaiting_customer"] = 1.0
+    return response
 
 
 def node_build_profile(state: dict[str, Any]) -> dict[str, Any]:
