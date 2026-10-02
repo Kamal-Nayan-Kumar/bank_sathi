@@ -105,7 +105,13 @@ export function ChatPanel({
       setMissing(reply.missing_fields);
       setProfile(reply.response.profile);
       onProfile(reply.response.profile);
-      onResult(reply.response);
+
+      // A pending turn is part of the conversation, not a result. Handing it to
+      // the results panel unmounted this chat and threw the transcript away, so
+      // asking one question felt like the app gave up. Only a settled answer
+      // moves on.
+      const pending = reply.response.status === "need_more_information";
+      if (!pending) onResult(reply.response);
 
       const answer = reply.response.question ?? reply.response.summary;
       if (answer) {
@@ -115,8 +121,8 @@ export function ChatPanel({
             id: nextId.current++,
             role: "assistant",
             content: answer,
-            source: reply.response.status === "need_more_information"
-              ? "asking for one more detail"
+            source: pending
+              ? "one more thing"
               : reply.response.verifier?.used_fallback
                 ? "written from the engine's figures"
                 : undefined,
@@ -163,11 +169,16 @@ export function ChatPanel({
 
   const settled = partial && Object.keys(partial).length > 0;
 
+  /** The box should invite the answer, not repeat the question. */
+  const placeholder = missing.length
+    ? `Tell me about your ${fieldLabel(missing[0])}…`
+    : "Describe yourself in your own words…";
+
   return (
     <div>
       <div
         ref={logRef}
-        className="max-h-[26rem] min-h-[14rem] space-y-4 overflow-y-auto border border-rule bg-slip/60 px-4 py-5"
+        className="min-h-[12rem] space-y-4 border border-rule bg-slip/60 px-4 py-5"
       >
           {messages.length === 0 ? (
             <Opening />
@@ -231,7 +242,7 @@ export function ChatPanel({
             id="chat-input"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Describe yourself in your own words…"
+            placeholder={placeholder}
             autoComplete="off"
             disabled={busy}
             className="flex-1 border border-rule bg-slip px-3.5 py-3 text-[0.9375rem] text-ink placeholder:text-ink-45 focus:border-ledger focus:outline-none disabled:opacity-60"
