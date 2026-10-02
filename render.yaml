@@ -24,6 +24,17 @@ services:
       - key: PYTHON_VERSION
         value: "3.11.9"
 
+      # Keep the runtime lean: the free tier has 512MB and the embedding model
+      # is the hungriest thing in the process.
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: OPENBLAS_NUM_THREADS
+        value: "1"
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
+      - key: LOG_LEVEL
+        value: WARNING
+
       # --- Groq (primary LLM). Optional: falls back to template prose. ---
       - key: GROQ_API_KEY
         sync: false

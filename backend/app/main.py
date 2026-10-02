@@ -65,6 +65,14 @@ async def lifespan(app: FastAPI):
 
 
 def _warm_up() -> None:
+    """Warm the cheap paths. The embedder is deliberately excluded.
+
+    Loading the MiniLM model at boot alongside everything else spiked past the
+    512MB free-tier limit and OOM-killed the process. It loads lazily on first
+    retrieval instead — one slow request rather than a dead service.
+    Set WARM_EMBEDDER=1 to restore boot warming where RAM allows.
+    """
+    import os as _os
     import time as _time
 
     started = _time.perf_counter()
@@ -78,10 +86,10 @@ def _warm_up() -> None:
             log.warning("warm-up step %s failed: %s", name, exc)
         stages[name] = round((_time.perf_counter() - t0) * 1000, 1)
 
-    timed("embedder", lambda: __import__("app.rag.store", fromlist=["x"]).get_embedder().embed(["warm up"]))
+    if _os.environ.get("WARM_EMBEDDER", "0") == "1":
+        timed("embedder", lambda: __import__("app.rag.store", fromlist=["x"]).get_embedder().embed(["warm up"]))
     timed("vector_store", lambda: __import__("app.rag.store", fromlist=["x"]).get_store().count())
     timed("catalogue", lambda: __import__("app.db", fromlist=["x"]).get_all_cards())
-
     log.info(
         "warm-up: %s (%.0fms)",
         ", ".join(f"{k}={v}ms" for k, v in stages.items()),
@@ -105,7 +113,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://bank-sathi.vercel.app",
+        "https://card-sathi.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
