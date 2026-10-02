@@ -22,9 +22,11 @@ setup: ## Create the venv, install the backend, install the frontend
 
 data: ## Generate the catalogue, profiles and ground truth, then ingest
 	$(PY) scripts/build_data.py --cards 120 --profiles 300
+	$(PY) scripts/build_samples.py
 
 data-force: ## Rebuild every generated artefact from the seed
 	$(PY) scripts/build_data.py --cards 120 --profiles 300 --force
+	$(PY) scripts/build_samples.py
 
 test: ## Run the test suite
 	$(PY) -m pytest

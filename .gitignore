@@ -26,6 +26,9 @@ evaluation/results.json
 evaluation/results.md
 evaluation/runs/
 
+# cProfile output
+prof
+
 # Frontend
 frontend/node_modules/
 frontend/dist/
